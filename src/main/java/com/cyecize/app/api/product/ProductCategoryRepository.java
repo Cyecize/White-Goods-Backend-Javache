@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
@@ -21,7 +22,10 @@ public class ProductCategoryRepository {
 
         return entityManager
                 .createQuery("select pc from ProductCategory pc", ProductCategory.class)
-                .setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph("productCategoryAll"))
+                .setHint(
+                        General.HIBERNATE_HINT_ENTITY_GRAPH,
+                        entityManager.getEntityGraph(EntityGraphs.PRODUCT_CATEGORY_ALL)
+                )
                 .getResultList();
     }
 }

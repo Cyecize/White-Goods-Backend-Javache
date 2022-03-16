@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,7 +23,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@NamedEntityGraph(name = "productCategoryAll", includeAllAttributes = true)
+@NamedEntityGraph(name = EntityGraphs.PRODUCT_CATEGORY_ALL, includeAllAttributes = true)
 public class ProductCategory {
 
     @Id

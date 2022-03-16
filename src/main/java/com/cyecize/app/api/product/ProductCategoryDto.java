@@ -16,11 +16,4 @@ public class ProductCategoryDto {
     private String imageUrl;
 
     private List<TagDto> tags;
-
-    @Data
-    private static class TagDto {
-        private Long id;
-
-        private String name;
-    }
 }

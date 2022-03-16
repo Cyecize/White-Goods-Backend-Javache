@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -14,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
+@NamedEntityGraph(name = EntityGraphs.PRODUCT_ALL, includeAllAttributes = true)
 public class Product {
 
     @Id
