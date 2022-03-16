@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,8 +17,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -57,9 +59,12 @@ public class Product {
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     @ToString.Exclude
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     private Boolean enabled;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private Set<ProductSpecification> specifications;
 
 //    /**
 //     * @var Image[]

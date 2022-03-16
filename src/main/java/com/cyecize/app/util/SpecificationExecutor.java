@@ -34,8 +34,6 @@ public class SpecificationExecutor {
             typeQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph(entityGraph));
         }
 
-        typeQuery.setMaxResults(1);
-
         return typeQuery.getResultList().stream().findFirst().orElse(null);
     }
 }

@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.api.product.productspec.ProductSpecificationDto;
 import lombok.Data;
 
 import java.util.List;
@@ -25,6 +26,6 @@ public class ProductDto {
 
     private List<TagDto> tags;
 
-//    private $imageGallery;
-//    private $specifications;
+    //    private $imageGallery;
+    private List<ProductSpecificationDto> specifications;
 }
