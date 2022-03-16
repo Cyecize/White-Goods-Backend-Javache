@@ -66,9 +66,6 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     private Set<ProductSpecification> specifications;
 
-//    /**
-//     * @var Image[]
-//     * @ORM\OneToMany(targetEntity="App\Entity\Image", mappedBy="product", fetch="LAZY")
-//     */
-//    private $images;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    private Set<Image> images;
 }
