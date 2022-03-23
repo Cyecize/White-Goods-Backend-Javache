@@ -7,11 +7,21 @@ import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
+import com.cyecize.summer.areas.validation.exceptions.ConstraintValidationException;
+import com.cyecize.summer.areas.validation.interfaces.BindingResult;
+import com.cyecize.summer.areas.validation.models.FieldError;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.ExceptionListener;
 
+import java.util.List;
+
 @Controller
 public class GlobalErrorController {
+
+    @ExceptionListener(ConstraintValidationException.class)
+    public List<FieldError> constraintErrs(ConstraintValidationException ex, BindingResult bindingResult) {
+        return bindingResult.getErrors();
+    }
 
     @ExceptionListener(value = ApiException.class, produces = General.APPLICATION_JSON)
     public ErrorResponse handleApiException(ApiException exception,
