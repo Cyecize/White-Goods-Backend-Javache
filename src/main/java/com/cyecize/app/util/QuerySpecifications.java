@@ -1,11 +1,13 @@
 package com.cyecize.app.util;
 
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.SingularAttribute;
 
 import static com.cyecize.app.util.QuerySpecificationUtils.betweenPredicate;
@@ -86,8 +88,9 @@ public final class QuerySpecifications {
 
     public static <T> Specification<T> sort(Class<T> entity, Expression<?> field, SortDirection direction) {
         return (root, query, criteriaBuilder) -> {
-            final Class<?> resultType = query.getResultType();
-            if (resultType.equals(Long.class) || resultType.equals(long.class)) {
+            final Selection<?> selection = query.getSelection();
+            if ((selection instanceof AggregationFunction)
+                    && AggregationFunction.COUNT.class.isAssignableFrom(selection.getClass())) {
                 return criteriaBuilder.conjunction();
             }
 

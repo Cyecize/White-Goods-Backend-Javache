@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -27,6 +28,9 @@ import java.util.Set;
 @Setter
 @ToString
 @NamedEntityGraph(name = EntityGraphs.PRODUCT_ALL, includeAllAttributes = true)
+@NamedEntityGraph(name = EntityGraphs.PRODUCT_FOR_SEARCH, attributeNodes = {
+        @NamedAttributeNode("tags")
+})
 public class Product {
 
     @Id
@@ -64,8 +68,10 @@ public class Product {
     private Boolean enabled;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    @ToString.Exclude
     private Set<ProductSpecification> specifications;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    @ToString.Exclude
     private Set<Image> images;
 }
