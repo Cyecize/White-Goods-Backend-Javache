@@ -17,16 +17,16 @@ public class ProductDtoDetailed extends ProductDto {
 
     private List<ProductSpecificationDto> specifications;
 
-    private final List<String> gallery = new ArrayList<>();
+    private final List<String> imageGallery = new ArrayList<>();
 
     public void setImages(List<Image> images) {
         if (images != null) {
-            this.gallery.addAll(images.stream().map(Image::getImageUrl).collect(Collectors.toList()));
+            this.imageGallery.addAll(images.stream().map(Image::getImageUrl).collect(Collectors.toList()));
         }
     }
 
     public void setImageUrl(String imageUrl) {
         super.setImageUrl(imageUrl);
-        this.gallery.add(imageUrl);
+        this.imageGallery.add(imageUrl);
     }
 }
