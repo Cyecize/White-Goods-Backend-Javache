@@ -8,4 +8,6 @@ public class Endpoints {
     public static final String PRODUCT                      = "/products/{id}";
 
     public static final String HOME_CAROUSEL                = "/home-carousel";
+
+    public static final String QUESTION                     = "/question";
 }

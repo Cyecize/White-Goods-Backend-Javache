@@ -1,0 +1,21 @@
+<div style="margin: 0 auto; padding: 20px;">
+    <h2>Имате въпрос</h2>
+    <div>
+        <h3>От: {{ model.fullName }}</h3>
+        <p>Дата: {{ "now"|date("yyyy/MM/dd") }}</p>
+        {% if model.phoneNumber is not null %}
+            <p>Тел. номер: {{ model.phoneNumber }}</p>
+        {% endif %}
+        {% if model.email is not null %}
+            <p>Email: {{ model.email }}</p>
+        {% endif %}
+    </div>
+    <br>
+    <div style="text-align: left;">
+        <label for="message-box">Въпрос: </label><br>
+        <div>
+            <pre>{{ model.message }}</pre>
+        </div>
+    </div>
+    <br>
+</div>
