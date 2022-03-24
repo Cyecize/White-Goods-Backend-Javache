@@ -117,4 +117,22 @@ public class SpecificationExecutor {
 
         return entityManager.createQuery(query).getSingleResult();
     }
+
+    @Transactional
+    public <T> List<T> findAll(Specification<T> specification, Class<T> returnType, @Nullable String entityGraph) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        final CriteriaQuery<T> query = criteriaBuilder.createQuery(returnType);
+        final Root<T> root = query.from(returnType);
+
+        query.where(specification.toPredicate(root, query, criteriaBuilder));
+
+        final TypedQuery<T> typedQuery = entityManager.createQuery(query);
+        if (entityGraph != null) {
+            typedQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph(entityGraph));
+        }
+
+        return typedQuery.getResultList();
+    }
 }
