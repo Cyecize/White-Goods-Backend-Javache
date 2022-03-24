@@ -1,3 +1,6 @@
 .idea/
 target/
 out/
+!src/main/resources/webapp/assets/images/uploaded
+src/main/resources/webapp/assets/images/uploaded/*
+!src/main/resources/webapp/assets/images/uploaded/.gitkeep
