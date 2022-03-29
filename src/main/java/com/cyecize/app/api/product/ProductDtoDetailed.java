@@ -1,6 +1,8 @@
 package com.cyecize.app.api.product;
 
 import com.cyecize.app.api.product.productspec.ProductSpecificationDto;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,9 +13,9 @@ import java.util.stream.Collectors;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ProductDtoDetailed extends ProductDto {
-    private String categoryNameBg;
 
-    private String categoryNameEn;
+    @JsonUnwrapped
+    private CategoryDto category;
 
     private List<ProductSpecificationDto> specifications;
 
@@ -28,5 +30,14 @@ public class ProductDtoDetailed extends ProductDto {
     public void setImageUrl(String imageUrl) {
         super.setImageUrl(imageUrl);
         this.imageGallery.add(imageUrl);
+    }
+
+    @Data
+    static class CategoryDto {
+        @JsonProperty("categoryNameBg")
+        private String nameBg;
+
+        @JsonProperty("categoryNameEn")
+        private String nameEn;
     }
 }

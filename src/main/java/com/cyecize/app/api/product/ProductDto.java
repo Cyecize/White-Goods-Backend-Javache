@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,6 +12,9 @@ public class ProductDto {
 
     private Long id;
 
+    private Long categoryId;
+
+    @JsonProperty("name")
     private String productName;
 
     private Double price;
