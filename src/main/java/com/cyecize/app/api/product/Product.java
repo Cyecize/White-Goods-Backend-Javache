@@ -1,6 +1,6 @@
 package com.cyecize.app.api.product;
 
-import com.cyecize.app.api.product.productspec.ProductSpecification;
+import com.cyecize.app.api.product.productspec.Specification;
 import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +18,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.Set;
@@ -27,7 +28,14 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@NamedEntityGraph(name = EntityGraphs.PRODUCT_ALL, includeAllAttributes = true)
+@NamedEntityGraph(name = EntityGraphs.PRODUCT_ALL, attributeNodes = {
+        @NamedAttributeNode("tags"),
+        @NamedAttributeNode(value = "specifications", subgraph = "specificationTypes"),
+        @NamedAttributeNode("category"),
+        @NamedAttributeNode("images"),
+},subgraphs = {
+        @NamedSubgraph(name = "specificationTypes", attributeNodes = @NamedAttributeNode("specificationType"))
+})
 @NamedEntityGraph(name = EntityGraphs.PRODUCT_FOR_SEARCH, attributeNodes = {
         @NamedAttributeNode("tags")
 })
@@ -67,9 +75,13 @@ public class Product {
 
     private Boolean enabled;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
+    @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude
-    private Set<ProductSpecification> specifications;
+    @JoinTable(name = "products_specifications",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "specification_id")
+    )
+    private Set<Specification> specifications;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     @ToString.Exclude
