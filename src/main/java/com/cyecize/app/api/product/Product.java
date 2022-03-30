@@ -1,6 +1,6 @@
 package com.cyecize.app.api.product;
 
-import com.cyecize.app.api.product.productspec.Specification;
+import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
@@ -81,7 +81,7 @@ public class Product {
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "specification_id")
     )
-    private Set<Specification> specifications;
+    private Set<ProductSpecification> specifications;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     @ToString.Exclude

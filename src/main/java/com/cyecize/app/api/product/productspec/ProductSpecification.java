@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @ToString
-public class Specification {
+public class ProductSpecification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
@@ -29,6 +29,7 @@ public class Specification {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "specificationTypeId", insertable = false, updatable = false)
+    @ToString.Exclude
     private SpecificationType specificationType;
 
     private String valueBg;

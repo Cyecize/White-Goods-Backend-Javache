@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Data;
 
 @Data
-public class SpecificationDto {
+public class ProductSpecificationDto {
 
     private Long id;
 

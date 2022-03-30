@@ -11,4 +11,6 @@ public class Endpoints {
 
     public static final String QUESTION                     = "/question";
     public static final String CONTACT_INFO                 = "/contact-info";
+
+    public static final String SPECIFICATION_TYPES          = "/specification_types";
 }

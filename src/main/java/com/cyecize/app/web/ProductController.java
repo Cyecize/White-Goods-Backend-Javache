@@ -6,6 +6,9 @@ import com.cyecize.app.api.product.ProductDtoDetailed;
 import com.cyecize.app.api.product.ProductIdDataAdapter;
 import com.cyecize.app.api.product.ProductQuery;
 import com.cyecize.app.api.product.ProductService;
+import com.cyecize.app.api.product.productspec.SpecificationTypeDto;
+import com.cyecize.app.api.product.productspec.SpecificationTypeQuery;
+import com.cyecize.app.api.product.productspec.SpecificationTypeService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.util.Page;
@@ -28,6 +31,8 @@ public class ProductController {
 
     private final ProductService productService;
 
+    private final SpecificationTypeService specificationTypeService;
+
     @PostMapping(Endpoints.PRODUCTS)
     public Page<ProductDto> searchProducts(@Valid ProductQuery productQuery) {
         return this.productService.searchProducts(productQuery)
@@ -38,5 +43,11 @@ public class ProductController {
     public ProductDtoDetailed getProduct(@PathVariable(value = "id")
                                          @ConvertedBy(ProductIdDataAdapter.class) Product product) {
         return this.modelMapper.map(product, ProductDtoDetailed.class);
+    }
+
+    @PostMapping(Endpoints.SPECIFICATION_TYPES)
+    public Page<SpecificationTypeDto> searchSpecificationTypes(@Valid SpecificationTypeQuery query) {
+        return this.specificationTypeService.findAll(query)
+                .map(st -> this.modelMapper.map(st, SpecificationTypeDto.class));
     }
 }
