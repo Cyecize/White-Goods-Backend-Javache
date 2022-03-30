@@ -63,6 +63,7 @@ public class SpecificationExecutor {
 
         //TODO: use reflection here to get the field that is annotated with javax.persistence.Id
         query.where(root.get("id").in(page.getElements()));
+        root.getJoins().clear();
         query.orderBy(orderList);
 
         final TypedQuery<T> typedQuery = entityManager.createQuery(query);
@@ -85,6 +86,7 @@ public class SpecificationExecutor {
         //TODO: use reflection here to get the field that is annotated with javax.persistence.Id
         query.select(root.get("id"));
         query.where(specification.toPredicate(root, query, criteriaBuilder));
+        query.distinct(true);
 
         final TypedQuery<Long> typedQuery = entityManager.createQuery(query)
                 .setMaxResults(pageQuery.getSize())
@@ -94,7 +96,7 @@ public class SpecificationExecutor {
 
         final Long count;
         if (pageQuery.getPage() > 0 || resultList.size() == pageQuery.getSize()) {
-            count = this.countBySpecification(specification, returnType);
+            count = this.countDistinctBySpecification(specification, returnType);
         } else {
             count = (long) resultList.size();
         }
@@ -102,15 +104,15 @@ public class SpecificationExecutor {
         return new Page<>(resultList, count, pageQuery);
     }
 
-    private <T> Long countBySpecification(Specification<T> specification,
-                                          Class<T> entityType) {
+    private <T> Long countDistinctBySpecification(Specification<T> specification,
+                                                  Class<T> entityType) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
         final Root<T> root = query.from(entityType);
 
-        query.select(criteriaBuilder.count(root));
+        query.select(criteriaBuilder.countDistinct(root));
 
         final Predicate predicate = specification.toPredicate(root, query, criteriaBuilder);
         query.where(predicate);
