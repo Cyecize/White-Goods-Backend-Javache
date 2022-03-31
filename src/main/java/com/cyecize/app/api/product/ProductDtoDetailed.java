@@ -1,6 +1,6 @@
 package com.cyecize.app.api.product;
 
-import com.cyecize.app.api.product.productspec.ProductSpecificationDto;
+import com.cyecize.app.api.product.productspec.ProductSpecificationDtoDetailed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class ProductDtoDetailed extends ProductDto {
     @JsonUnwrapped
     private CategoryDto category;
 
-    private List<ProductSpecificationDto> specifications;
+    private List<ProductSpecificationDtoDetailed> specifications;
 
     private final List<String> imageGallery = new ArrayList<>();
 
