@@ -19,7 +19,10 @@ import java.util.List;
 public class GlobalErrorController {
 
     @ExceptionListener(ConstraintValidationException.class)
-    public List<FieldError> constraintErrs(ConstraintValidationException ex, BindingResult bindingResult) {
+    public List<FieldError> constraintErrs(ConstraintValidationException ex,
+                                           BindingResult bindingResult,
+                                           HttpSoletResponse response) {
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
         return bindingResult.getErrors();
     }
 
