@@ -1,5 +1,7 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.api.product.productspec.ProductSpecification;
+import com.cyecize.app.api.product.productspec.ProductSpecification_;
 import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
@@ -7,6 +9,10 @@ import com.cyecize.app.util.Specification;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.SetJoin;
+import javax.persistence.criteria.Subquery;
 import java.util.List;
 
 public class ProductSpecifications {
@@ -53,6 +59,29 @@ public class ProductSpecifications {
         return QuerySpecifications.contains(Product_.productName, text)
                 .or(QuerySpecifications.contains(Product_.descriptionBg, text))
                 .or(QuerySpecifications.contains(Product_.descriptionEn, text));
+    }
+
+    public static Specification<Product> includesAllSpecifications(List<Long> specificationIds) {
+        if (specificationIds == null || specificationIds.isEmpty()) {
+            return Specification.where(null);
+        }
+
+        return (root, query, criteriaBuilder) -> {
+            final Subquery<Long> subquery = query.subquery(Long.class);
+            final Root<Product> subRoot = subquery.from(Product.class);
+
+            final SetJoin<Product, ProductSpecification> specs = subRoot.join(Product_.specifications, JoinType.INNER);
+
+            subquery.select(specs.get(ProductSpecification_.id));
+            subquery.where(criteriaBuilder.equal(root, subRoot));
+
+            Predicate predicate = criteriaBuilder.conjunction();
+            for (Long specId : specificationIds) {
+                predicate = criteriaBuilder.and(predicate, criteriaBuilder.literal(specId).in(subquery));
+            }
+
+            return predicate;
+        };
     }
 
     public static Specification<Product> fetchTags() {

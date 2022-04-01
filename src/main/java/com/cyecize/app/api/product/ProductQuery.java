@@ -21,5 +21,7 @@ public class ProductQuery {
 
     private List<Long> categoryIds;
 
+    private List<Long> specifications;
+
     private String search;
 }

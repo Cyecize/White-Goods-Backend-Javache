@@ -27,6 +27,7 @@ public class ProductServiceImpl implements ProductService {
         final Specification<Product> specification = ProductSpecifications.enabled(true)
                 .and(ProductSpecifications.sort(productQuery.getSort()))
                 .and(ProductSpecifications.categoryIdContains(productQuery.getCategoryIds()))
+                .and(ProductSpecifications.includesAllSpecifications(productQuery.getSpecifications()))
                 .and(ProductSpecifications.containsText(productQuery.getSearch()));
 
         return this.specificationExecutor.findAll(
