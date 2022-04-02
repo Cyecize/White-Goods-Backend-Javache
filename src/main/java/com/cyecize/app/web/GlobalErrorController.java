@@ -7,6 +7,7 @@ import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
+import com.cyecize.summer.areas.security.exceptions.UnauthorizedException;
 import com.cyecize.summer.areas.validation.exceptions.ConstraintValidationException;
 import com.cyecize.summer.areas.validation.interfaces.BindingResult;
 import com.cyecize.summer.areas.validation.models.FieldError;
@@ -30,7 +31,7 @@ public class GlobalErrorController {
     public List<FieldError> constraintErrs(ConstraintValidationException ex,
                                            BindingResult bindingResult,
                                            HttpSoletResponse response) {
-        response.setStatusCode(HttpStatus.BAD_REQUEST);
+        response.setStatusCode(HttpStatus.NOT_ACCEPTABLE);
         return bindingResult.getErrors();
     }
 
