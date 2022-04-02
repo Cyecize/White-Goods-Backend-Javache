@@ -14,4 +14,9 @@ public class Endpoints {
 
     public static final String SPECIFICATION_TYPES_SEARCH   = "/specification_types/search";
     public static final String PRODUCT_SPECS_SEARCH         = "/product_specifications/search";
+
+    public static final String LOGIN                        = "/login";
+    public static final String LOGOUT                       = "/logout";
+
+    public static final String USER_DETAILS                 = "/user-details";
 }

@@ -5,4 +5,6 @@ import java.util.List;
 public interface UserService {
 
     List<String> getEmailsOfAdmins();
+
+    User findByUsernameOrEmail(String value);
 }

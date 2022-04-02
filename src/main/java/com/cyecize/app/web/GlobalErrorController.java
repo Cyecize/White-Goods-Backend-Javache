@@ -18,6 +18,14 @@ import java.util.List;
 @Controller
 public class GlobalErrorController {
 
+    @ExceptionListener(UnauthorizedException.class)
+    public ErrorResponse handleUnauthorizedException(UnauthorizedException exception,
+                                                     HttpSoletRequest request,
+                                                     HttpSoletResponse response) {
+        response.setStatusCode(HttpStatus.UNAUTHORIZED);
+        return this.createErrorResponse(request, HttpStatus.UNAUTHORIZED, exception.getMessage());
+    }
+
     @ExceptionListener(ConstraintValidationException.class)
     public List<FieldError> constraintErrs(ConstraintValidationException ex,
                                            BindingResult bindingResult,
