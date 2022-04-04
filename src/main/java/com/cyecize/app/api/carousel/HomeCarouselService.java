@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface HomeCarouselService {
     List<HomeCarousel> getHomeCarousel();
+
+    HomeCarousel createCarouselItem(CreateCarouselDto dto);
 }
