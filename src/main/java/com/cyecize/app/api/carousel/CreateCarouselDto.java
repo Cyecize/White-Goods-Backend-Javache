@@ -1,5 +1,6 @@
 package com.cyecize.app.api.carousel;
 
+import com.cyecize.app.api.base64.validator.ImageTypeFile;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.api.base64.Base64FileBindingModel;
@@ -23,6 +24,7 @@ public class CreateCarouselDto {
 
     @Valid
     @NotNull(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
+    @ImageTypeFile(message = ValidationMessages.INVALID_VALUE)
     private Base64FileBindingModel image;
 
     @MaxLength(length = General.MAX_VARCHAR, message = ValidationMessages.INVALID_VALUE)
