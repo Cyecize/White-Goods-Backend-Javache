@@ -1,5 +1,7 @@
-package com.cyecize.app.api.product;
+package com.cyecize.app.api.product.dto;
 
+import com.cyecize.app.api.product.Image;
+import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.product.productspec.ProductSpecificationDtoDetailed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;

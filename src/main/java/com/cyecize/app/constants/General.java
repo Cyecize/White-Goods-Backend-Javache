@@ -15,4 +15,5 @@ public class General {
     public static final int MAX_FILE_SIZE_BYTES = 15_000_000;
 
     public static final int MAX_VARCHAR = 255;
+    public static final int MAX_ALLOWED_TAGS = 5;
 }

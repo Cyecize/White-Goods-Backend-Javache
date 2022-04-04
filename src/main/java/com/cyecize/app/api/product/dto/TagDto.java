@@ -1,4 +1,4 @@
-package com.cyecize.app.api.product;
+package com.cyecize.app.api.product.dto;
 
 import lombok.Data;
 

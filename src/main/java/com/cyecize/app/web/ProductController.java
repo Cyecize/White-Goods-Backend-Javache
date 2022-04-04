@@ -1,8 +1,8 @@
 package com.cyecize.app.web;
 
 import com.cyecize.app.api.product.Product;
-import com.cyecize.app.api.product.ProductDto;
-import com.cyecize.app.api.product.ProductDtoDetailed;
+import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.product.dto.ProductDtoDetailed;
 import com.cyecize.app.api.product.ProductIdDataAdapter;
 import com.cyecize.app.api.product.ProductQuery;
 import com.cyecize.app.api.product.ProductService;

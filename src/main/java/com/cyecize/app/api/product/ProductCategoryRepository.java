@@ -17,7 +17,7 @@ public class ProductCategoryRepository {
     private final TransactionContext transactionContext;
 
     @Transactional
-    public List<ProductCategory> findALl() {
+    public List<ProductCategory> findAll() {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
 
         return entityManager
@@ -27,5 +27,12 @@ public class ProductCategoryRepository {
                         entityManager.getEntityGraph(EntityGraphs.PRODUCT_CATEGORY_ALL)
                 )
                 .getResultList();
+    }
+
+    @Transactional
+    public ProductCategory persist(ProductCategory productCategory) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.persist(productCategory);
+        return productCategory;
     }
 }
