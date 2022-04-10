@@ -31,4 +31,9 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         productCategory.setTags(this.tagService.findOrCreate(dto.getTagNames()));
         return this.productCategoryRepository.persist(productCategory);
     }
+
+    @Override
+    public ProductCategory getCategory(Long categoryId) {
+        return this.productCategoryRepository.find(categoryId);
+    }
 }

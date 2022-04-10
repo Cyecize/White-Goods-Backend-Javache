@@ -35,4 +35,11 @@ public class ProductCategoryRepository {
         entityManager.persist(productCategory);
         return productCategory;
     }
+
+    @Transactional
+    public ProductCategory find(Long id) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery("select pc from ProductCategory pc where pc.id = ?1", ProductCategory.class)
+                .getResultStream().findFirst().orElse(null);
+    }
 }

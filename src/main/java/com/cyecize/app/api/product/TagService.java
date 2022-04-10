@@ -1,7 +1,8 @@
 package com.cyecize.app.api.product;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
 public interface TagService {
-    List<Tag> findOrCreate(List<String> tagNames);
+    Set<Tag> findOrCreate(Collection<String> tagNames);
 }

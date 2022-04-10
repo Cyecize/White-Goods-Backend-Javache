@@ -2,10 +2,10 @@ package com.cyecize.app.api.product;
 
 import com.cyecize.app.util.Specification;
 
-import java.util.List;
+import java.util.Collection;
 
 public final class TagSpecifications {
-    public static Specification<Tag> tagNamesContains(List<String> tagNames) {
+    public static Specification<Tag> tagNamesContains(Collection<String> tagNames) {
         if (tagNames == null || tagNames.isEmpty()) {
             return Specification.not(null);
         }

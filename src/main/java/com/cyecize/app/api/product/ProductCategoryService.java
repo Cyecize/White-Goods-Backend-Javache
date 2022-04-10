@@ -9,4 +9,6 @@ public interface ProductCategoryService {
     List<ProductCategory> findAllCategories();
 
     ProductCategory createCategory(CreateCategoryDto dto);
+
+    ProductCategory getCategory(Long categoryId);
 }

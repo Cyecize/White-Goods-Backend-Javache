@@ -5,7 +5,9 @@ import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,20 +18,20 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public List<Tag> findOrCreate(List<String> tagNames) {
+    public Set<Tag> findOrCreate(Collection<String> tagNames) {
         if (tagNames == null || tagNames.isEmpty()) {
-            return List.of();
+            return Set.of();
         }
 
-        tagNames = tagNames.stream().map(String::toUpperCase).collect(Collectors.toList());
+        tagNames = tagNames.stream().map(String::toUpperCase).collect(Collectors.toSet());
 
-        final List<Tag> existingTags = this.specificationExecutor.findAll(
+        final Collection<Tag> existingTags = this.specificationExecutor.findAll(
                 TagSpecifications.tagNamesContains(tagNames),
                 Tag.class,
                 null
         );
 
-        tagNames.removeAll(existingTags.stream().map(Tag::getName).collect(Collectors.toList()));
+        tagNames.removeAll(existingTags.stream().map(Tag::getName).collect(Collectors.toSet()));
 
         for (String tagName : tagNames) {
             final Tag tag = new Tag();
@@ -37,6 +39,6 @@ public class TagServiceImpl implements TagService {
             existingTags.add(this.tagRepository.persist(tag));
         }
 
-        return existingTags;
+        return new HashSet<>(existingTags);
     }
 }
