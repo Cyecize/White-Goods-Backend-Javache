@@ -3,6 +3,9 @@ package com.cyecize.app.api.product;
 import com.cyecize.app.api.base64.Base64FileBindingModel;
 import com.cyecize.app.api.base64.Base64FileService;
 import com.cyecize.app.api.product.dto.CreateProductDto;
+import com.cyecize.app.api.product.productspec.CreateProductSpecificationDto;
+import com.cyecize.app.api.product.productspec.ProductSpecification;
+import com.cyecize.app.api.product.productspec.ProductSpecificationService;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
@@ -24,6 +27,8 @@ public class ProductServiceImpl implements ProductService {
     private final ModelMapper modelMapper;
     private final TagService tagService;
     private final Base64FileService base64FileService;
+    private final ProductRepository repository;
+    private final ProductSpecificationService productSpecificationService;
     //TODO: Add service
     private final ImageRepository imageRepository;
 
@@ -57,6 +62,21 @@ public class ProductServiceImpl implements ProductService {
         product.setCategoryId(createProductDto.getCategory().getId());
         product.setTags(this.tagService.findOrCreate(createProductDto.getTagNames()));
         product.setImageUrl(this.base64FileService.saveFile(createProductDto.getImage()));
+
+        final Set<ProductSpecification> specifications = new HashSet<>();
+        if (createProductDto.getProductSpecifications() != null) {
+            for (CreateProductSpecificationDto dto : createProductDto.getProductSpecifications()) {
+                specifications.add(this.productSpecificationService.createProductSpecification(dto));
+            }
+        }
+
+        if (createProductDto.getExistingProductSpecifications() != null) {
+            specifications.addAll(createProductDto.getExistingProductSpecifications());
+        }
+
+        product.setSpecifications(specifications);
+
+        this.repository.persist(product);
 
         final Set<Image> images = this.createImages(createProductDto.getGallery());
         if (!images.isEmpty()) {

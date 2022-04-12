@@ -13,4 +13,12 @@ public final class ProductSpecificationSpecifications {
 
         return (root, query, criteriaBuilder) -> root.get(ProductSpecification_.specificationTypeId).in(ids);
     }
+
+    public static Specification<ProductSpecification> idIn(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Specification.not(null);
+        }
+
+        return (root, query, criteriaBuilder) -> root.get(ProductSpecification_.id).in(ids);
+    }
 }

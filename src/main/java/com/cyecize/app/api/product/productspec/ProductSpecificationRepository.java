@@ -9,16 +9,13 @@ import javax.persistence.EntityManager;
 
 @Service
 @RequiredArgsConstructor
-public class SpecificationTypeRepository {
+public class ProductSpecificationRepository {
     private final TransactionContext transactionContext;
 
     @Transactional
-    public boolean existsById(Long id) {
+    public ProductSpecification persist(ProductSpecification productSpecification) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-        return entityManager.createQuery(
-                "select case when (count(st) > 0)  then true else false end from SpecificationType st where st.id = ?1",
-                Boolean.class
-        ).setParameter(1, id)
-                .getSingleResult();
+        entityManager.persist(productSpecification);
+        return productSpecification;
     }
 }

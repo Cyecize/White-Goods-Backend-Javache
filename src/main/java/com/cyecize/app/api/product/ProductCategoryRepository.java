@@ -40,6 +40,7 @@ public class ProductCategoryRepository {
     public ProductCategory find(Long id) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         return entityManager.createQuery("select pc from ProductCategory pc where pc.id = ?1", ProductCategory.class)
+                .setParameter(1, id)
                 .getResultStream().findFirst().orElse(null);
     }
 }

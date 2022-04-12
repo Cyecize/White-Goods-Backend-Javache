@@ -5,6 +5,8 @@ import com.cyecize.app.api.base64.validator.ImageTypeFile;
 import com.cyecize.app.api.product.ProductCategory;
 import com.cyecize.app.api.product.converter.CategoryIdDataAdapter;
 import com.cyecize.app.api.product.productspec.CreateProductSpecificationDto;
+import com.cyecize.app.api.product.productspec.ProductSpecification;
+import com.cyecize.app.api.product.productspec.ProductSpecificationIdArrayDataAdapter;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.summer.areas.validation.annotations.ConvertedBy;
@@ -49,6 +51,10 @@ public class CreateProductDto {
 
     @Valid
     private List<CreateProductSpecificationDto> productSpecifications;
+
+    @NotNull
+    @ConvertedBy(ProductSpecificationIdArrayDataAdapter.class)
+    private List<ProductSpecification> existingProductSpecifications;
 
     @Valid
     private List<Base64FileBindingModel> gallery;

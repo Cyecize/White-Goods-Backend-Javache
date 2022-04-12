@@ -54,7 +54,7 @@ public class ProductController {
                 .map(product -> this.modelMapper.map(product, ProductDto.class));
     }
 
-    @PostMapping(Endpoints.PRODUCTS)
+    @PostMapping(Endpoints.PRODUCT_CREATE)
     public ProductDto createProduct(@Valid CreateProductDto dto) {
         return this.modelMapper.map(this.productService.createProduct(dto), ProductDto.class);
     }
