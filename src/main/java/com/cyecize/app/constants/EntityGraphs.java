@@ -9,4 +9,6 @@ public class EntityGraphs {
     public static final String AUTH_TOKEN_USER_ROLES = "authTokenUserRoles";
 
     public static final String USER_ALL = "userAllAttributes";
+
+    public static final String SPECIFICATION_TYPE_ALL = "specificationTypeAll";
 }

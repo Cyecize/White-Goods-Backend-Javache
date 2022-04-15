@@ -12,7 +12,7 @@ public final class SpecificationTypeSpecifications {
 
     public static Specification<SpecificationType> categoryContains(Collection<Long> categoryIds) {
         if (categoryIds == null || categoryIds.isEmpty()) {
-            return Specification.where(null);
+            return Specification.where((root, query, criteriaBuilder) -> criteriaBuilder.conjunction());
         }
 
         return (root, query, criteriaBuilder) -> {
@@ -24,5 +24,9 @@ public final class SpecificationTypeSpecifications {
 
             return criteriaBuilder.conjunction();
         };
+    }
+
+    public static Specification<SpecificationType> idEquals(Long id) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(SpecificationType_.id), id);
     }
 }

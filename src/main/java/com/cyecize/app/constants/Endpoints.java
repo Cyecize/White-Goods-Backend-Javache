@@ -13,7 +13,9 @@ public class Endpoints {
     public static final String QUESTION                     = "/question";
     public static final String CONTACT_INFO                 = "/contact-info";
 
+    public static final String SPECIFICATION_TYPES          = "/specification_types";
     public static final String SPECIFICATION_TYPES_SEARCH   = "/specification_types/search";
+    public static final String SPECIFICATION_CATEGORY       = "/specification_types/{specTypeId}/category/{catId}";
     public static final String PRODUCT_SPECS_SEARCH         = "/product_specifications/search";
 
     public static final String LOGIN                        = "/login";

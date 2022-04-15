@@ -15,7 +15,11 @@ public class CategoryIdDataAdapter implements DataAdapter<ProductCategory> {
 
     @Override
     public ProductCategory resolve(String paramName, HttpSoletRequest request) {
-        final long id = NumberUtils.toLong(paramName, Long.MIN_VALUE);
+        long id = NumberUtils.toLong(paramName, Long.MIN_VALUE);
+        if (id == Long.MIN_VALUE) {
+            id = NumberUtils.toLong(request.getBodyParam(paramName), Long.MIN_VALUE);
+        }
+
         if (id == Long.MIN_VALUE) {
             return null;
         }
