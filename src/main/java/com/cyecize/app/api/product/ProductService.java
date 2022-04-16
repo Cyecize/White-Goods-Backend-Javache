@@ -6,7 +6,7 @@ import com.cyecize.app.util.Page;
 
 public interface ProductService {
 
-    Product findEnabledProductById(Long id);
+    Product findProductById(Long id, User currentUser);
 
     Page<Product> searchProducts(ProductQuery productQuery, User currentUser);
 

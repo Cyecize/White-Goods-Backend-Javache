@@ -33,9 +33,9 @@ public class ProductServiceImpl implements ProductService {
     private final ImageService imageService;
 
     @Override
-    public Product findEnabledProductById(Long id) {
+    public Product findProductById(Long id, User currentUser) {
         final Specification<Product> specification = ProductSpecifications.idEquals(id)
-                .and(ProductSpecifications.enabled(true));
+                .and(ProductSpecifications.showHidden(true, currentUser));
 
         return this.specificationExecutor.findOne(specification, Product.class, EntityGraphs.PRODUCT_ALL);
     }
