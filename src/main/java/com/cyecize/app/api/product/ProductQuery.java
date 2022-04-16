@@ -24,4 +24,6 @@ public class ProductQuery {
     private List<Long> specifications;
 
     private String search;
+
+    private Boolean showHidden;
 }

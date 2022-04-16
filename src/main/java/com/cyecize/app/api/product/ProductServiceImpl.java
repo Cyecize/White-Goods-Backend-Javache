@@ -6,6 +6,7 @@ import com.cyecize.app.api.product.dto.CreateProductDto;
 import com.cyecize.app.api.product.productspec.CreateProductSpecificationDto;
 import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecificationService;
+import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
@@ -29,8 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private final Base64FileService base64FileService;
     private final ProductRepository repository;
     private final ProductSpecificationService productSpecificationService;
-    //TODO: Add service
-    private final ImageRepository imageRepository;
+    private final ImageService imageService;
 
     @Override
     public Product findEnabledProductById(Long id) {
@@ -41,9 +41,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<Product> searchProducts(ProductQuery productQuery) {
-        //TODO: maybe filter enabled based on logged user and permissions
-        final Specification<Product> specification = ProductSpecifications.enabled(true)
+    public Page<Product> searchProducts(ProductQuery productQuery, User currentUser) {
+        final Specification<Product> specification = ProductSpecifications
+                .showHidden(productQuery.getShowHidden(), currentUser)
                 .and(ProductSpecifications.sort(productQuery.getSort()))
                 .and(ProductSpecifications.categoryIdContains(productQuery.getCategoryIds()))
                 .and(ProductSpecifications.includesAllSpecifications(productQuery.getSpecifications()))
@@ -82,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         if (!images.isEmpty()) {
             images.forEach(image -> image.setProductId(product.getId()));
             product.setImages(images);
-            this.imageRepository.persistAll(images);
+            this.imageService.persistAll(images);
         }
 
         return product;

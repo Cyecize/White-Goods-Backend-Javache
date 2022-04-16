@@ -25,6 +25,8 @@ public class ProductDto {
 
     private String imageUrl;
 
+    private Boolean enabled;
+
     private final List<String> tags = new ArrayList<>();
 
     public void setTags(List<TagDto> tags) {

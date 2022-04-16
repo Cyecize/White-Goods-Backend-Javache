@@ -7,11 +7,13 @@ import com.cyecize.app.api.product.converter.ProductIdDataAdapter;
 import com.cyecize.app.api.product.dto.CreateProductDto;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.product.dto.ProductDtoDetailed;
+import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.util.Page;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.security.enums.AuthorizationType;
+import com.cyecize.summer.areas.security.models.Principal;
 import com.cyecize.summer.areas.validation.annotations.ConvertedBy;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
@@ -34,8 +36,8 @@ public class ProductController {
 
     @PostMapping(Endpoints.PRODUCTS)
     @PreAuthorize(AuthorizationType.ANY)
-    public Page<ProductDto> searchProducts(@Valid ProductQuery productQuery) {
-        return this.productService.searchProducts(productQuery)
+    public Page<ProductDto> searchProducts(@Valid ProductQuery productQuery, Principal principal) {
+        return this.productService.searchProducts(productQuery, (User) principal.getUser())
                 .map(product -> this.modelMapper.map(product, ProductDto.class));
     }
 

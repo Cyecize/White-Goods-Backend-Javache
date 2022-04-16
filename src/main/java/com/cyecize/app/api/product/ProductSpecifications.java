@@ -2,10 +2,13 @@ package com.cyecize.app.api.product;
 
 import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecification_;
+import com.cyecize.app.api.user.User;
+import com.cyecize.app.util.AuthUtils;
 import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.criteria.JoinType;
@@ -31,6 +34,14 @@ public class ProductSpecifications {
         }
 
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Product_.enabled), enabled);
+    }
+
+    public static Specification<Product> showHidden(Boolean showHidden, User currentUser) {
+        if (!BooleanUtils.toBoolean(showHidden) || !AuthUtils.hasAdminRole(currentUser)) {
+            return (root, query, cb) -> cb.isTrue(root.get(Product_.enabled));
+        }
+
+        return Specification.where(null);
     }
 
     public static Specification<Product> sort(SortQuery sortQuery) {
