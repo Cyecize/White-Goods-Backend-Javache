@@ -49,6 +49,14 @@ public class Base64FileServiceImpl implements Base64FileService {
         return filePath.replaceAll("\\\\", "/");
     }
 
+    @Override
+    public void removeFile(String path) {
+        final File physicalFile = new File(PathUtils.appendPath(this.getAssetsDir(), path));
+        if (physicalFile.exists()) {
+            physicalFile.delete();
+        }
+    }
+
     private String getAssetsDir() {
         return this.soletConfig.getAttribute(SoletConstants.SOLET_CONFIG_ASSETS_DIR).toString();
     }

@@ -37,6 +37,12 @@ public class ProductCategoryRepository {
     }
 
     @Transactional
+    public void merge(ProductCategory productCategory) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.merge(productCategory);
+    }
+
+    @Transactional
     public ProductCategory find(Long id) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         return entityManager.createQuery("select pc from ProductCategory pc where pc.id = ?1", ProductCategory.class)
