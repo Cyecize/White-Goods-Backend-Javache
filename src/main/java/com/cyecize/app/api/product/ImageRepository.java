@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import javax.persistence.EntityManager;
 import java.util.Collection;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,21 @@ public class ImageRepository {
         entityManager.createQuery("delete from Image where id = ?1")
                 .setParameter(1, image.getId())
                 .executeUpdate();
+    }
+
+    @Transactional
+    public List<Image> findByProductId(Long productId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery("select i from Image i where i.productId = ?1", Image.class)
+                .setParameter(1, productId)
+                .getResultList();
+    }
+
+    @Transactional
+    public Image findById(long imageId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery("select i from Image i where i.id = ?1", Image.class)
+                .setParameter(1, imageId)
+                .getResultStream().findFirst().orElse(null);
     }
 }

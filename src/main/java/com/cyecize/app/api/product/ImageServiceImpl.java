@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -40,5 +41,15 @@ public class ImageServiceImpl implements ImageService {
         }
 
         return images;
+    }
+
+    @Override
+    public List<Image> findByProductId(Long productId) {
+        return this.imageRepository.findByProductId(productId);
+    }
+
+    @Override
+    public Image findById(long imageId) {
+        return this.imageRepository.findById(imageId);
     }
 }
