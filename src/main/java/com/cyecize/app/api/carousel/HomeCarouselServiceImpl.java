@@ -1,6 +1,7 @@
 package com.cyecize.app.api.carousel;
 
 import com.cyecize.app.api.base64.Base64FileService;
+import com.cyecize.app.api.user.User;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
@@ -22,8 +23,8 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
     private final Base64FileService base64FileService;
 
     @Override
-    public List<HomeCarousel> getHomeCarousel() {
-        final Specification<HomeCarousel> specification = HomeCarouselSpecifications.enabled(true)
+    public List<HomeCarousel> getHomeCarousel(boolean showHidden, User currentUser) {
+        final Specification<HomeCarousel> specification = HomeCarouselSpecifications.showHidden(showHidden, currentUser)
                 .and(HomeCarouselSpecifications.applyOrder());
 
         return this.specificationExecutor.findAll(specification, HomeCarousel.class, null);
@@ -36,5 +37,35 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
 
         homeCarousel.setImageUrl(imagePath);
         return this.homeCarouselRepository.persist(homeCarousel);
+    }
+
+    @Override
+    public HomeCarousel editCarouselItem(Long id, EditCarouselDto dto) {
+        final HomeCarousel homeCarousel = this.getCarouselItem(id);
+
+        //TODO: ModelMerger
+        homeCarousel.setEnabled(dto.getEnabled());
+        homeCarousel.setTextBg(dto.getTextBg());
+        homeCarousel.setTextEn(dto.getTextEn());
+        homeCarousel.setOrderNumber(dto.getOrderNumber());
+        homeCarousel.setCustomLink(dto.getCustomLink());
+        homeCarousel.setCustomLinkSamePage(dto.getCustomLinkSamePage());
+        homeCarousel.setProductId(dto.getProductId());
+
+        if (dto.getImage() != null) {
+            this.base64FileService.removeFile(homeCarousel.getImageUrl());
+            final String imagePath = this.base64FileService.saveFile(dto.getImage());
+            homeCarousel.setImageUrl(imagePath);
+        }
+
+        this.homeCarouselRepository.merge(homeCarousel);
+        return homeCarousel;
+    }
+
+    @Override
+    public HomeCarousel getCarouselItem(Long id) {
+        return this.specificationExecutor.findOne(
+                HomeCarouselSpecifications.idEquals(id), HomeCarousel.class, null
+        );
     }
 }

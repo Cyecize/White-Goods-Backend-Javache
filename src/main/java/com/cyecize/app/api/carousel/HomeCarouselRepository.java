@@ -20,4 +20,10 @@ public class HomeCarouselRepository {
 
         return homeCarousel;
     }
+
+    @Transactional
+    public void merge(HomeCarousel homeCarousel) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.merge(homeCarousel);
+    }
 }

@@ -12,6 +12,7 @@ public class Endpoints {
     public static final String PRODUCT_GALLERY_ITEM         = "/product/{id}/gallery_items/{imageId}";
 
     public static final String HOME_CAROUSEL                = "/home-carousel";
+    public static final String HOME_CAROUSEL_ITEM           = "/home-carousel/{id}";
 
     public static final String QUESTION                     = "/question";
     public static final String CONTACT_INFO                 = "/contact-info";

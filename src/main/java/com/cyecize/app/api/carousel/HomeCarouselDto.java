@@ -16,5 +16,9 @@ public class HomeCarouselDto {
 
     private String customLink;
 
+    private Boolean enabled;
+
     private Boolean customLinkSamePage;
+
+    private Integer orderNumber;
 }
