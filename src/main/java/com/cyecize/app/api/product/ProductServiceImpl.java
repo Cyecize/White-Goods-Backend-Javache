@@ -127,6 +127,7 @@ public class ProductServiceImpl implements ProductService {
         final Set<Image> images = this.imageService.createImages(dto.getGallery());
         if (!images.isEmpty()) {
             images.forEach(image -> image.setProductId(product.getId()));
+            this.imageService.persistAll(images);
             product.getImages().addAll(images);
         }
 
