@@ -20,4 +20,12 @@ public class ImageRepository {
             entityManager.persist(image);
         }
     }
+
+    @Transactional
+    public void delete(Image image) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery("delete from Image where id = ?1")
+                .setParameter(1, image.getId())
+                .executeUpdate();
+    }
 }

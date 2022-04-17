@@ -1,8 +1,8 @@
 package com.cyecize.app.api.product;
 
-import com.cyecize.app.api.base64.Base64FileBindingModel;
 import com.cyecize.app.api.base64.Base64FileService;
 import com.cyecize.app.api.product.dto.CreateProductDto;
+import com.cyecize.app.api.product.dto.EditProductDto;
 import com.cyecize.app.api.product.productspec.CreateProductSpecificationDto;
 import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecificationService;
@@ -16,7 +16,6 @@ import com.cyecize.ioc.annotations.Service;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -78,7 +77,7 @@ public class ProductServiceImpl implements ProductService {
 
         this.repository.persist(product);
 
-        final Set<Image> images = this.createImages(createProductDto.getGallery());
+        final Set<Image> images = this.imageService.createImages(createProductDto.getGallery());
         if (!images.isEmpty()) {
             images.forEach(image -> image.setProductId(product.getId()));
             product.setImages(images);
@@ -88,19 +87,53 @@ public class ProductServiceImpl implements ProductService {
         return product;
     }
 
-    //TODO: Move to its own service
-    private Set<Image> createImages(Collection<Base64FileBindingModel> imageDtos) {
-        final Set<Image> images = new HashSet<>();
-        if (imageDtos == null) {
-            return images;
+    @Override
+    @Transactional
+    public Product editProduct(Long id, EditProductDto dto) {
+        final Product product = this.specificationExecutor.findOne(
+                ProductSpecifications.idEquals(id), Product.class, EntityGraphs.PRODUCT_ALL
+        );
+
+        //TODO: ModelMerger
+        product.setCategoryId(dto.getCategory().getId());
+        product.setCategory(dto.getCategory());
+        product.setEnabled(dto.getEnabled());
+        product.setProductName(dto.getProductName());
+        product.setDescriptionBg(dto.getDescriptionBg());
+        product.setDescriptionEn(dto.getDescriptionEn());
+        product.setPrice(dto.getPrice());
+
+        product.setTags(this.tagService.findOrCreate(dto.getTagNames()));
+
+        if (dto.getImage() != null) {
+            this.base64FileService.removeFile(product.getImageUrl());
+            product.setImageUrl(this.base64FileService.saveFile(dto.getImage()));
         }
 
-        for (Base64FileBindingModel imageDto : imageDtos) {
-            final Image image = new Image();
-            image.setImageUrl(this.base64FileService.saveFile(imageDto));
-            images.add(image);
+        final Set<ProductSpecification> specifications = new HashSet<>();
+        if (dto.getProductSpecifications() != null) {
+            for (CreateProductSpecificationDto specDto : dto.getProductSpecifications()) {
+                specifications.add(this.productSpecificationService.createProductSpecification(specDto));
+            }
         }
 
-        return images;
+        if (dto.getExistingProductSpecifications() != null) {
+            specifications.addAll(dto.getExistingProductSpecifications());
+        }
+
+        product.getSpecifications().clear();
+        product.getSpecifications().addAll(specifications);
+
+        final Set<Image> images = this.imageService.createImages(dto.getGallery());
+        if (!images.isEmpty()) {
+            images.forEach(image -> image.setProductId(product.getId()));
+            product.getImages().addAll(images);
+        }
+
+        this.repository.merge(product);
+
+        product.setSpecifications(new HashSet<>(specifications));
+
+        return product;
     }
 }

@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product.productspec;
 
+import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
@@ -34,7 +35,7 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
         return this.specificationExecutor.findAll(
                 ProductSpecificationSpecifications.idIn(ids),
                 ProductSpecification.class,
-                null
+                EntityGraphs.PRODUCT_SPECIFICATIONS_ALL
         );
     }
 

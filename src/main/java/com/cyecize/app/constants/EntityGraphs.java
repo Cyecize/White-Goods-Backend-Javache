@@ -11,4 +11,6 @@ public class EntityGraphs {
     public static final String USER_ALL = "userAllAttributes";
 
     public static final String SPECIFICATION_TYPE_ALL = "specificationTypeAll";
+
+    public static final String PRODUCT_SPECIFICATIONS_ALL = "productSpecificationsAll";
 }

@@ -18,4 +18,10 @@ public class ProductRepository {
         entityManager.persist(product);
         return product;
     }
+
+    @Transactional
+    public void merge(Product product) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.merge(product);
+    }
 }

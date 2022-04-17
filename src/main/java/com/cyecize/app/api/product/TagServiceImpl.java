@@ -20,7 +20,7 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public Set<Tag> findOrCreate(Collection<String> tagNames) {
         if (tagNames == null || tagNames.isEmpty()) {
-            return Set.of();
+            return new HashSet<>();
         }
 
         tagNames = tagNames.stream().map(String::toUpperCase).collect(Collectors.toSet());

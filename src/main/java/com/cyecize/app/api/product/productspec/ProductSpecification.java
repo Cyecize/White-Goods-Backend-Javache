@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product.productspec;
 
+import com.cyecize.app.constants.EntityGraphs;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 
 @Entity
@@ -19,6 +21,7 @@ import javax.persistence.Table;
 @Getter
 @Setter
 @ToString
+@NamedEntityGraph(name = EntityGraphs.PRODUCT_SPECIFICATIONS_ALL, includeAllAttributes = true)
 public class ProductSpecification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
