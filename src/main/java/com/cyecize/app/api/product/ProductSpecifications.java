@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import javax.persistence.criteria.Subquery;
 import java.util.List;
+import java.util.Map;
 
 public class ProductSpecifications {
 
@@ -72,8 +73,8 @@ public class ProductSpecifications {
                 .or(QuerySpecifications.contains(Product_.descriptionEn, text));
     }
 
-    public static Specification<Product> includesAllSpecifications(List<Long> specificationIds) {
-        if (specificationIds == null || specificationIds.isEmpty()) {
+    public static Specification<Product> includesAllSpecifications(Map<Long, List<Long>> specifications) {
+        if (specifications == null || specifications.isEmpty()) {
             return Specification.where(null);
         }
 
@@ -86,12 +87,24 @@ public class ProductSpecifications {
             subquery.select(specs.get(ProductSpecification_.id));
             subquery.where(criteriaBuilder.equal(root, subRoot));
 
-            Predicate predicate = criteriaBuilder.conjunction();
-            for (Long specId : specificationIds) {
-                predicate = criteriaBuilder.and(predicate, criteriaBuilder.literal(specId).in(subquery));
+            Predicate finalPredicate = criteriaBuilder.conjunction();
+            for (Map.Entry<Long, List<Long>> specsEntry : specifications.entrySet()) {
+                if (specsEntry.getValue().isEmpty()) {
+                    continue;
+                }
+
+                Predicate specTypePredicate = criteriaBuilder.disjunction();
+                for (Long specId : specsEntry.getValue()) {
+                    specTypePredicate = criteriaBuilder.or(
+                            specTypePredicate,
+                            criteriaBuilder.literal(specId).in(subquery)
+                    );
+                }
+
+                finalPredicate = criteriaBuilder.and(finalPredicate, specTypePredicate);
             }
 
-            return predicate;
+            return finalPredicate;
         };
     }
 

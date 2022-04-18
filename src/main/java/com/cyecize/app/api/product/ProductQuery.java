@@ -7,6 +7,7 @@ import com.cyecize.summer.areas.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class ProductQuery {
@@ -21,7 +22,7 @@ public class ProductQuery {
 
     private List<Long> categoryIds;
 
-    private List<Long> specifications;
+    private Map<Long,List<Long>> specifications;
 
     private String search;
 
