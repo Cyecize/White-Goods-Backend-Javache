@@ -9,4 +9,11 @@ import lombok.EqualsAndHashCode;
 public class ProductSpecificationDtoDetailed extends ProductSpecificationDto {
     @JsonUnwrapped
     private SpecificationTypeDto specificationType;
+
+    @Data
+    static class SpecificationTypeDto {
+        private String specificationType;
+        private String titleBg;
+        private String titleEn;
+    }
 }
