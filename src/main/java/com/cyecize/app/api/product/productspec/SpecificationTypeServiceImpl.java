@@ -69,4 +69,17 @@ public class SpecificationTypeServiceImpl implements SpecificationTypeService {
         specificationType.getCategories().add(dto.getCategory());
         return this.specificationTypeRepository.persist(specificationType);
     }
+
+    @Override
+    @Transactional
+    public SpecificationType editSpecificationType(Long id, EditSpecificationTypeDto dto) {
+        final SpecificationType specificationType = this.getSpecificationTypeEagerlyFetch(id);
+
+        //TODO: ModelMerger
+        specificationType.setTitleBg(dto.getTitleBg());
+        specificationType.setTitleEn(dto.getTitleEn());
+
+        this.specificationTypeRepository.merge(specificationType);
+        return specificationType;
+    }
 }

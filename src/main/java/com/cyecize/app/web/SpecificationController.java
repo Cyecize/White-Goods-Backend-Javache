@@ -3,6 +3,7 @@ package com.cyecize.app.web;
 import com.cyecize.app.api.product.ProductCategory;
 import com.cyecize.app.api.product.converter.CategoryIdDataAdapter;
 import com.cyecize.app.api.product.productspec.CreateSpecificationTypeDto;
+import com.cyecize.app.api.product.productspec.EditSpecificationTypeDto;
 import com.cyecize.app.api.product.productspec.ProductSpecificationDto;
 import com.cyecize.app.api.product.productspec.ProductSpecificationQuery;
 import com.cyecize.app.api.product.productspec.ProductSpecificationService;
@@ -85,5 +86,15 @@ public class SpecificationController {
     @PostMapping(Endpoints.SPECIFICATION_TYPES)
     public SpecificationTypeDto createSpecificationType(@Valid CreateSpecificationTypeDto dto) {
         return this.modelMapper.map(this.specificationTypeService.createSpecificationType(dto), SpecificationTypeDto.class);
+    }
+
+    @PutMapping(Endpoints.SPECIFICATION_TYPE)
+    public SpecificationTypeDto editSpecificationType(@Valid EditSpecificationTypeDto dto,
+                                                      @PathVariable("typeId") @ConvertedBy(SpecificationTypeIdDataAdapter.class)
+                                                      SpecificationType specificationType) {
+        return this.modelMapper.map(
+                this.specificationTypeService.editSpecificationType(specificationType.getId(), dto),
+                SpecificationTypeDto.class
+        );
     }
 }

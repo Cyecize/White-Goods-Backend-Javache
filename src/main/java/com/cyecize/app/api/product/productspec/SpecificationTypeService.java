@@ -17,4 +17,6 @@ public interface SpecificationTypeService {
     boolean existsBySpecificationType(String type);
 
     SpecificationType createSpecificationType(CreateSpecificationTypeDto dto);
+
+    SpecificationType editSpecificationType(Long id, EditSpecificationTypeDto dto);
 }
