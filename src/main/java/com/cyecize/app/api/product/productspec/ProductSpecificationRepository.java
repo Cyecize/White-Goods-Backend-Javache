@@ -18,4 +18,10 @@ public class ProductSpecificationRepository {
         entityManager.persist(productSpecification);
         return productSpecification;
     }
+
+    @Transactional
+    public void merge(ProductSpecification specification) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.merge(specification);
+    }
 }

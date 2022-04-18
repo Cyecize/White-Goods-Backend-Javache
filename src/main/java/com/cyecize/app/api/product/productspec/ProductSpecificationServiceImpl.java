@@ -44,4 +44,26 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
     public ProductSpecification createProductSpecification(CreateProductSpecificationDto dto) {
         return this.repository.persist(this.modelMapper.map(dto, ProductSpecification.class));
     }
+
+    @Override
+    public ProductSpecification findById(Long id) {
+        return this.specificationExecutor.findOne(
+                ProductSpecificationSpecifications.idIn(List.of(id)),
+                ProductSpecification.class,
+                null
+        );
+    }
+
+    @Override
+    @Transactional
+    public ProductSpecification editProductSpecification(Long id, EditProductSpecificationDto dto) {
+        final ProductSpecification specification = this.findById(id);
+
+        //TODO: ModelMerger
+        specification.setValueBg(dto.getValueBg());
+        specification.setValueEn(dto.getValueEn());
+
+        this.repository.merge(specification);
+        return specification;
+    }
 }

@@ -3,8 +3,11 @@ package com.cyecize.app.web;
 import com.cyecize.app.api.product.ProductCategory;
 import com.cyecize.app.api.product.converter.CategoryIdDataAdapter;
 import com.cyecize.app.api.product.productspec.CreateSpecificationTypeDto;
+import com.cyecize.app.api.product.productspec.EditProductSpecificationDto;
 import com.cyecize.app.api.product.productspec.EditSpecificationTypeDto;
+import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecificationDto;
+import com.cyecize.app.api.product.productspec.ProductSpecificationIdDataAdapter;
 import com.cyecize.app.api.product.productspec.ProductSpecificationQuery;
 import com.cyecize.app.api.product.productspec.ProductSpecificationService;
 import com.cyecize.app.api.product.productspec.SpecificationType;
@@ -63,6 +66,17 @@ public class SpecificationController {
                 .collect(Collectors.groupingBy(ProductSpecificationDto::getSpecificationTypeId));
     }
 
+    @PutMapping(Endpoints.PRODUCT_SPECIFICATION)
+    public ProductSpecificationDto editProductSpecification(@PathVariable("id")
+                                                            @ConvertedBy(ProductSpecificationIdDataAdapter.class)
+                                                                    ProductSpecification specification,
+                                                            @Valid EditProductSpecificationDto dto) {
+        return this.modelMapper.map(
+                this.productSpecificationService.editProductSpecification(specification.getId(), dto),
+                ProductSpecificationDto.class
+        );
+    }
+
     @PutMapping(Endpoints.SPECIFICATION_CATEGORY)
     public JsonResponse addSpecificationToCategory(@ConvertedBy(SpecificationTypeIdDataAdapter.class)
                                                    @PathVariable("specTypeId")
@@ -91,7 +105,7 @@ public class SpecificationController {
     @PutMapping(Endpoints.SPECIFICATION_TYPE)
     public SpecificationTypeDto editSpecificationType(@Valid EditSpecificationTypeDto dto,
                                                       @PathVariable("typeId") @ConvertedBy(SpecificationTypeIdDataAdapter.class)
-                                                      SpecificationType specificationType) {
+                                                              SpecificationType specificationType) {
         return this.modelMapper.map(
                 this.specificationTypeService.editSpecificationType(specificationType.getId(), dto),
                 SpecificationTypeDto.class
