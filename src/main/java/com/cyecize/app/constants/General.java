@@ -16,4 +16,5 @@ public class General {
 
     public static final int MAX_VARCHAR = 255;
     public static final int MAX_ALLOWED_TAGS = 5;
+    public static final int MIN_PROD_QUANTITY = 0;
 }

@@ -102,6 +102,7 @@ public class ProductServiceImpl implements ProductService {
         product.setDescriptionBg(dto.getDescriptionBg());
         product.setDescriptionEn(dto.getDescriptionEn());
         product.setPrice(dto.getPrice());
+        product.setQuantity(dto.getQuantity());
 
         product.setTags(this.tagService.findOrCreate(dto.getTagNames()));
 

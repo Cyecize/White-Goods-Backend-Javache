@@ -27,6 +27,8 @@ public class ProductDto {
 
     private Boolean enabled;
 
+    private Integer quantity;
+
     private final List<String> tags = new ArrayList<>();
 
     public void setTags(List<TagDto> tags) {

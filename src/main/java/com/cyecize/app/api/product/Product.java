@@ -86,4 +86,7 @@ public class Product {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "product")
     @ToString.Exclude
     private Set<Image> images;
+
+    @Column(nullable = false)
+    private int quantity;
 }

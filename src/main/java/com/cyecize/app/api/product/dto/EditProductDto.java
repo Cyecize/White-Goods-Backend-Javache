@@ -12,15 +12,17 @@ import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.summer.areas.validation.annotations.ConvertedBy;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.areas.validation.constraints.MaxLength;
+import com.cyecize.summer.areas.validation.constraints.Min;
 import com.cyecize.summer.areas.validation.constraints.NotEmpty;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
-
 import java.util.List;
+import java.util.Objects;
+import lombok.Data;
 
 @Data
 public class EditProductDto {
+
     @JsonProperty("categoryId")
     @NotNull(message = ValidationMessages.INVALID_VALUE)
     @ConvertedBy(CategoryIdDataAdapter.class)
@@ -47,6 +49,9 @@ public class EditProductDto {
 
     private Boolean enabled;
 
+    @Min(value = General.MIN_PROD_QUANTITY, message = ValidationMessages.INVALID_VALUE)
+    private Integer quantity;
+
     @Valid
     private List<CreateProductSpecificationDto> productSpecifications;
 
@@ -56,4 +61,8 @@ public class EditProductDto {
 
     @Valid
     private List<Base64FileBindingModel> gallery;
+
+    public Integer getQuantity() {
+        return Objects.requireNonNullElse(this.quantity, 0);
+    }
 }
