@@ -11,6 +11,10 @@ public class Endpoints {
     public static final String PRODUCT_GALLERY_ITEMS        = "/product/{id}/gallery_items";
     public static final String PRODUCT_GALLERY_ITEM         = "/product/{id}/gallery_items/{imageId}";
 
+    public static final String SHOPPING_CART_SESSION        = "/shopping-cart/session";
+    public static final String SHOPPING_CART                = "/shopping-cart/{session}";
+    public static final String SHOPPING_CART_ITEM           = "/shopping-cart/{session}/items/{prodId}";
+
     public static final String HOME_CAROUSEL                = "/home-carousel";
     public static final String HOME_CAROUSEL_ITEM           = "/home-carousel/{id}";
 
