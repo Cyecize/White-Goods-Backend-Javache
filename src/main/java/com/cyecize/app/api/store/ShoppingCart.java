@@ -16,6 +16,8 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "shopping_carts")
@@ -33,6 +35,7 @@ public class ShoppingCart {
 
     @ManyToOne(targetEntity = User.class)
     @JoinColumn(nullable = false, name = "userId")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long userId;
 
     @OneToMany(targetEntity = ShoppingCartItem.class, mappedBy = "cartId")
