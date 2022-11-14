@@ -3,6 +3,9 @@ package com.cyecize.app.api.store;
 import java.util.List;
 
 public interface ShoppingCartService {
+
+    void removeExpiredSessions();
+
     String createSession();
 
     void removeAllItems(String sessionId);

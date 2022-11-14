@@ -6,11 +6,13 @@ import com.cyecize.app.api.user.User;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.areas.security.models.Principal;
+import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +34,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ModelMapper modelMapper;
 
     private final ShoppingCartRepository shoppingCartRepository;
+
+    @Configuration("shopping.cart.session.lifetime.hours")
+    private final int sessionLifetimeHours;
+
+    @Override
+    public void removeExpiredSessions() {
+        final LocalDateTime min = LocalDateTime.now().minusHours(this.sessionLifetimeHours);
+        final List<String> keysToRemove = this.sessionItems.entrySet().stream()
+                .filter(entry -> entry.getValue().getLastModified().isBefore(min))
+                .map(Entry::getKey)
+                .collect(Collectors.toList());
+
+        keysToRemove.forEach(this.sessionItems::remove);
+    }
 
     @Override
     public String createSession() {
