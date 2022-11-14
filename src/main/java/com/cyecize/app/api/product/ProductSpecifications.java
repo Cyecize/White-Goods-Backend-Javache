@@ -8,6 +8,7 @@ import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
+import java.util.Collection;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,6 +28,14 @@ public class ProductSpecifications {
         }
 
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Product_.id), id);
+    }
+
+    public static Specification<Product> idContains(Collection<Long> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return Specification.not(null);
+        }
+
+        return (root, query, criteriaBuilder) -> root.get(Product_.id).in(ids);
     }
 
     public static Specification<Product> enabled(Boolean enabled) {

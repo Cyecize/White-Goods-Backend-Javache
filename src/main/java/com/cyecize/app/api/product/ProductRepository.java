@@ -3,13 +3,13 @@ package com.cyecize.app.api.product;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-
 import javax.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ProductRepository {
+
     private final TransactionContext transactionContext;
 
     @Transactional
@@ -23,5 +23,20 @@ public class ProductRepository {
     public void merge(Product product) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.merge(product);
+    }
+
+    @Transactional
+    public boolean existsById(Long id) {
+        if (id == null) {
+            return false;
+        }
+
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery(
+                        "select case when (count(p) > 0)  then true else false end from Product p where p.id = ?1",
+                        Boolean.class
+                ).setParameter(1, id)
+                .getSingleResult();
+
     }
 }

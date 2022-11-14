@@ -13,6 +13,8 @@ import com.cyecize.app.util.Page;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.ioc.annotations.Service;
+import java.util.Collection;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -30,6 +32,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductSpecificationService productSpecificationService;
     private final ImageService imageService;
+
+    @Override
+    public boolean existsById(Long id) {
+        return this.repository.existsById(id);
+    }
 
     @Override
     public Product findProductById(Long id, User currentUser) {
@@ -51,6 +58,15 @@ public class ProductServiceImpl implements ProductService {
         return this.specificationExecutor.findAll(
                 specification, productQuery.getPage(), Product.class, EntityGraphs.PRODUCT_FOR_SEARCH
         );
+    }
+
+    @Override
+    public List<Product> findAllByIdIn(Collection<Long> ids) {
+        final Specification<Product> specification = ProductSpecifications
+                .showHidden(false, null)
+                .and(ProductSpecifications.idContains(ids));
+
+        return this.specificationExecutor.findAll(specification, Product.class, null);
     }
 
     @Override
