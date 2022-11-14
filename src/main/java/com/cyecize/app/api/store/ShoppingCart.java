@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store;
 
 import com.cyecize.app.api.user.User;
+import com.cyecize.app.constants.EntityGraphs;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Column;
@@ -8,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -19,6 +22,9 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@NamedEntityGraph(name = EntityGraphs.SHOPPING_CART_WITH_ITEMS, attributeNodes = {
+        @NamedAttributeNode("items")
+})
 public class ShoppingCart {
 
     @Id
