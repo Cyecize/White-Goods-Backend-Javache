@@ -66,7 +66,11 @@ public class ProductServiceImpl implements ProductService {
                 .showHidden(false, null)
                 .and(ProductSpecifications.idContains(ids));
 
-        return this.specificationExecutor.findAll(specification, Product.class, null);
+        return this.specificationExecutor.findAll(
+                specification,
+                Product.class,
+                EntityGraphs.PRODUCT_FOR_SEARCH
+        );
     }
 
     @Override
