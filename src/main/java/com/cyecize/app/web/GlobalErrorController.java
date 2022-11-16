@@ -1,5 +1,6 @@
 package com.cyecize.app.web;
 
+import com.cyecize.app.api.store.ShoppingCartSessionException;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.error.ErrorResponse;
@@ -74,6 +75,14 @@ public class GlobalErrorController {
                                             HttpSoletResponse response) {
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         return this.createErrorResponse(request, HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionListener(value = ShoppingCartSessionException.class, produces = General.APPLICATION_JSON)
+    public ErrorResponse handleShoppingCartSessionException(ShoppingCartSessionException ex,
+            HttpSoletRequest request,
+            HttpSoletResponse response) {
+        response.setStatusCode(HttpStatus.NOT_ACCEPTABLE);
+        return this.createErrorResponse(request, HttpStatus.NOT_ACCEPTABLE, ex.getMessage());
     }
 
     @ExceptionListener(value = NotFoundApiException.class, produces = General.APPLICATION_JSON)

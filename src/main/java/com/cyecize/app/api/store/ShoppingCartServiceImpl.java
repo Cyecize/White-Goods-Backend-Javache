@@ -1,5 +1,7 @@
 package com.cyecize.app.api.store;
 
+import static com.cyecize.app.constants.ValidationMessages.INVALID_SHOPPING_CART_SESSION;
+
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.user.User;
@@ -205,7 +207,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private ShoppingCartDto getShoppingCartFromSession(String sessionId) {
         final ShoppingCartDto shoppingCartDto = this.sessionItems.get(sessionId);
         if (shoppingCartDto == null) {
-            throw new ApiException("Invalid shopping cart session ID!");
+            throw new ShoppingCartSessionException(INVALID_SHOPPING_CART_SESSION);
         }
 
         shoppingCartDto.setLastModified(LocalDateTime.now());

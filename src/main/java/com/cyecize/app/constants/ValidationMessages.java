@@ -9,4 +9,5 @@ public class ValidationMessages {
     public static final String USERNAME_NOT_FOUND = "usernameNotFound";
     public static final String INVALID_FILE_SIZE = "invalidFileSize";
     public static final String TOO_MANY_TAGS = "tooManyTags";
+    public static final String INVALID_SHOPPING_CART_SESSION = "invalidShoppingCartSessionId";
 }
