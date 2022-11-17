@@ -1,6 +1,6 @@
 package com.cyecize.app.config;
 
-import com.cyecize.app.api.store.ShoppingCartService;
+import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.summer.common.annotations.Component;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.PostConstruct;

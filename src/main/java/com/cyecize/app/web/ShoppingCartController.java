@@ -1,8 +1,8 @@
 package com.cyecize.app.web;
 
-import com.cyecize.app.api.store.AddShoppingCartItemDto;
-import com.cyecize.app.api.store.ShoppingCartItemDetailedDto;
-import com.cyecize.app.api.store.ShoppingCartService;
+import com.cyecize.app.api.store.cart.AddShoppingCartItemDto;
+import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.http.HttpStatus;

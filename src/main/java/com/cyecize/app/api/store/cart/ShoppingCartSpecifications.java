@@ -1,5 +1,6 @@
-package com.cyecize.app.api.store;
+package com.cyecize.app.api.store.cart;
 
+import com.cyecize.app.api.store.cart.ShoppingCart_;
 import com.cyecize.app.util.Specification;
 
 public class ShoppingCartSpecifications {

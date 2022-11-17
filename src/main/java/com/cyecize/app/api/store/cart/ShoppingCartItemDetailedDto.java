@@ -1,4 +1,4 @@
-package com.cyecize.app.api.store;
+package com.cyecize.app.api.store.cart;
 
 import com.cyecize.app.api.product.dto.ProductDto;
 import lombok.Data;

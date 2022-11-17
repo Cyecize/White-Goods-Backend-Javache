@@ -1,4 +1,4 @@
-package com.cyecize.app.api.store;
+package com.cyecize.app.api.store.cart;
 
 import static com.cyecize.app.constants.ValidationMessages.INVALID_SHOPPING_CART_SESSION;
 

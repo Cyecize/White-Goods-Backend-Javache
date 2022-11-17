@@ -1,6 +1,6 @@
 package com.cyecize.app.web;
 
-import com.cyecize.app.api.store.ShoppingCartSessionException;
+import com.cyecize.app.api.store.cart.ShoppingCartSessionException;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.error.ErrorResponse;

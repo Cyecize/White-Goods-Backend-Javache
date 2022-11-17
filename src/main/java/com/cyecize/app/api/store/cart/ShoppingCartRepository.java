@@ -1,4 +1,4 @@
-package com.cyecize.app.api.store;
+package com.cyecize.app.api.store.cart;
 
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.TransactionContext;
