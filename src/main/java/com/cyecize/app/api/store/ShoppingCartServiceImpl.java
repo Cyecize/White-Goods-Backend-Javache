@@ -37,6 +37,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     private final ShoppingCartRepository shoppingCartRepository;
 
+    private final ShoppingCartItemRepository shoppingCartItemRepository;
+
     @Configuration("shopping.cart.session.lifetime.hours")
     private final int sessionLifetimeHours;
 
@@ -187,20 +189,33 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                         ShoppingCartItemDto::getQuantity)
                 );
 
-        db.getItems().removeIf(item -> !sessionProductIds.contains(item.getProductId()));
+        final List<ShoppingCartItem> itemsToRemove = new ArrayList<>();
+        db.getItems().removeIf(item -> {
+            if (!sessionProductIds.contains(item.getProductId())) {
+                itemsToRemove.add(item);
+                return true;
+            }
+
+            return false;
+        });
+
         for (ShoppingCartItem item : db.getItems()) {
             item.setQuantity(sessionProds.get(item.getProductId()));
         }
 
+        final List<ShoppingCartItem> itemsToPersist = new ArrayList<>();
         for (ShoppingCartItemDto item : session.getItems()) {
             if (!dbProductIds.contains(item.getProductId())) {
-                db.getItems().add(new ShoppingCartItem(
-                        db.getId(), item.getProductId(), item.getQuantity())
-                );
+                itemsToPersist.add(new ShoppingCartItem(
+                        db.getId(), item.getProductId(), item.getQuantity()
+                ));
             }
         }
 
+        db.getItems().addAll(itemsToPersist);
         db.setLastModified(LocalDateTime.now());
+        this.shoppingCartItemRepository.persist(itemsToPersist);
+        this.shoppingCartItemRepository.remove(itemsToRemove);
         this.shoppingCartRepository.merge(db);
     }
 
@@ -243,8 +258,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         shoppingCart = new ShoppingCart();
         shoppingCart.setLastModified(LocalDateTime.now());
         shoppingCart.setUserId(user.getId());
+        shoppingCart.setItems(new ArrayList<>());
+        this.shoppingCartRepository.persist(shoppingCart);
 
-        return this.shoppingCartRepository.persist(shoppingCart);
+        return shoppingCart;
     }
 
     private User getUser() {

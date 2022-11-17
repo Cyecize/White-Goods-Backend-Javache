@@ -89,7 +89,7 @@ create table shopping_cart_items
 ) engine=InnoDB;
 create table shopping_carts
 (
-    id            bigint not null,
+    id            bigint not null auto_increment,
     last_modified datetime(6),
     user_id       bigint not null,
     primary key (id)
