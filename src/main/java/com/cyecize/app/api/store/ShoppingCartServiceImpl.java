@@ -5,6 +5,7 @@ import static com.cyecize.app.constants.ValidationMessages.INVALID_SHOPPING_CART
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.user.User;
+import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.areas.security.models.Principal;
@@ -112,7 +113,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         if (existingItem != null) {
             if (!dto.getReplace()) {
-                item.setQuantity(item.getQuantity() + existingItem.getQuantity());
+                final int sum = item.getQuantity() + existingItem.getQuantity();
+                if (sum <= General.MAX_PROD_QUANTITY) {
+                    item.setQuantity(sum);
+                }
             }
             shoppingCartFromSession.getItems().remove(existingItem);
         }
