@@ -11,10 +11,10 @@ import lombok.Data;
 public class QuestionQuery {
 
     @NotEmpty(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
-    @MaxLength(length = 50, message = ValidationMessages.INVALID_VALUE)
+    @MaxLength(length = General.MAX_NAME, message = ValidationMessages.INVALID_VALUE)
     private String fullName;
 
-    @MaxLength(length = 50, message = ValidationMessages.INVALID_VALUE)
+    @MaxLength(length = General.MAX_NAME, message = ValidationMessages.INVALID_VALUE)
     @RegEx(value = General.VALID_EMAIL_PATTERN, message = ValidationMessages.INVALID_VALUE)
     private String email;
 
