@@ -21,7 +21,6 @@ import javax.persistence.Transient;
 public class Role implements GrantedAuthority {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)
     private Long id;
 
