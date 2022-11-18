@@ -4,6 +4,7 @@ import static org.hibernate.cfg.AvailableSettings.DIALECT;
 import static org.hibernate.cfg.AvailableSettings.PHYSICAL_NAMING_STRATEGY;
 import static org.hibernate.cfg.AvailableSettings.SHOW_SQL;
 
+import com.cyecize.solet.SoletConstants;
 import com.cyecize.summer.common.annotations.Bean;
 import com.cyecize.summer.common.annotations.BeanConfig;
 import com.cyecize.summer.common.annotations.Configuration;
@@ -32,6 +33,9 @@ public class EntityManagerFactoryBeanConfig {
 
     private final DataSource dataSource;
 
+    @Configuration(SoletConstants.SOLET_CFG_WORKING_DIR)
+    private final String workingDir;
+
     @Bean
     public EntityManagerFactory entityManagerFactory() {
         final Properties properties = new Properties();
@@ -43,7 +47,8 @@ public class EntityManagerFactoryBeanConfig {
                 new PersistenceUnitInfoImpl(
                         this.persistenceUnitName,
                         dataSource,
-                        properties
+                        properties,
+                        this.workingDir
                 ),
                 new HashMap<>()
         );

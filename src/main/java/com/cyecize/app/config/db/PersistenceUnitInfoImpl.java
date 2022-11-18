@@ -20,6 +20,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     private final String persistenceUnitName;
     private final DataSource dataSource;
     private final Properties properties;
+    private final String workingDir;
 
     @Override
     public String getPersistenceUnitName() {
@@ -54,9 +55,8 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     @Override
     public List<URL> getJarFileUrls() {
         try {
-            return Collections.list(this.getClass()
-                    .getClassLoader()
-                    .getResources(""));
+            //TODO: Use updated PathUtils to append the path and avoid double slash
+            return List.of(new URL("file:/" + this.workingDir));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
