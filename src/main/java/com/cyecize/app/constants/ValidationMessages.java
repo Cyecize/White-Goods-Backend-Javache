@@ -10,4 +10,5 @@ public class ValidationMessages {
     public static final String INVALID_FILE_SIZE = "invalidFileSize";
     public static final String TOO_MANY_TAGS = "tooManyTags";
     public static final String INVALID_SHOPPING_CART_SESSION = "invalidShoppingCartSessionId";
+    public static final String SHOPPING_CART_EMPTY = "shoppingCartIsEmpty";
 }
