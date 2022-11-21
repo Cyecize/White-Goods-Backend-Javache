@@ -83,7 +83,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (this.principal.isUserPresent()) {
             this.shoppingCartRepository.deleteByUserId(this.getUser().getId());
         }
-        this.sessionItems.remove(sessionId);
+        this.sessionItems
+                .getOrDefault(sessionId, new ShoppingCartDto())
+                .setItems(new ArrayList<>());
     }
 
     @Override
