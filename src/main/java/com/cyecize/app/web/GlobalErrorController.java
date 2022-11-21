@@ -13,6 +13,7 @@ import com.cyecize.solet.SoletConstants;
 import com.cyecize.summer.areas.routing.exceptions.HttpNotFoundException;
 import com.cyecize.summer.areas.security.exceptions.UnauthorizedException;
 import com.cyecize.summer.areas.validation.exceptions.ConstraintValidationException;
+import com.cyecize.summer.areas.validation.exceptions.ObjectBindingException;
 import com.cyecize.summer.areas.validation.interfaces.BindingResult;
 import com.cyecize.summer.areas.validation.models.FieldError;
 import com.cyecize.summer.common.annotations.Controller;
@@ -75,6 +76,18 @@ public class GlobalErrorController {
                                             HttpSoletResponse response) {
         response.setStatusCode(HttpStatus.BAD_REQUEST);
         return this.createErrorResponse(request, HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionListener(value = ObjectBindingException.class, produces = General.APPLICATION_JSON)
+    public ErrorResponse handleObjectBingingException(ObjectBindingException ex,
+                                                      HttpSoletRequest request,
+                                                      HttpSoletResponse response) {
+        response.setStatusCode(HttpStatus.BAD_REQUEST);
+        return this.createErrorResponse(
+                request,
+                HttpStatus.BAD_REQUEST,
+                ex.getCause().getMessage()
+        );
     }
 
     @ExceptionListener(value = ShoppingCartSessionException.class, produces = General.APPLICATION_JSON)
