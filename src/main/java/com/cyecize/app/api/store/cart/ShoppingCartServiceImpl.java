@@ -8,6 +8,7 @@ import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
+import com.cyecize.app.util.MathUtil;
 import com.cyecize.summer.areas.security.models.Principal;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
@@ -246,10 +247,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
         return this.productService.findAllByIdIn(prodQuantity.keySet()).stream()
-                .map(prod -> new ShoppingCartItemDetailedDto(
-                        this.modelMapper.map(prod, ProductDto.class),
-                        prodQuantity.get(prod.getId())
-                ))
+                .map(prod -> {
+                    final int qty = prodQuantity.get(prod.getId());
+                    return new ShoppingCartItemDetailedDto(
+                            this.modelMapper.map(prod, ProductDto.class),
+                            qty,
+                            MathUtil.calculatePrice(prod.getPrice(), qty)
+                    );
+                })
                 .collect(Collectors.toList());
     }
 

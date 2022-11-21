@@ -7,4 +7,5 @@ import lombok.Data;
 public class ShoppingCartItemDetailedDto {
     private final ProductDto product;
     private final Integer quantity;
+    private final Double calculatedPrice;
 }
