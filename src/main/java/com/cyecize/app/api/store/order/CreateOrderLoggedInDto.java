@@ -1,5 +1,6 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.api.store.order.validator.ValidConfirmedPrice;
 import com.cyecize.app.api.user.address.UserAddress;
 import com.cyecize.app.api.user.address.converter.UserAddressIdConverter;
 import com.cyecize.app.constants.ValidationMessages;
@@ -16,4 +17,8 @@ public class CreateOrderLoggedInDto {
     @NotNull(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
     @UserAddressIdConverter
     private UserAddress userAddress;
+
+    @NotNull(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
+    @ValidConfirmedPrice
+    private Double userAgreedPrice;
 }

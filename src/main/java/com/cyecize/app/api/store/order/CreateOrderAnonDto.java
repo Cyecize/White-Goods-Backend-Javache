@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store.order;
 
 import com.cyecize.app.api.store.delivery.CreateAddressDto;
+import com.cyecize.app.api.store.order.validator.ValidConfirmedPrice;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.areas.validation.constraints.NotEmpty;
@@ -16,4 +17,8 @@ public class CreateOrderAnonDto {
 
     @NotEmpty(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
     private String sessionId;
+
+    @NotNull(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
+    @ValidConfirmedPrice
+    private Double userAgreedPrice;
 }

@@ -11,4 +11,5 @@ public class ValidationMessages {
     public static final String TOO_MANY_TAGS = "tooManyTags";
     public static final String INVALID_SHOPPING_CART_SESSION = "invalidShoppingCartSessionId";
     public static final String SHOPPING_CART_EMPTY = "shoppingCartIsEmpty";
+    public static final String ORDER_INVALID_CONFIRM_PRICE = "invalidConfirmPrice";
 }
