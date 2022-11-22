@@ -44,6 +44,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Configuration("shopping.cart.session.lifetime.hours")
     private final int sessionLifetimeHours;
 
+    @Configuration("delivery.price")
+    private final Double deliveryPrice;
+
     @Override
     public void removeExpiredSessions() {
         final LocalDateTime min = LocalDateTime.now().minusHours(this.sessionLifetimeHours);
@@ -150,6 +153,14 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
         return this.fetchItems(shoppingCartFromSession.getItems());
+    }
+
+    @Override
+    public ShoppingCartPricingDto getPricing(String sessionId) {
+        final List<ShoppingCartItemDetailedDto> items = this.getShoppingCartItems(sessionId, false);
+        final Double subtotal = MathUtil.calculateTotal(items);
+        final Double total = MathUtil.sum(subtotal, this.deliveryPrice);
+        return new ShoppingCartPricingDto(subtotal, this.deliveryPrice, total);
     }
 
     private List<ShoppingCartItemDto> mergeIntoSession(String sessionId) {

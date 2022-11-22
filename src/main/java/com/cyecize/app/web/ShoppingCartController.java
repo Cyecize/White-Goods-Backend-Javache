@@ -2,6 +2,7 @@ package com.cyecize.app.web;
 
 import com.cyecize.app.api.store.cart.AddShoppingCartItemDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.cart.ShoppingCartPricingDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
@@ -61,6 +62,11 @@ public class ShoppingCartController {
             @PathVariable("session") String session,
             @PathVariable("prodId") Long productId) {
         return this.shoppingCartService.removeItem(session, productId);
+    }
+
+    @GetMapping(Endpoints.SHOPPING_CART_PRICING)
+    public ShoppingCartPricingDto getPricing(@PathVariable("session") String session) {
+        return this.shoppingCartService.getPricing(session);
     }
 
     @Data

@@ -15,4 +15,6 @@ public interface ShoppingCartService {
     List<ShoppingCartItemDetailedDto> addItem(String sessionId, AddShoppingCartItemDto dto);
 
     List<ShoppingCartItemDetailedDto> removeItem(String sessionId, Long productId);
+
+    ShoppingCartPricingDto getPricing(String sessionId);
 }
