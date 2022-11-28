@@ -8,29 +8,33 @@ import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
-import com.cyecize.solet.SoletConfig;
 import com.cyecize.solet.SoletConstants;
+import com.cyecize.solet.SoletOutputStream;
 import com.cyecize.summer.areas.routing.exceptions.HttpNotFoundException;
 import com.cyecize.summer.areas.security.exceptions.UnauthorizedException;
 import com.cyecize.summer.areas.validation.exceptions.ConstraintValidationException;
 import com.cyecize.summer.areas.validation.exceptions.ObjectBindingException;
 import com.cyecize.summer.areas.validation.interfaces.BindingResult;
 import com.cyecize.summer.areas.validation.models.FieldError;
+import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.ExceptionListener;
-import com.cyecize.summer.common.models.ModelAndView;
+import com.cyecize.summer.utils.PathUtils;
+import lombok.RequiredArgsConstructor;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class GlobalErrorController {
 
-    private final SoletConfig soletConfig;
+    @Configuration(SoletConstants.SOLET_CONFIG_ASSETS_DIR)
+    private final String assetsDir;
 
     /**
      * Logic for forwarding requests to the frontend. If index.html exists in the assets' dir, then
@@ -39,14 +43,15 @@ public class GlobalErrorController {
      */
     @ExceptionListener(HttpNotFoundException.class)
     public Object handleNotFoundException(HttpSoletResponse httpSoletResponse,
-            HttpNotFoundException ex) throws IOException {
-        final String assetsDir = this.soletConfig.getAttribute(SoletConstants.SOLET_CONFIG_ASSETS_DIR) + "";
-        if (Files.exists(Path.of(assetsDir + "/index.html"))) {
+                                          HttpNotFoundException ex) throws IOException {
+        final Path indexPath = Path.of(PathUtils.appendPath(this.assetsDir, "/index.html"));
+        if (Files.exists(indexPath)) {
             httpSoletResponse.setStatusCode(HttpStatus.OK);
-            final String fileContents = new String(
-                    Files.readAllBytes(Path.of(assetsDir + "/index.html")));
-
-            return new ModelAndView("index.html.twig", Map.of("data", fileContents));
+            // Old way of serving files. Not recommended since it loads the whole file in memory
+            // final String fileContents = new String(Files.readAllBytes(indexPath));
+            //  return new ModelAndView("index.html.twig", Map.of("data", fileContents));
+            this.downloadHtmlFile(indexPath, httpSoletResponse);
+            return null;
         }
 
         httpSoletResponse.setStatusCode(HttpStatus.NOT_FOUND);
@@ -92,8 +97,8 @@ public class GlobalErrorController {
 
     @ExceptionListener(value = ShoppingCartSessionException.class, produces = General.APPLICATION_JSON)
     public ErrorResponse handleShoppingCartSessionException(ShoppingCartSessionException ex,
-            HttpSoletRequest request,
-            HttpSoletResponse response) {
+                                                            HttpSoletRequest request,
+                                                            HttpSoletResponse response) {
         response.setStatusCode(HttpStatus.NOT_ACCEPTABLE);
         return this.createErrorResponse(request, HttpStatus.NOT_ACCEPTABLE, ex.getMessage());
     }
@@ -108,5 +113,26 @@ public class GlobalErrorController {
 
     private ErrorResponse createErrorResponse(HttpSoletRequest request, HttpStatus status, String message) {
         return new ErrorResponse(request.getRequestURI(), status, message);
+    }
+
+    private void downloadHtmlFile(Path filePath, HttpSoletResponse response) {
+        final File file = filePath.toFile();
+
+        try {
+            response.addHeader("Content-Type", "text/html");
+            response.addHeader("Content-Disposition", "inline;");
+            response.addHeader("Content-Length", file.length() + "");
+
+            final SoletOutputStream outputStream = response.getOutputStream();
+            final byte[] buff = new byte[2048];
+            try (final FileInputStream fileInputStream = new FileInputStream(file)) {
+                while (fileInputStream.available() > 0) {
+                    final int read = fileInputStream.read(buff);
+                    outputStream.write(buff, 0, read);
+                }
+            }
+        } catch (IOException ex) {
+            throw new ApiException("Could not download file!");
+        }
     }
 }
