@@ -11,7 +11,130 @@
     <properties>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <build>
+
+        <plugins>
+            <!-- Following 2 plugins can be used to build a self executable jar.
+            After the build, just run java -jar outputName.jar -->
+
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-dependency-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-dependencies</id>-->
+<!--                        <phase>prepare-package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy-dependencies</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <outputDirectory>${project.build.directory}/lib</outputDirectory>-->
+<!--                            <overWriteReleases>false</overWriteReleases>-->
+<!--                            <overWriteSnapshots>false</overWriteSnapshots>-->
+<!--                            <overWriteIfNewer>true</overWriteIfNewer>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+<!--            <plugin>-->
+<!--                &lt;!&ndash; Build an executable JAR &ndash;&gt;-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <version>3.2.1</version>-->
+<!--                <configuration>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            <mainClass>com.cyecize.app.StartUp</mainClass>-->
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+<!--                        </manifest>-->
+<!--                        <manifestEntries>-->
+<!--                            &lt;!&ndash;                            <Class-Path>lib/summer-1.3.jar lib/javache-embedded-1.3.jar</Class-Path>&ndash;&gt;-->
+<!--                            <Class-Path>lib/summer-1.3.jar lib/javache-embedded-1.3.jar</Class-Path>-->
+<!--                        </manifestEntries>-->
+<!--                    </archive>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+
+            <!-- Following 2 plugins can be used to build a jar file in the correct format for the standalone server.
+             After the build, just place the jar file into the webapps folder of javache.
+              The file name may need to be renamed to ROOT.jar -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/classes/lib</outputDirectory>
+                            <overWriteReleases>false</overWriteReleases>
+                            <overWriteSnapshots>false</overWriteSnapshots>
+                            <overWriteIfNewer>true</overWriteIfNewer>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>Prepare-For-Jar</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>${project.build.sourceEncoding}</encoding>
+                            <target name="Prepare classes folder for custom jar file">
+                                <copy encoding="${project.build.sourceEncoding}"
+                                      outputencoding="${project.build.sourceEncoding}"
+                                      todir="${project.basedir}/target/temp/classes/">
+                                    <fileset dir="${project.basedir}/target/classes/"/>
+                                </copy>
+                                <delete dir="${project.basedir}/target/classes"/>
+
+                                <copy encoding="${project.build.sourceEncoding}"
+                                      outputencoding="${project.build.sourceEncoding}"
+                                      todir="${project.basedir}/target/classes/classes/">
+                                    <fileset dir="${project.basedir}/target/temp/classes/"/>
+                                </copy>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>Restore-After-Jar</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <encoding>${project.build.sourceEncoding}</encoding>
+                            <target name="Restore classes folder">
+                                <delete dir="${project.basedir}/target/classes/classes"/>
+                                <copy encoding="${project.build.sourceEncoding}"
+                                      outputencoding="${project.build.sourceEncoding}"
+                                      todir="${project.basedir}/target/classes/">
+                                    <fileset dir="${project.basedir}/target/temp/classes/"/>
+                                </copy>
+                                <delete dir="${project.basedir}/target/temp/"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
     <dependencies>
         <dependency>
