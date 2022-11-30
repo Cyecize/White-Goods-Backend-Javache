@@ -16,4 +16,6 @@ public class EntityGraphs {
     public static final String PRODUCT_SPECIFICATIONS_ALL = "productSpecificationsAll";
 
     public static final String SHOPPING_CART_WITH_ITEMS = "shoppingCartWithItems";
+
+    public static final String PROMOTION_WITH_ITEMS = "promotionWithItems";
 }
