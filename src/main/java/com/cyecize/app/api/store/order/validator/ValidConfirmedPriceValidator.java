@@ -6,10 +6,8 @@ import com.cyecize.summer.areas.validation.interfaces.ConstraintValidator;
 import com.cyecize.summer.common.annotations.Component;
 import java.lang.reflect.Field;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Component
-@Slf4j
 @RequiredArgsConstructor
 public class ValidConfirmedPriceValidator implements
         ConstraintValidator<ValidConfirmedPrice, Double> {
@@ -34,9 +32,11 @@ public class ValidConfirmedPriceValidator implements
             declaredField.setAccessible(true);
             sessionId = (String) declaredField.get(model);
         } catch (Exception e) {
-            log.error("Error while validating confirm price on dto {}. Field: {}, User Val: {}",
-                    model, this.sessionIdFieldName, val, e
+            System.out.printf(
+                    "Error while validating confirm price on dto %s. Field: %s, User Val: %s%n",
+                    model, this.sessionIdFieldName, val
             );
+            e.printStackTrace();
             return false;
         }
 

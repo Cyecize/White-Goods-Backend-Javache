@@ -4,6 +4,8 @@ import static com.cyecize.app.constants.ValidationMessages.INVALID_SHOPPING_CART
 
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.promotion.PromotionService;
+import com.cyecize.app.api.store.promotion.dto.DiscountsDto;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
@@ -40,6 +42,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
 
     private final ShoppingCartItemRepository shoppingCartItemRepository;
+
+    private final PromotionService promotionService;
 
     @Configuration("shopping.cart.session.lifetime.hours")
     private final int sessionLifetimeHours;
@@ -159,8 +163,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ShoppingCartPricingDto getPricing(String sessionId) {
         final List<ShoppingCartItemDetailedDto> items = this.getShoppingCartItems(sessionId, false);
         final Double subtotal = MathUtil.calculateTotal(items);
-        final Double total = MathUtil.sum(subtotal, this.deliveryPrice);
-        return new ShoppingCartPricingDto(subtotal, this.deliveryPrice, total);
+        final DiscountsDto discounts = this.promotionService.calculateDiscounts(items, subtotal);
+
+        final Double deliveryPrice = discounts.isFreeDelivery() ? null : this.deliveryPrice;
+        final Double total = Math.max(
+                0D,
+                MathUtil.subtract(
+                        MathUtil.sum(subtotal, deliveryPrice),
+                        discounts.getTotalDiscounts()
+                )
+        );
+
+        return new ShoppingCartPricingDto(
+                subtotal,
+                deliveryPrice,
+                total,
+                discounts
+        );
     }
 
     private List<ShoppingCartItemDto> mergeIntoSession(String sessionId) {
