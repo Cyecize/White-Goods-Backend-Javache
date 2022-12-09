@@ -214,5 +214,11 @@
             <artifactId>flyway-mysql</artifactId>
             <version>9.8.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.thymeleaf</groupId>
+            <artifactId>thymeleaf</artifactId>
+            <version>3.1.0.RELEASE</version>
+        </dependency>
     </dependencies>
 </project>

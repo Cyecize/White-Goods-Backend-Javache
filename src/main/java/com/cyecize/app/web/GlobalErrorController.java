@@ -1,5 +1,7 @@
 package com.cyecize.app.web;
 
+import com.cyecize.app.api.frontend.index.IndexServingService;
+import com.cyecize.app.api.frontend.opengraph.OpenGraphService;
 import com.cyecize.app.api.store.cart.ShoppingCartSessionException;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
@@ -8,33 +10,26 @@ import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
-import com.cyecize.solet.SoletConstants;
-import com.cyecize.solet.SoletOutputStream;
 import com.cyecize.summer.areas.routing.exceptions.HttpNotFoundException;
 import com.cyecize.summer.areas.security.exceptions.UnauthorizedException;
 import com.cyecize.summer.areas.validation.exceptions.ConstraintValidationException;
 import com.cyecize.summer.areas.validation.exceptions.ObjectBindingException;
 import com.cyecize.summer.areas.validation.interfaces.BindingResult;
 import com.cyecize.summer.areas.validation.models.FieldError;
-import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.ExceptionListener;
-import com.cyecize.summer.utils.PathUtils;
-import lombok.RequiredArgsConstructor;
-
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
 public class GlobalErrorController {
 
-    @Configuration(SoletConstants.SOLET_CONFIG_ASSETS_DIR)
-    private final String assetsDir;
+    private final IndexServingService indexServingService;
+
+    private final OpenGraphService openGraphService;
+
 
     /**
      * Logic for forwarding requests to the frontend. If index.html exists in the assets' dir, then
@@ -42,19 +37,14 @@ public class GlobalErrorController {
      * URL, FE will handle it. Otherwise, print an error.
      */
     @ExceptionListener(HttpNotFoundException.class)
-    public Object handleNotFoundException(HttpSoletResponse httpSoletResponse,
+    public Object handleNotFoundException(HttpSoletRequest req,
+                                          HttpSoletResponse res,
                                           HttpNotFoundException ex) throws IOException {
-        final Path indexPath = Path.of(PathUtils.appendPath(this.assetsDir, "/index.html"));
-        if (Files.exists(indexPath)) {
-            httpSoletResponse.setStatusCode(HttpStatus.OK);
-            // Old way of serving files. Not recommended since it loads the whole file in memory
-            // final String fileContents = new String(Files.readAllBytes(indexPath));
-            //  return new ModelAndView("index.html.twig", Map.of("data", fileContents));
-            this.downloadHtmlFile(indexPath, httpSoletResponse);
+        if (this.indexServingService.serveIndexFile(req, res, this.openGraphService.getTags(req))) {
             return null;
         }
 
-        httpSoletResponse.setStatusCode(HttpStatus.NOT_FOUND);
+        res.setStatusCode(HttpStatus.NOT_FOUND);
         ex.printStackTrace();
         return "Page not found!";
     }
@@ -113,26 +103,5 @@ public class GlobalErrorController {
 
     private ErrorResponse createErrorResponse(HttpSoletRequest request, HttpStatus status, String message) {
         return new ErrorResponse(request.getRequestURI(), status, message);
-    }
-
-    private void downloadHtmlFile(Path filePath, HttpSoletResponse response) {
-        final File file = filePath.toFile();
-
-        try {
-            response.addHeader("Content-Type", "text/html");
-            response.addHeader("Content-Disposition", "inline;");
-            response.addHeader("Content-Length", file.length() + "");
-
-            final SoletOutputStream outputStream = response.getOutputStream();
-            final byte[] buff = new byte[2048];
-            try (final FileInputStream fileInputStream = new FileInputStream(file)) {
-                while (fileInputStream.available() > 0) {
-                    final int read = fileInputStream.read(buff);
-                    outputStream.write(buff, 0, read);
-                }
-            }
-        } catch (IOException ex) {
-            throw new ApiException("Could not download file!");
-        }
     }
 }

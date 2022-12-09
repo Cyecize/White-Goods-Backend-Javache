@@ -5,6 +5,7 @@ public class Endpoints {
     public static final String CATEGORIES                   = "/categories";
     public static final String CATEGORY                     = "/category/{id}";
 
+    public static final String PROD_FE                      = "/prod/{id}";
     public static final String PRODUCTS                     = "/products";
     public static final String PRODUCT                      = "/products/{id}";
     public static final String PRODUCT_CREATE               = "/product/create";

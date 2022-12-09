@@ -1,5 +1,7 @@
 package com.cyecize.app.web;
 
+import com.cyecize.app.api.frontend.index.IndexServingService;
+import com.cyecize.app.api.frontend.opengraph.OpenGraphService;
 import com.cyecize.app.api.product.Image;
 import com.cyecize.app.api.product.ImageService;
 import com.cyecize.app.api.product.Product;
@@ -7,6 +9,7 @@ import com.cyecize.app.api.product.ProductQuery;
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.converter.ImageIdDataAdapter;
 import com.cyecize.app.api.product.converter.ProductIdDataAdapter;
+import com.cyecize.app.api.product.converter.ProductIdNoErrorDataAdapter;
 import com.cyecize.app.api.product.dto.CreateProductDto;
 import com.cyecize.app.api.product.dto.EditProductDto;
 import com.cyecize.app.api.product.dto.ImageDto;
@@ -18,6 +21,8 @@ import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.util.Page;
 import com.cyecize.http.HttpStatus;
+import com.cyecize.solet.HttpSoletRequest;
+import com.cyecize.solet.HttpSoletResponse;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.security.enums.AuthorizationType;
 import com.cyecize.summer.areas.security.models.Principal;
@@ -31,6 +36,8 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -49,6 +56,35 @@ public class ProductController {
     private final ProductService productService;
 
     private final ImageService imageService;
+
+    private final OpenGraphService openGraphService;
+
+    private final IndexServingService indexServingService;
+
+    /**
+     * Endpoint for serving index.html file with preloaded open graph meta tags.
+     *
+     * @param product  -
+     * @param request  -
+     * @param response -
+     */
+    @GetMapping(Endpoints.PROD_FE)
+    @PreAuthorize(AuthorizationType.ANY)
+    public void searchProduct(@PathVariable(value = "id", required = false)
+                              @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
+            HttpSoletRequest request,
+            HttpSoletResponse response) {
+        final Map<String, String> ogTags;
+        if (product != null) {
+            ogTags = this.openGraphService.getTags(request, product);
+        } else {
+            ogTags = new HashMap<>();
+        }
+
+        if (!this.indexServingService.serveIndexFile(request, response, ogTags)) {
+            throw new ApiException("Could not load Front End!");
+        }
+    }
 
     @PostMapping(Endpoints.PRODUCTS)
     @PreAuthorize(AuthorizationType.ANY)
