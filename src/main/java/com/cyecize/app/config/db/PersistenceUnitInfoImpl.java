@@ -1,5 +1,6 @@
 package com.cyecize.app.config.db;
 
+import com.cyecize.javache.common.PathUtils;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URL;
@@ -55,8 +56,7 @@ public class PersistenceUnitInfoImpl implements PersistenceUnitInfo {
     @Override
     public List<URL> getJarFileUrls() {
         try {
-            //TODO: Use updated PathUtils to append the path and avoid double slash
-            return List.of(new URL("file:/" + this.workingDir));
+            return List.of(new URL(PathUtils.appendPath("file:/", this.workingDir, "/")));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

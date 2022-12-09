@@ -95,7 +95,6 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <encoding>${project.build.sourceEncoding}</encoding>
                             <target name="Prepare classes folder for custom jar file">
                                 <copy encoding="${project.build.sourceEncoding}"
                                       outputencoding="${project.build.sourceEncoding}"
@@ -119,7 +118,6 @@
                             <goal>run</goal>
                         </goals>
                         <configuration>
-                            <encoding>${project.build.sourceEncoding}</encoding>
                             <target name="Restore classes folder">
                                 <delete dir="${project.basedir}/target/classes/classes"/>
                                 <copy encoding="${project.build.sourceEncoding}"
