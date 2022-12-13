@@ -1,5 +1,7 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.constants.EntityGraphs;
+import com.cyecize.app.constants.General;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
@@ -17,6 +19,19 @@ public class OrderRepository {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.persist(order);
         return order;
+    }
+
+    @Transactional
+    public Order findById(Long orderId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager
+                .createQuery("select o from Order o where o.id = :orderId", Order.class)
+                .setParameter("orderId", orderId)
+                .setHint(
+                        General.HIBERNATE_HINT_ENTITY_GRAPH,
+                        entityManager.getEntityGraph(EntityGraphs.ORDER_ALL)
+                )
+                .getResultStream().findFirst().orElse(null);
     }
 
 }

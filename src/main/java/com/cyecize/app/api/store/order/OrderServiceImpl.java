@@ -1,10 +1,15 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.api.product.Product;
+import com.cyecize.app.api.product.ProductService;
+import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartPricingDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.delivery.DeliveryAddress;
 import com.cyecize.app.api.store.delivery.DeliveryAddressService;
+import com.cyecize.app.api.store.order.dto.OrderDto;
+import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
@@ -15,9 +20,12 @@ import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.DoubleAdder;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +41,10 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     private final OrderItemRepository orderItemRepository;
+
+    private final ModelMapper modelMapper;
+
+    private final ProductService productService;
 
     @Override
     @Transactional
@@ -118,11 +130,43 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
+    @Override
+    public OrderDto getOrder(Long orderId) {
+        final Order order = this.orderRepository.findById(orderId);
+        if (order == null) {
+            return null;
+        }
+
+        final OrderDto orderDto = this.modelMapper.map(order, OrderDto.class);
+        orderDto.setTotalPrice(this.calculateTotal(order));
+        orderDto.setSubtotal(this.calculateSubtotal(order));
+
+        final List<Long> productIds = orderDto.getItems().stream()
+                .map(OrderItemDto::getProductId)
+                .collect(Collectors.toList());
+
+        final Map<Long, Product> prods = this.productService.findAllByIdIn(productIds).stream()
+                .collect(Collectors.toMap(Product::getId, product -> product));
+
+        orderDto.getItems().forEach(item -> item.setProduct(
+                this.modelMapper.map(prods.get(item.getProductId()), ProductDto.class)
+        ));
+
+        return orderDto;
+    }
+
     private Double calculateTotal(Order order) {
         final DoubleAdder da = new DoubleAdder();
-        da.add(order.getDeliveryPrice() * -1.0);
+        da.add(order.getDeliveryPrice());
         da.add(order.getTotalDiscounts() * -1.0);
 
+        da.add(this.calculateSubtotal(order));
+
+        return da.sum();
+    }
+
+    private Double calculateSubtotal(Order order) {
+        final DoubleAdder da = new DoubleAdder();
         for (OrderItem item : order.getItems()) {
             da.add(MathUtil.calculatePrice(item.getPriceSnapshot(), item.getQuantity()));
         }
