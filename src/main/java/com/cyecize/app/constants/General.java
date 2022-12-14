@@ -1,5 +1,7 @@
 package com.cyecize.app.constants;
 
+import java.time.format.DateTimeFormatter;
+
 public class General {
     public static final String APPLICATION_JSON = "application/json";
 
@@ -22,4 +24,8 @@ public class General {
     public static final int MAX_PROD_QUANTITY = 50;
 
     public static final String QUERY_PARAM_LANG = "lang";
+
+    public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(
+            "dd MMM, yyyy - HH:mm"
+    );
 }

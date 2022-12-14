@@ -1,5 +1,7 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.api.mail.EmailTemplate;
+import com.cyecize.app.api.mail.MailService;
 import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
@@ -11,6 +13,7 @@ import com.cyecize.app.api.store.delivery.DeliveryAddressService;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.user.User;
+import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
@@ -45,6 +48,10 @@ public class OrderServiceImpl implements OrderService {
     private final ModelMapper modelMapper;
 
     private final ProductService productService;
+
+    private final UserService userService;
+
+    private final MailService mailService;
 
     @Override
     @Transactional
@@ -82,7 +89,10 @@ public class OrderServiceImpl implements OrderService {
 
     private void postOrderCreated(String cartSessionId, Order order, Long userId) {
         this.shoppingCartService.removeAllItems(cartSessionId);
-        //TODO: notify admins
+        final List<String> emailsOfAdmins = this.userService.getEmailsOfAdmins();
+        final OrderDto orderDto = this.getOrder(order.getId());
+
+        this.mailService.sendEmail(EmailTemplate.NEW_ORDER_ADMINS, orderDto, emailsOfAdmins);
     }
 
     private Order createOrder(List<ShoppingCartItemDetailedDto> items,
@@ -93,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
         final ShoppingCartPricingDto pricing = this.shoppingCartService.getPricing(cartSessionId);
         final Order order = new Order();
         order.setAddressId(address.getId());
+        order.setAddress(address);
 
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.WAITING);

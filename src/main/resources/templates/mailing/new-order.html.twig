@@ -1,0 +1,22 @@
+<html>
+
+<head>
+    {% embed './general.styles.twig' %} {% endembed %}
+    {% embed './partials/order-details.styles.twig' %} {% endembed %}
+</head>
+
+<body class="page-body">
+<div class="container">
+    <h2>{{ translate.getValue('you.have.new.order') }}</h2>
+    <div>
+        <h3>{{ translate.getValue('from') }}: {{ model.address.fullName }}</h3>
+        {% if util.isNotNull(model.userId) %}
+            <p>{{ translate.getValue('registered.user') }}</p>
+        {% endif %}
+        <p>{{ translate.getValue('date') }}: {{ util.formatDate(model.date) }}</p>
+    </div>
+    {% embed './partials/order-details.twig' %} {% endembed %}
+</div>
+
+</body>
+</html>

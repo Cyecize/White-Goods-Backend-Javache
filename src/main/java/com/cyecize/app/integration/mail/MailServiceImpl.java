@@ -2,6 +2,7 @@ package com.cyecize.app.integration.mail;
 
 import com.cyecize.app.api.mail.EmailTemplate;
 import com.cyecize.app.api.mail.MailService;
+import com.cyecize.app.api.translate.TranslateService;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.summer.areas.template.services.TemplateRenderingService;
 import com.cyecize.summer.common.annotations.Configuration;
@@ -47,6 +48,11 @@ public class MailServiceImpl implements MailService {
 
     private final TemplateRenderingService templateRenderingService;
 
+    private final TranslateService translateService;
+
+    @Configuration("website.name")
+    private final String websiteName;
+
     @Override
     public <T> void sendEmail(EmailTemplate<T> template, T viewModel, List<String> receivers) {
         final Model model = new Model();
@@ -60,9 +66,13 @@ public class MailServiceImpl implements MailService {
 
             final Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(this.mailFrom));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(commaSeparatedMails));
-            message.setSubject(template.getSubject());
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse(commaSeparatedMails)
+            );
+            message.setSubject(
+                    this.translateService.getValue(template.getSubject()) + " - " + this.websiteName
+            );
 
             final MimeBodyPart mimeBodyPart = new MimeBodyPart();
             mimeBodyPart.setContent(html, "text/html; charset=utf-8");

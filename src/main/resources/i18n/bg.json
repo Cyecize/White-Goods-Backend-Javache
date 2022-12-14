@@ -37,5 +37,7 @@
   "order.accepted": "Поръчката е приета",
   "order.in.progress": "Поръчката се обработва",
   "order.sent": "Поръчката е изпратена",
-  "order.completed": "Поръчката е завършена"
+  "order.completed": "Поръчката е завършена",
+  "new.question": "Ново запитване",
+  "new.order": "Нова поръчка"
 }

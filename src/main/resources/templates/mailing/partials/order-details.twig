@@ -1,0 +1,96 @@
+<div>
+    <h3>{{ translate.getValue('status') }}:</h3>
+    <p>{{ translate.getValue(model.status.getMessage()) }}</p>
+    <hr class="initial-divider">
+    <h3>{{ translate.getValue('shopping.cart') }}:</h3>
+    <table class="products-table table-fullwidth">
+        {% for item in model.items %}
+            <tr>
+                <td>
+                    <div style="width: 80px">
+                        <img src="{{ util.createImageUrl(request, item.product.imageUrl) }}"
+                             width="80"
+                             height="80"/>
+                    </div>
+                </td>
+                <td>
+                    <a class="product-title"
+                       href="{{ util.createProductUrl(request, item.productId) }}">
+                        {{ item.product.productName }}
+                    </a>
+                </td>
+                <td class="h5">{{ util.formatNumber(item.priceSnapshot) }}</td>
+                <td>
+                    <div>
+                        <input class="control"
+                               style="max-width: 50px;"
+                               disabled
+                               value="{{ item.quantity }}">
+                    </div>
+                </td>
+                <td class="h5">{{ util.calculatePrice(item.priceSnapshot, item.quantity) }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <table class="table-fullwidth">
+        <tr class="text-muted">
+            <td>{{ translate.getValue('subtotal') }}:</td>
+            <td class="text-right">{{ util.formatNumber(model.subtotal) }}</td>
+        </tr>
+        {% if model.deliveryPrice > 0 %}
+            <tr class="text-muted">
+                <td>{{ translate.getValue('shipping.price') }}:</td>
+                <td class="text-right">{{ util.formatNumber(model.deliveryPrice) }}</td>
+            </tr>
+        {% endif %}
+        {% if model.totalDiscounts > 0 %}
+            <tr class="text-muted">
+                <td>{{ translate.getValue('discounts') }}:</td>
+                <td class="text-right">{{ util.formatNumber(model.totalDiscounts) }}</td>
+            </tr>
+        {% endif %}
+        <tr>
+            <td class="text-total-price">{{ translate.getValue('final.price') }}</td>
+            <td class="text-total-price text-right">{{ util.formatNumber(model.totalPrice) }}</td>
+        </tr>
+    </table>
+
+    <hr class="initial-divider" style="margin-top: 40px">
+    <h3>{{ translate.getValue('delivery.info') }}:</h3>
+    <table class="table-fullwidth">
+        <tr class="text-muted">
+            <td>{{ translate.getValue('name') }}:</td>
+            <td class="text-right">{{ model.address.fullName }}</td>
+        </tr>
+        <tr class="text-muted">
+            <td>E-Mail:</td>
+            <td class="text-right">{{ model.address.email }}</td>
+        </tr>
+        <tr class="text-muted">
+            <td>{{ translate.getValue('phone.number') }}</td>
+            <td class="text-right">{{ model.address.phoneNumber }}</td>
+        </tr>
+        <tr class="text-muted">
+            <td>{{ translate.getValue('country') }}:</td>
+            <td class="text-right">{{ model.address.country }}</td>
+        </tr>
+        <tr class="text-muted">
+            <td>{{ translate.getValue('city') }}:</td>
+            <td class="text-right">{{ model.address.city }}</td>
+        </tr>
+        <tr class="text-muted">
+            <td>{{ translate.getValue('address') }}:</td>
+            <td class="text-right">{{ model.address.addressLine }}</td>
+        </tr>
+        {% if util.isNotNull(model.address.notes) %}
+            <tr class="text-muted">
+                <td>{{ translate.getValue('notes') }}:</td>
+                <td class="text-right">{{ model.address.notes }}</td>
+            </tr>
+        {% endif %}
+    </table>
+
+    <hr class="initial-divider" style="margin-top: 40px">
+
+</div>
