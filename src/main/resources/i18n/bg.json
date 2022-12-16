@@ -38,6 +38,7 @@
   "order.in.progress": "Поръчката се обработва",
   "order.sent": "Поръчката е изпратена",
   "order.completed": "Поръчката е завършена",
+  "order.cancelled": "Поръчката е отказана",
   "new.question": "Ново запитване",
   "new.order": "Нова поръчка"
 }

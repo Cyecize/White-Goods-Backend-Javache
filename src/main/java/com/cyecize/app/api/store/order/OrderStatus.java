@@ -8,7 +8,8 @@ public enum OrderStatus {
     WAITING("order.accepted"),
     IN_PROGRESS("order.in.progress"),
     SENT("order.sent"),
-    COMPLETED("order.completed");
+    COMPLETED("order.completed"),
+    CANCELLED("order.cancelled");
 
     @Getter
     private final String message;
