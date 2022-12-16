@@ -18,6 +18,9 @@ import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.MathUtil;
+import com.cyecize.app.util.Page;
+import com.cyecize.app.util.Specification;
+import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
@@ -52,6 +55,8 @@ public class OrderServiceImpl implements OrderService {
     private final UserService userService;
 
     private final MailService mailService;
+
+    private final SpecificationExecutor specificationExecutor;
 
     @Override
     @Transactional
@@ -142,6 +147,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public OrderDto getOrder(Long orderId) {
         final Order order = this.orderRepository.findById(orderId);
         if (order == null) {
@@ -183,5 +189,20 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return da.sum();
+    }
+
+    @Override
+    @Transactional
+    public Page<Order> searchOrders(OrderQuery query, Long userId) {
+        final Specification<Order> specification = OrderSpecifications.userIdEquals(userId)
+                .and(OrderSpecifications.sort(query.getSort()))
+                .and(OrderSpecifications.statusContains(query.getStatuses()));
+
+        return this.specificationExecutor.findAll(
+                specification,
+                query.getPage(),
+                Order.class,
+                null
+        );
     }
 }
