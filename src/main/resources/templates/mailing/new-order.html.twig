@@ -16,6 +16,14 @@
         <p>{{ translate.getValue('date') }}: {{ util.formatDate(model.date) }}</p>
     </div>
     {% embed './partials/order-details.twig' %} {% endembed %}
+
+    <div style="margin-top: 20px; text-align: right">
+        <a href="{{ util.getEditOrderAddress(request, model.id) }}" class="btn">
+            {{ translate.getValue('manage.order') }}
+        </a>
+    </div>
+
+    TODO: Embed this email is sent from....
 </div>
 
 </body>

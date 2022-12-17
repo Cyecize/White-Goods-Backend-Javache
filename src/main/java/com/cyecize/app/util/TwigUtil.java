@@ -18,6 +18,9 @@ public class TwigUtil {
     @Configuration("website.scheme")
     private final String scheme;
 
+    @Configuration("website.order.edit.url")
+    private final String editOrderUrl;
+
     public String formatDate(LocalDateTime date) {
         return date.format(General.DEFAULT_DATE_TIME_FORMAT);
     }
@@ -40,6 +43,15 @@ public class TwigUtil {
                 this.scheme,
                 request.getHost(),
                 Endpoints.PROD_FE.replace("{id}", productId + "")
+        );
+    }
+
+    public String getEditOrderAddress(HttpSoletRequest request, Long orderId) {
+        return String.format(
+                "%s://%s%s",
+                this.scheme,
+                request.getHost(),
+                this.editOrderUrl.replace("{id}", orderId + "")
         );
     }
 

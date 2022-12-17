@@ -40,5 +40,6 @@
   "order.completed": "Поръчката е завършена",
   "order.cancelled": "Поръчката е отказана",
   "new.question": "Ново запитване",
-  "new.order": "Нова поръчка"
+  "new.order": "Нова поръчка",
+  "manage.order": "Управление на поръчката"
 }
