@@ -12,5 +12,7 @@ public interface OrderService {
 
     OrderDto getOrder(Long orderId);
 
+    OrderDto getOrder(Long orderId, Long userId);
+
     Page<Order> searchOrders(OrderQuery query, Long userId);
 }

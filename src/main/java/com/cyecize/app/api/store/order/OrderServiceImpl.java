@@ -150,6 +150,17 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public OrderDto getOrder(Long orderId) {
         final Order order = this.orderRepository.findById(orderId);
+        return this.getOrder(order);
+    }
+
+    @Override
+    @Transactional
+    public OrderDto getOrder(Long orderId, Long userId) {
+        final Order order = this.orderRepository.findByIdAndUserId(orderId, userId);
+        return this.getOrder(order);
+    }
+
+    public OrderDto getOrder(Order order) {
         if (order == null) {
             return null;
         }
