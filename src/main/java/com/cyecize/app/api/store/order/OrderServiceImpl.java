@@ -190,7 +190,7 @@ public class OrderServiceImpl implements OrderService {
 
         da.add(this.calculateSubtotal(order));
 
-        return da.sum();
+        return MathUtil.round(da.sum());
     }
 
     private Double calculateSubtotal(Order order) {

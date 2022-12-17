@@ -72,7 +72,7 @@ public class MathUtil {
         return round(n1 - n2);
     }
 
-    private static double round(double val) {
+    public static double round(double val) {
         final double rounded = Math.round(val * 1000) / 1000.0;
         return (int) (rounded * 100) / 100d;
     }
