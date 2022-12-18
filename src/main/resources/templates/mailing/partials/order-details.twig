@@ -2,7 +2,7 @@
     <h3>{{ translate.getValue('status') }}:</h3>
     <p>{{ translate.getValue(model.status.getMessage()) }}</p>
     <hr class="initial-divider">
-    <h3>{{ translate.getValue('shopping.cart') }}:</h3>
+    <h3>{{ translate.getValue('order.number') }}: {{ model.id }}</h3>
     <table class="products-table table-fullwidth">
         {% for item in model.items %}
             <tr>
