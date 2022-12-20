@@ -1,5 +1,6 @@
 package com.cyecize.app.api.contacts;
 
+import com.cyecize.ioc.annotations.Nullable;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,10 @@ public class ContactsServiceImpl implements ContactsService {
     @Configuration("contacts.youtube")
     private final String youtube;
 
+    @Nullable
+    @Configuration("contacts.delivery.companies")
+    private final String deliveryCompanies;
+
     @Override
     public ContactsDto getContacts() {
         return new ContactsDto(
@@ -30,7 +35,8 @@ public class ContactsServiceImpl implements ContactsService {
                 this.phoneNumber,
                 this.whatsapp,
                 this.facebook,
-                this.youtube
+                this.youtube,
+                this.deliveryCompanies
         );
     }
 }

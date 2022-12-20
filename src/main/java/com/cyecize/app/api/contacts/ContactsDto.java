@@ -9,4 +9,5 @@ public class ContactsDto {
     private final String whatsapp;
     private final String facebook;
     private final String youtube;
+    private final String deliveryCompanies;
 }

@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 @RequiredArgsConstructor
 public class OpenGraphServiceImpl implements OpenGraphService {
 
-    //TODO: Fix nullable not working for configurations
     @Nullable
     @Configuration("facebook.app.id")
     private final String facebookAppId;
