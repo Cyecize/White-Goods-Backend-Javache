@@ -1,14 +1,15 @@
 package com.cyecize.app.api.product.productspec;
 
+import static com.cyecize.app.api.product.productspec.ProductSpecificationSpecifications.assignedToProduct;
+import static com.cyecize.app.api.product.productspec.ProductSpecificationSpecifications.specificationTypeIdIn;
+
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
-import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +21,11 @@ public class ProductSpecificationServiceImpl implements ProductSpecificationServ
 
     @Override
     public List<ProductSpecification> findAllSpecifications(ProductSpecificationQuery query) {
-        final Specification<ProductSpecification> specification =
-                ProductSpecificationSpecifications.specificationTypeIdIn(query.getSpecificationTypeIds());
+        var specification = specificationTypeIdIn(query.getSpecificationTypeIds());
+
+        if (query.getOnlyAssignedValues()) {
+            specification = assignedToProduct();
+        }
 
         return this.specificationExecutor.findAll(specification, ProductSpecification.class, null);
     }
