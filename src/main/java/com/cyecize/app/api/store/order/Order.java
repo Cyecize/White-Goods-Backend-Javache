@@ -43,6 +43,10 @@ public class Order {
 
     private LocalDateTime date;
 
+    private LocalDateTime dateCompleted;
+
+    private String trackingNumber;
+
     private Long addressId;
 
     @ManyToOne(fetch = FetchType.LAZY)

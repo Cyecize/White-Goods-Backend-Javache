@@ -20,6 +20,7 @@ public class Endpoints {
     public static final String ORDERS_ANON                  = "/orders-anon";
     public static final String ORDERS                       = "/orders";
     public static final String ORDER                        = "/orders/{id}";
+    public static final String ORDERS_STATUS                = "/orders/status";
     public static final String ORDERS_SEARCH                = "/orders/search";
 
     public static final String HOME_CAROUSEL                = "/home-carousel";

@@ -6,6 +6,7 @@ import com.cyecize.app.api.store.order.OrderQuery;
 import com.cyecize.app.api.store.order.OrderService;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.OrderDtoSimple;
+import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.user.RoleType;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.Endpoints;
@@ -21,6 +22,7 @@ import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
+import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +66,13 @@ public class OrderController {
         }
 
         return orderDto;
+    }
+
+    @PutMapping(Endpoints.ORDERS_STATUS)
+    @PreAuthorize(role = General.ROLE_ADMIN)
+    public OrderDto updateStatus(@Valid UpdateOrderStatusDto dto) {
+        this.orderService.changeOrderStatus(dto);
+        return this.orderService.getOrder(dto.getOrder().getId());
     }
 
     @PostMapping(Endpoints.ORDERS_SEARCH)

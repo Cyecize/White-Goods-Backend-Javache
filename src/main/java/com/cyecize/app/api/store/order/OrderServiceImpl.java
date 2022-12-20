@@ -12,6 +12,7 @@ import com.cyecize.app.api.store.delivery.DeliveryAddress;
 import com.cyecize.app.api.store.delivery.DeliveryAddressService;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.OrderItemDto;
+import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.constants.ValidationMessages;
@@ -23,6 +24,9 @@ import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +34,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -144,6 +146,31 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return order;
+    }
+
+    @Override
+    @Transactional
+    public void changeOrderStatus(UpdateOrderStatusDto dto) {
+        final Order order = this.orderRepository.findById(dto.getOrder().getId());
+
+        dto.getOrderStatus().getStatusApplier().applyOrderStatus(
+                order,
+                dto,
+                this
+        );
+
+        this.orderRepository.merge(order);
+        //TODO: send email to admins and user
+    }
+
+    @Override
+    @Transactional
+    public Order findByIdNoFetch(Long id) {
+        return this.specificationExecutor.findOne(
+                OrderSpecifications.idEquals(id),
+                Order.class,
+                null
+        );
     }
 
     @Override

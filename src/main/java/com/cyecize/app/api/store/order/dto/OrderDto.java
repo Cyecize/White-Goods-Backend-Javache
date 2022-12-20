@@ -29,6 +29,11 @@ public class OrderDto {
     @DateTimeConverter
     private LocalDateTime date;
 
+    @DateTimeConverter
+    private LocalDateTime dateCompleted;
+
+    private String trackingNumber;
+
     private Long addressId;
 
     private DeliveryAddressDto address;

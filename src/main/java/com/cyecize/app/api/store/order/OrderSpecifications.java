@@ -30,6 +30,10 @@ public class OrderSpecifications {
         );
     }
 
+    public static Specification<Order> idEquals(Long id) {
+        return (root, query, cb) -> cb.equal(root.get(Order_.id), id);
+    }
+
     public static Specification<Order> statusContains(List<OrderStatus> statuses) {
         if (statuses == null || statuses.isEmpty()) {
             return Specification.where(null);

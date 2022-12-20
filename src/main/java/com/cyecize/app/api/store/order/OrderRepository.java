@@ -22,6 +22,12 @@ public class OrderRepository {
     }
 
     @Transactional
+    public Order merge(Order order) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.merge(order);
+    }
+
+    @Transactional
     public Order findById(Long orderId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         return entityManager
