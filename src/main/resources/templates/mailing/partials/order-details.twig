@@ -1,6 +1,12 @@
 <div>
-    <h3>{{ translate.getValue('status') }}:</h3>
-    <p>{{ translate.getValue(model.status.getMessage()) }}</p>
+    <h3>
+        {{ translate.getValue('status') }}:
+        <small>{{ translate.getValue(model.status.getMessage()) }}</small>
+    </h3>
+    <p>{{ translate.getValue('date') }}: {{ util.formatDate(model.date) }}</p>
+    {% if util.isNotNull(model.dateCompleted) %}
+        <p>{{ translate.getValue('completed.on') }}: {{ util.formatDate(model.dateCompleted) }}</p>
+    {% endif %}
     <hr class="initial-divider">
     <h3>{{ translate.getValue('order.number') }}: {{ model.id }}</h3>
     <table class="products-table table-fullwidth">
@@ -86,6 +92,12 @@
             <tr class="text-muted">
                 <td>{{ translate.getValue('notes') }}:</td>
                 <td class="text-left">{{ model.address.notes }}</td>
+            </tr>
+        {% endif %}
+        {% if util.isNotNull(model.trackingNumber) %}
+            <tr class="text-muted">
+                <td>{{ translate.getValue('tracking.number') }}:</td>
+                <td class="text-left">{{ model.trackingNumber }}</td>
             </tr>
         {% endif %}
     </table>

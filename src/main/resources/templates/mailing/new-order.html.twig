@@ -13,7 +13,6 @@
         {% if util.isNotNull(model.userId) %}
             <p>{{ translate.getValue('registered.user') }}</p>
         {% endif %}
-        <p>{{ translate.getValue('date') }}: {{ util.formatDate(model.date) }}</p>
     </div>
     {% embed './partials/order-details.twig' %} {% endembed %}
 
