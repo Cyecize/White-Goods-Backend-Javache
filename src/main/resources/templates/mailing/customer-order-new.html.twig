@@ -1,0 +1,26 @@
+<html>
+
+<head>
+    {% embed './general.styles.twig' %} {% endembed %}
+    {% embed './partials/order-details.styles.twig' %} {% endembed %}
+</head>
+
+<body class="page-body">
+<div class="container">
+    {% block heading %}
+        <div class="text-center">
+            <h2>{{ translate.getValue('new.order') }} - {{ util.getWebsiteName() }}</h2>
+        </div>
+        <div>
+            <p>{{ translate.getValue('hello') }}, <strong>{{ model.address.fullName }}!</strong></p>
+            <p>{{ translate.getValue('your.order.registered') }}</p>
+        </div>
+    {% endblock %}
+
+    {% embed './partials/order-details.twig' %} {% endembed %}
+
+    {% embed './partials/footer.twig' %} {% endembed %}
+</div>
+
+</body>
+</html>

@@ -21,6 +21,13 @@ public class TwigUtil {
     @Configuration("website.order.edit.url")
     private final String editOrderUrl;
 
+    @Configuration("website.name")
+    private final String websiteName;
+
+    public String getWebsiteName() {
+        return this.websiteName;
+    }
+
     public String formatDate(LocalDateTime date) {
         return date.format(General.DEFAULT_DATE_TIME_FORMAT);
     }

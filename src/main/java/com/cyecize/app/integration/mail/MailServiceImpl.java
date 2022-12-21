@@ -53,8 +53,14 @@ public class MailServiceImpl implements MailService {
     @Configuration("website.name")
     private final String websiteName;
 
+    @Configuration("mail.enabled")
+    private final boolean mailsEnabled;
+
     @Override
     public <T> void sendEmail(EmailTemplate<T> template, T viewModel, List<String> receivers) {
+        if (!this.mailsEnabled) {
+            return;
+        }
         final Model model = new Model();
         model.addAttribute("model", viewModel);
 

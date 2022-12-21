@@ -1,0 +1,11 @@
+{% extends './customer-order-new.html.twig' %}
+
+{% block heading %}
+    <div class="text-center">
+        <h2>{{ translate.getValue('order.status.update') }}</h2>
+    </div>
+    <div>
+        <p>{{ translate.getValue('hello') }}, <strong>{{ model.address.fullName }}!</strong></p>
+        <p>{{ translate.getValue('your.order.just.got.updated') }}</p>
+    </div>
+{% endblock %}

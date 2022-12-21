@@ -24,9 +24,6 @@ import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +31,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -100,6 +99,11 @@ public class OrderServiceImpl implements OrderService {
         final OrderDto orderDto = this.getOrder(order.getId());
 
         this.mailService.sendEmail(EmailTemplate.NEW_ORDER_ADMINS, orderDto, emailsOfAdmins);
+        this.mailService.sendEmail(
+                EmailTemplate.NEW_ORDER_CUSTOMER,
+                orderDto,
+                List.of(order.getAddress().getEmail())
+        );
     }
 
     private Order createOrder(List<ShoppingCartItemDetailedDto> items,
@@ -160,7 +164,11 @@ public class OrderServiceImpl implements OrderService {
         );
 
         this.orderRepository.merge(order);
-        //TODO: send email to admins and user
+        this.mailService.sendEmail(
+                EmailTemplate.ORDER_STATUS_UPDATE,
+                this.getOrder(order),
+                List.of(order.getAddress().getEmail())
+        );
     }
 
     @Override
