@@ -30,7 +30,7 @@ public class OpenGraphServiceImpl implements OpenGraphService {
     public Map<String, String> getTags(HttpSoletRequest request) {
         final Map<String, String> result = new HashMap<>();
         result.put("og:type", "website");
-        result.put("url", request.getRequestURI());
+        result.put("og:url", request.getRequestURI());
         result.put("og:title", "Healthy Hair Project");
         result.put("og:image", String.format(
                 "%s://%s%s",
@@ -66,8 +66,8 @@ public class OpenGraphServiceImpl implements OpenGraphService {
                 request.getHost(),
                 product.getImageUrl()
         ));
-        result.put("og:image:width", "400");
-        result.put("og:image:height", "400");
+//        result.put("og:image:width", "400");
+//        result.put("og:image:height", "400");
 
         final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
