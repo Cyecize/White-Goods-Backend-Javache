@@ -28,4 +28,6 @@ public class General {
     public static final DateTimeFormatter DEFAULT_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern(
             "dd MMM, yyyy - HH:mm"
     );
+
+    public static final int MIN_PASS_LENGTH = 6;
 }

@@ -137,4 +137,18 @@ public class SpecificationExecutor {
 
         return typedQuery.getResultList();
     }
+
+    @Transactional
+    public <T> boolean exists(Specification<T> specification, Class<T> from) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+
+        final CriteriaQuery<Long> query = criteriaBuilder.createQuery(Long.class);
+        final Root<T> root = query.from(from);
+        query.select(criteriaBuilder.count(root));
+
+        query.where(specification.toPredicate(root, query, criteriaBuilder));
+
+        return entityManager.createQuery(query).getResultStream().findFirst().orElse(0L) > 0;
+    }
 }

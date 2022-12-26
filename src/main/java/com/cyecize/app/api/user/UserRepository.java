@@ -22,4 +22,11 @@ public class UserRepository {
                 .setParameter(1, role)
                 .getResultList();
     }
+
+    @Transactional
+    public User persist(User user) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.persist(user);
+        return user;
+    }
 }

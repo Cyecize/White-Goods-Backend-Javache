@@ -7,4 +7,8 @@ public interface UserService {
     List<String> getEmailsOfAdmins();
 
     User findByUsernameOrEmail(String value);
+
+    boolean isUsernameOrEmailTaken(String value);
+
+    User register(UserRegisterDto dto);
 }

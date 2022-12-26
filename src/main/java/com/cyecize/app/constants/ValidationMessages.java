@@ -12,4 +12,6 @@ public class ValidationMessages {
     public static final String INVALID_SHOPPING_CART_SESSION = "invalidShoppingCartSessionId";
     public static final String SHOPPING_CART_EMPTY = "shoppingCartIsEmpty";
     public static final String ORDER_INVALID_CONFIRM_PRICE = "invalidConfirmPrice";
+    public static final String PASSWORDS_DO_NOT_MATCH = "passwords.do.not.match";
+    public static final String PASSWORD_TOO_SHORT = "passwordIsTooShort";
 }
