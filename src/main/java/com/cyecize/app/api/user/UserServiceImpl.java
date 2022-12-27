@@ -4,10 +4,14 @@ import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
+import com.cyecize.summer.common.annotations.PostConstruct;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +23,21 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final SpecificationExecutor specificationExecutor;
+
+    private final RoleRepository roleRepository;
+
+    private Map<RoleType, Role> allRoles;
+
+    @PostConstruct
+    public void init() {
+        this.allRoles = new HashMap<>();
+        final List<Role> roles = this.roleRepository.findAll();
+        for (Role role : roles) {
+            allRoles.put(role.getRole(), role);
+        }
+
+        this.allRoles = Collections.unmodifiableMap(this.allRoles);
+    }
 
     @Override
     public List<String> getEmailsOfAdmins() {
@@ -58,6 +77,7 @@ public class UserServiceImpl implements UserService {
         ));
 
         user.setRoles(new ArrayList<>());
+        user.getRoles().add(this.allRoles.get(RoleType.ROLE_USER));
         return this.userRepository.persist(user);
     }
 
