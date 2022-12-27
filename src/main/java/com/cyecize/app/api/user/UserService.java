@@ -11,4 +11,6 @@ public interface UserService {
     boolean isUsernameOrEmailTaken(String value);
 
     User register(UserRegisterDto dto);
+
+    void changePassword(ChangePasswordDto dto);
 }

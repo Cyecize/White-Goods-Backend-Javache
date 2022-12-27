@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<String> getEmailsOfAdmins() {
-        return this.userRepository.selectEmailWhereRoleEquals(RoleType.ROLE_ADMIN.name());
+        return this.userRepository.selectEmailWhereRoleEquals(RoleType.ROLE_ADMIN);
     }
 
     @Override
@@ -95,5 +95,13 @@ public class UserServiceImpl implements UserService {
         } while (this.isUsernameOrEmailTaken(generatedName));
 
         return generatedName;
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(ChangePasswordDto dto) {
+        final User user = this.userRepository.findById(dto.getUser().getId());
+        user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
+        this.userRepository.merge(user);
     }
 }
