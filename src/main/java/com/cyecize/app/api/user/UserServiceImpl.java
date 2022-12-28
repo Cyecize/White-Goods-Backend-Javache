@@ -1,6 +1,8 @@
 package com.cyecize.app.api.user;
 
 import com.cyecize.app.constants.EntityGraphs;
+import com.cyecize.app.constants.ValidationMessages;
+import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
@@ -103,5 +105,18 @@ public class UserServiceImpl implements UserService {
         final User user = this.userRepository.findById(dto.getUser().getId());
         user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
         this.userRepository.merge(user);
+    }
+
+    @Override
+    @Transactional
+    public void deleteUser(User user) {
+        final boolean canDeleteAccount = user.getRoles().stream()
+                .noneMatch(role -> role.getRole().isForbidUserDelete());
+
+        if (!canDeleteAccount) {
+            throw new ApiException(ValidationMessages.CANNOT_DELETE_ADMIN);
+        }
+
+        this.userRepository.deleteById(user.getId());
     }
 }

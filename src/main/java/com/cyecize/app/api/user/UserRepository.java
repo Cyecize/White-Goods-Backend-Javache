@@ -46,4 +46,12 @@ public class UserRepository {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         return entityManager.merge(user);
     }
+
+    @Transactional
+    public boolean deleteById(Long id) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery("delete from User where id = :id")
+                .setParameter("id", id)
+                .executeUpdate() > 0;
+    }
 }

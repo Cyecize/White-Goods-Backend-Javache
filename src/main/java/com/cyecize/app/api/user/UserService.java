@@ -1,5 +1,6 @@
 package com.cyecize.app.api.user;
 
+import com.cyecize.summer.areas.security.interfaces.UserDetails;
 import java.util.List;
 
 public interface UserService {
@@ -13,4 +14,6 @@ public interface UserService {
     User register(UserRegisterDto dto);
 
     void changePassword(ChangePasswordDto dto);
+
+    void deleteUser(User user);
 }
