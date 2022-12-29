@@ -35,5 +35,5 @@ public class UserAddress {
 
     private String notes;
 
-    private Boolean preferredAddress;
+    private boolean preferredAddress;
 }

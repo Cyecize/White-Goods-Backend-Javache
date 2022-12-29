@@ -44,4 +44,6 @@ public class Endpoints {
     public static final String REGISTER                     = "/register";
     public static final String CHANGE_PASSWORD              = "/change-password";
     public static final String DELETE_ACCOUNT               = "/delete-account";
+
+    public static final String USER_ADDRESSES               = "/user-addresses";
 }

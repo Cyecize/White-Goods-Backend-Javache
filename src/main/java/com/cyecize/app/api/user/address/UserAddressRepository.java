@@ -24,4 +24,19 @@ public class UserAddressRepository {
                 .getResultStream().findFirst().orElse(null);
     }
 
+    @Transactional
+    public UserAddress persist(UserAddress userAddress) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.persist(userAddress);
+        return userAddress;
+    }
+
+    @Transactional
+    public void setPreferredFalseWhereUserIdEquals(Long userId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery(
+                        "update UserAddress set preferredAddress = false where userId = :uid"
+                ).setParameter("uid", userId)
+                .executeUpdate();
+    }
 }

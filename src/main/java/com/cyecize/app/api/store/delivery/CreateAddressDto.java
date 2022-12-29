@@ -37,4 +37,6 @@ public class CreateAddressDto {
 
     @MaxLength(length = General.MAX_VARCHAR, message = ValidationMessages.INVALID_VALUE)
     private String notes;
+
+    private Boolean makePreferred;
 }
