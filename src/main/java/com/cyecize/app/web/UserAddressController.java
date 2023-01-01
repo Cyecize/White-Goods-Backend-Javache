@@ -12,8 +12,10 @@ import com.cyecize.summer.areas.security.enums.AuthorizationType;
 import com.cyecize.summer.areas.security.models.Principal;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
+import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -34,5 +36,10 @@ public class UserAddressController {
                 dto
         );
         return this.modelMapper.map(address, UserAddressDto.class);
+    }
+
+    @GetMapping(Endpoints.USER_ADDRESSES)
+    public List<UserAddress> getMyAddresses(Principal principal) {
+        return this.userAddressService.findByUserId(((User) principal.getUser()).getId());
     }
 }

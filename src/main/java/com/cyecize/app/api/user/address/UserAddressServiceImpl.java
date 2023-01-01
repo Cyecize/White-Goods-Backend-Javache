@@ -4,6 +4,7 @@ import com.cyecize.app.api.store.delivery.CreateAddressDto;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.BooleanUtils;
 import org.modelmapper.ModelMapper;
@@ -31,5 +32,10 @@ public class UserAddressServiceImpl implements UserAddressService {
     @Override
     public UserAddress findByUserAndId(User user, Long addressId) {
         return this.userAddressRepository.findByUserIdAndAddressId(user.getId(), addressId);
+    }
+
+    @Override
+    public List<UserAddress> findByUserId(Long userId) {
+        return this.userAddressRepository.findByUserId(userId);
     }
 }
