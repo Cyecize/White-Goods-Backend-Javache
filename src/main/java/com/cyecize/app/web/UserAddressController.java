@@ -16,6 +16,7 @@ import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -39,7 +40,10 @@ public class UserAddressController {
     }
 
     @GetMapping(Endpoints.USER_ADDRESSES)
-    public List<UserAddress> getMyAddresses(Principal principal) {
-        return this.userAddressService.findByUserId(((User) principal.getUser()).getId());
+    public List<UserAddressDto> getMyAddresses(Principal principal) {
+        return this.userAddressService.findByUserId(((User) principal.getUser()).getId())
+                .stream()
+                .map(addr -> this.modelMapper.map(addr, UserAddressDto.class))
+                .collect(Collectors.toList());
     }
 }
