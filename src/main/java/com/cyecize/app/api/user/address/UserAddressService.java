@@ -11,4 +11,6 @@ public interface UserAddressService {
     UserAddress findByUserAndId(User user, Long id);
 
     List<UserAddress> findByUserId(Long userId);
+
+    UserAddress update(UserAddress address, CreateAddressDto dto);
 }

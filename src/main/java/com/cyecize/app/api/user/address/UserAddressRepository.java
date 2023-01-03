@@ -33,6 +33,12 @@ public class UserAddressRepository {
     }
 
     @Transactional
+    public UserAddress merge(UserAddress address) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.merge(address);
+    }
+
+    @Transactional
     public void setPreferredFalseWhereUserIdEquals(Long userId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.createQuery(

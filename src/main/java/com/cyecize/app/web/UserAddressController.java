@@ -8,6 +8,7 @@ import com.cyecize.app.api.user.address.UserAddressService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.NotFoundApiException;
+import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.security.enums.AuthorizationType;
 import com.cyecize.summer.areas.security.models.Principal;
@@ -16,6 +17,7 @@ import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
+import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +53,22 @@ public class UserAddressController {
 
     @GetMapping(Endpoints.USER_ADDRESS)
     public UserAddressDto getAddress(@PathVariable("id") Long addressId, Principal principal) {
+        return this.modelMapper.map(this.fetchAddress(addressId, principal), UserAddressDto.class);
+    }
+
+    @Transactional
+    @PutMapping(Endpoints.USER_ADDRESS)
+    public UserAddressDto editAddress(
+            @PathVariable("id") Long addressId,
+            Principal principal,
+            @Valid CreateAddressDto dto) {
+        final UserAddress oldAddress = this.fetchAddress(addressId, principal);
+        final UserAddress address = this.userAddressService.update(oldAddress, dto);
+
+        return this.modelMapper.map(address, UserAddressDto.class);
+    }
+
+    private UserAddress fetchAddress(Long addressId, Principal principal) {
         final UserAddress address = this.userAddressService.findByUserAndId(
                 (User) principal.getUser(),
                 addressId
@@ -60,6 +78,6 @@ public class UserAddressController {
             throw new NotFoundApiException("Invalid address id!");
         }
 
-        return this.modelMapper.map(address, UserAddressDto.class);
+        return address;
     }
 }

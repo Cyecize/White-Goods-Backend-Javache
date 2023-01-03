@@ -38,4 +38,25 @@ public class UserAddressServiceImpl implements UserAddressService {
     public List<UserAddress> findByUserId(Long userId) {
         return this.userAddressRepository.findByUserId(userId);
     }
+
+    @Override
+    @Transactional
+    public UserAddress update(UserAddress address, CreateAddressDto dto) {
+        //TODO: model merger
+
+        address.setFullName(dto.getFullName());
+        address.setEmail(dto.getEmail());
+        address.setPhoneNumber(dto.getPhoneNumber());
+        address.setCountry(dto.getCountry());
+        address.setCity(dto.getCity());
+        address.setAddressLine(dto.getAddressLine());
+        address.setNotes(dto.getNotes());
+
+        if (BooleanUtils.isTrue(dto.getMakePreferred()) && !address.isPreferredAddress()) {
+            this.userAddressRepository.setPreferredFalseWhereUserIdEquals(address.getUserId());
+            address.setPreferredAddress(true);
+        }
+
+        return this.userAddressRepository.merge(address);
+    }
 }
