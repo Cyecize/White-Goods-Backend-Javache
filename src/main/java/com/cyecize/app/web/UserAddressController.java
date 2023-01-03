@@ -7,12 +7,14 @@ import com.cyecize.app.api.user.address.UserAddressDto;
 import com.cyecize.app.api.user.address.UserAddressService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
+import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.security.enums.AuthorizationType;
 import com.cyecize.summer.areas.security.models.Principal;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.GetMapping;
+import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import java.util.List;
@@ -45,5 +47,19 @@ public class UserAddressController {
                 .stream()
                 .map(addr -> this.modelMapper.map(addr, UserAddressDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping(Endpoints.USER_ADDRESS)
+    public UserAddressDto getAddress(@PathVariable("id") Long addressId, Principal principal) {
+        final UserAddress address = this.userAddressService.findByUserAndId(
+                (User) principal.getUser(),
+                addressId
+        );
+
+        if (address == null) {
+            throw new NotFoundApiException("Invalid address id!");
+        }
+
+        return this.modelMapper.map(address, UserAddressDto.class);
     }
 }

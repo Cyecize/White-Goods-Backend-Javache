@@ -46,4 +46,5 @@ public class Endpoints {
     public static final String DELETE_ACCOUNT               = "/delete-account";
 
     public static final String USER_ADDRESSES               = "/user-addresses";
+    public static final String USER_ADDRESS                 = "/user-addresses/{id}";
 }
