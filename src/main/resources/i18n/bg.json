@@ -51,5 +51,9 @@
   "your.order.registered": "Вашата поръчка е регистрирана. Ще започнем нейното обработване възможно най-скоро.",
   "your.order": "Вашата поръчка",
   "order.status.update": "Промяна в статуса на поръчката ви",
-  "your.order.just.got.updated": "Поръчката ви току що се промени."
+  "your.order.just.got.updated": "Поръчката ви току що се промени.",
+  "forgotten.password": "Забравена парола",
+  "password.recovery.key.received": "Получихме заявка за възтановяване на вашата парола.",
+  "ignore.recovery.key.if.not.you": "Ако не сте изпращали такава заявка, моля извинете ни за неудобството!",
+  "change.password": "Смяна на парола"
 }

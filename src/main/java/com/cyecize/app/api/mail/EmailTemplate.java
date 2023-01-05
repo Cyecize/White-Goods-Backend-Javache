@@ -1,5 +1,7 @@
 package com.cyecize.app.api.mail;
 
+import com.cyecize.app.api.auth.recoverykey.PasswordRecoveryEmailDto;
+import com.cyecize.app.api.auth.recoverykey.RecoveryKeyDto;
 import com.cyecize.app.api.question.QuestionDto;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import lombok.Getter;
@@ -31,6 +33,12 @@ public final class EmailTemplate<T> {
             "mailing/customer-order-status-update.html.twig",
             "your.order",
             OrderDto.class
+    );
+
+    public static final EmailTemplate<PasswordRecoveryEmailDto> PASSWORD_RECOVERY_KEY = new EmailTemplate<>(
+            "mailing/password-recovery-key.html.twig",
+            "forgotten.password",
+            PasswordRecoveryEmailDto.class
     );
 
     private final String templateName;

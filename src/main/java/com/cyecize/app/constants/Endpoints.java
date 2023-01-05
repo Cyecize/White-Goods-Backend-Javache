@@ -38,6 +38,7 @@ public class Endpoints {
 
     public static final String LOGIN                        = "/login";
     public static final String LOGOUT                       = "/logout";
+    public static final String RECOVERY_EMAIL               = "/recovery-email";
 
     public static final String USER_DETAILS                 = "/user-details";
 
