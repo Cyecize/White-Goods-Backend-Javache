@@ -13,4 +13,6 @@ public interface UserAddressService {
     List<UserAddress> findByUserId(Long userId);
 
     UserAddress update(UserAddress address, CreateAddressDto dto);
+
+    void delete(UserAddress address);
 }

@@ -59,4 +59,10 @@ public class UserAddressServiceImpl implements UserAddressService {
 
         return this.userAddressRepository.merge(address);
     }
+
+    @Override
+    @Transactional
+    public void delete(UserAddress address) {
+        this.userAddressRepository.delete(address);
+    }
 }

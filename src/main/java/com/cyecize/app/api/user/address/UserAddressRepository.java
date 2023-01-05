@@ -39,6 +39,12 @@ public class UserAddressRepository {
     }
 
     @Transactional
+    public void delete(UserAddress address) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.remove(address);
+    }
+
+    @Transactional
     public void setPreferredFalseWhereUserIdEquals(Long userId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.createQuery(
