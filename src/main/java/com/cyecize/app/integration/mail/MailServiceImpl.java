@@ -71,7 +71,7 @@ public class MailServiceImpl implements MailService {
             );
 
             final Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(this.mailFrom));
+            message.setFrom(new InternetAddress(this.mailFrom, this.websiteName));
             message.setRecipients(
                     Message.RecipientType.TO,
                     InternetAddress.parse(commaSeparatedMails)
