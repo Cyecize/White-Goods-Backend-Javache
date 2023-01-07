@@ -21,6 +21,9 @@ public class TwigUtil {
     @Configuration("website.order.edit.url")
     private final String editOrderUrl;
 
+    @Configuration("website.order.details.url")
+    private final String orderDetailsUrl;
+
     @Configuration("website.change.password.url")
     private final String changePasswordUrl;
 
@@ -62,6 +65,15 @@ public class TwigUtil {
                 this.scheme,
                 request.getHost(),
                 this.editOrderUrl.replace("{id}", orderId + "")
+        );
+    }
+
+    public String getOrderDetailsAddress(HttpSoletRequest request, Long orderId) {
+        return String.format(
+                "%s://%s%s",
+                this.scheme,
+                request.getHost(),
+                this.orderDetailsUrl.replace("{id}", orderId + "")
         );
     }
 

@@ -19,6 +19,12 @@
 
     {% embed './partials/order-details.twig' %} {% endembed %}
 
+    <div style="margin-top: 20px; text-align: right">
+        <a href="{{ util.getOrderDetailsAddress(request, model.id) }}" class="btn">
+            {{ translate.getValue('view.on.website') }}
+        </a>
+    </div>
+
     {% embed './partials/footer.twig' %} {% endembed %}
 </div>
 
