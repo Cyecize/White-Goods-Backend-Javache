@@ -16,4 +16,5 @@ public class ValidationMessages {
     public static final String PASSWORD_TOO_SHORT = "passwordIsTooShort";
     public static final String CANNOT_DELETE_ADMIN = "cannotDeleteAdmin";
     public static final String INVALID_RECOVERY_KEY = "invalidRecoveryKey";
+    public static final String ADMIN_REQUIRED = "adminRequired";
 }

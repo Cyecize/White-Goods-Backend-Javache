@@ -1,5 +1,6 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.util.BetweenQuery;
 import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
@@ -40,5 +41,9 @@ public class OrderSpecifications {
         }
 
         return (root, query, cb) -> root.get(Order_.status).in(statuses);
+    }
+
+    public static Specification<Order> betweenId(BetweenQuery<Long> betweenQuery) {
+        return QuerySpecifications.between(Order_.id, betweenQuery);
     }
 }

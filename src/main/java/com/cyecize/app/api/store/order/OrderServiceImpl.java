@@ -240,9 +240,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Page<Order> searchOrders(OrderQuery query, Long userId) {
-        final Specification<Order> specification = OrderSpecifications.userIdEquals(userId)
-                .and(OrderSpecifications.sort(query.getSort()))
+        Specification<Order> specification = OrderSpecifications.sort(query.getSort())
                 .and(OrderSpecifications.statusContains(query.getStatuses()));
+
+        if (query.isShowOnlyMine()) {
+            specification = specification.and(OrderSpecifications.userIdEquals(userId));
+        }
+
+        if (query.getOrderId() != null) {
+            specification = specification.and(OrderSpecifications.betweenId(query.getOrderId()));
+        }
 
         return this.specificationExecutor.findAll(
                 specification,

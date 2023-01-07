@@ -76,9 +76,9 @@ public class OrderController {
     }
 
     @PostMapping(Endpoints.ORDERS_SEARCH)
-    @PreAuthorize(role = General.ROLE_ADMIN)
-    public Page<OrderDtoSimple> searchOrders(@Valid OrderQuery query) {
-        return this.orderService.searchOrders(query, null)
+    @PreAuthorize(AuthorizationType.LOGGED_IN)
+    public Page<OrderDtoSimple> searchOrders(@Valid OrderQuery query, Principal principal) {
+        return this.orderService.searchOrders(query, ((User) principal.getUser()).getId())
                 .map(order -> this.modelMapper.map(order, OrderDtoSimple.class));
     }
 
