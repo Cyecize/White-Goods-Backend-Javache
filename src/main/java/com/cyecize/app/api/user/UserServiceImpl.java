@@ -1,5 +1,7 @@
 package com.cyecize.app.api.user;
 
+import com.cyecize.app.api.auth.ResetPasswordDto;
+import com.cyecize.app.api.auth.recoverykey.RecoveryKeyService;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
@@ -27,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private final SpecificationExecutor specificationExecutor;
 
     private final RoleRepository roleRepository;
+
+    private final RecoveryKeyService recoveryKeyService;
 
     private Map<RoleType, Role> allRoles;
 
@@ -105,6 +109,15 @@ public class UserServiceImpl implements UserService {
         final User user = this.userRepository.findById(dto.getUser().getId());
         user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
         this.userRepository.merge(user);
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(ResetPasswordDto dto) {
+        final User user = this.userRepository.findById(dto.getRecoveryKey().getUserId());
+        user.setPassword(BCrypt.hashpw(dto.getNewPassword(), BCrypt.gensalt()));
+        this.userRepository.merge(user);
+        this.recoveryKeyService.destroyKeys(user.getId());
     }
 
     @Override

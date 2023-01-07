@@ -15,4 +15,5 @@ public class ValidationMessages {
     public static final String PASSWORDS_DO_NOT_MATCH = "passwords.do.not.match";
     public static final String PASSWORD_TOO_SHORT = "passwordIsTooShort";
     public static final String CANNOT_DELETE_ADMIN = "cannotDeleteAdmin";
+    public static final String INVALID_RECOVERY_KEY = "invalidRecoveryKey";
 }

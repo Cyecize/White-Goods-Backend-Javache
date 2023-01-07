@@ -4,7 +4,9 @@ import com.cyecize.app.api.auth.AuthTokenDto;
 import com.cyecize.app.api.auth.AuthenticationService;
 import com.cyecize.app.api.auth.ForgottenPasswordDto;
 import com.cyecize.app.api.auth.LoginBindingModel;
+import com.cyecize.app.api.auth.ResetPasswordDto;
 import com.cyecize.app.api.user.UserDto;
+import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.http.HttpStatus;
@@ -28,6 +30,8 @@ public class SecurityController {
     private final ModelMapper modelMapper;
 
     private final AuthenticationService authenticationService;
+
+    private final UserService userService;
 
     @PostMapping(Endpoints.LOGIN)
     @PreAuthorize(AuthorizationType.ANONYMOUS)
@@ -55,5 +59,13 @@ public class SecurityController {
         }
         return new JsonResponse(HttpStatus.OK)
                 .addAttribute("message", "recovery.email.sent");
+    }
+
+    @PostMapping(Endpoints.PASSWORD_RESET)
+    @PreAuthorize(AuthorizationType.ANONYMOUS)
+    public JsonResponse resetPassword(@Valid ResetPasswordDto dto) {
+        this.userService.changePassword(dto);
+        return new JsonResponse(HttpStatus.OK)
+                .addAttribute("message", "Password reset!");
     }
 }

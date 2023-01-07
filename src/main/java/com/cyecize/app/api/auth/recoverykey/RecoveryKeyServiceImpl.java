@@ -32,8 +32,10 @@ public class RecoveryKeyServiceImpl implements RecoveryKeyService {
             return null;
         }
 
-        final LocalDateTime validUntil = LocalDateTime.now().plusMinutes(this.validMinutes);
-        if (recoveryKey.getDateCreated().isAfter(validUntil)) {
+        final LocalDateTime validUntil = recoveryKey
+                .getDateCreated()
+                .plusMinutes(this.validMinutes);
+        if (LocalDateTime.now().isAfter(validUntil)) {
             this.destroyKey(key);
             return null;
         }
