@@ -94,7 +94,6 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private void postOrderCreated(String cartSessionId, Order order, Long userId) {
-        this.shoppingCartService.removeAllItems(cartSessionId);
         final List<String> emailsOfAdmins = this.userService.getEmailsOfAdmins();
         final OrderDto orderDto = this.getOrder(order.getId());
 
@@ -104,6 +103,7 @@ public class OrderServiceImpl implements OrderService {
                 orderDto,
                 List.of(order.getAddress().getEmail())
         );
+        this.shoppingCartService.removeAllItems(cartSessionId);
     }
 
     private Order createOrder(List<ShoppingCartItemDetailedDto> items,
