@@ -36,6 +36,9 @@ public class EntityManagerFactoryBeanConfig {
     @Configuration(SoletConstants.SOLET_CFG_WORKING_DIR)
     private final String workingDir;
 
+    // Inject so that flyway runs before creating hibernate
+    private final FlywayConfig flywayConfig;
+
     @Bean
     public EntityManagerFactory entityManagerFactory() {
         final Properties properties = new Properties();
