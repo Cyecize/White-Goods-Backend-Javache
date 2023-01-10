@@ -3,6 +3,8 @@ package com.cyecize.app.api.frontend.index;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.http.HttpStatus;
+import com.cyecize.javache.JavacheConfigValue;
+import com.cyecize.javache.services.JavacheConfigService;
 import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
 import com.cyecize.solet.SoletConstants;
@@ -29,20 +31,33 @@ public class IndexServingServiceImpl implements IndexServingService {
     @Configuration(SoletConstants.SOLET_CONFIG_ASSETS_DIR)
     private final String assetsDir;
 
+    @Configuration(SoletConstants.SOLET_CFG_WORKING_DIR)
+    private final String workingDir;
+
+    @Configuration(SoletConstants.SOLET_CONFIG_SERVER_CONFIG_SERVICE_KEY)
+    private final JavacheConfigService serverCfg;
+
     private final TemplateEngine templateEngine;
 
-    private Path indexPath;
+    private Path indexPath1;
+    private Path indexPath2;
 
     @PostConstruct
     public void init() {
-        this.indexPath = Path.of(PathUtils.appendPath(this.assetsDir, "/index.html"));
+        this.indexPath1 = Path.of(PathUtils.appendPath(this.assetsDir, "/index.html"));
+
+        final String path2 = PathUtils.appendPath(
+                this.workingDir,
+                this.serverCfg.getConfigParamString(JavacheConfigValue.APP_RESOURCES_DIR_NAME)
+        );
+        this.indexPath2 = Path.of(path2, "/index.html");
     }
 
     @Override
     public boolean serveIndexFile(HttpSoletRequest request,
             HttpSoletResponse response,
             Map<String, String> metaTags) {
-        if (!Files.exists(this.indexPath)) {
+        if (!Files.exists(this.indexPath1) && !Files.exists(this.indexPath2)) {
             return false;
         }
 
