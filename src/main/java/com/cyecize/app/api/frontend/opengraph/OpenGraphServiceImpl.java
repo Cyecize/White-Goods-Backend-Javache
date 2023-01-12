@@ -25,13 +25,27 @@ public class OpenGraphServiceImpl implements OpenGraphService {
     @Configuration("website.scheme")
     private final String websiteScheme;
 
-    //TODO: Load JSON with translations from assets folder
+    @Configuration("website.name")
+    private final String websiteName;
+
+    @Configuration("website.description.bg")
+    private final String descriptionBg;
+
+    @Configuration("website.description.en")
+    private final String descriptionEn;
+
+    @Configuration("website.keywords.bg")
+    private final String keywordsBg;
+
+    @Configuration("website.keywords.en")
+    private final String keywordsEn;
+
     @Override
     public Map<String, String> getTags(HttpSoletRequest request) {
         final Map<String, String> result = new HashMap<>();
         result.put("og:type", "website");
         result.put("og:url", request.getRequestURI());
-        result.put("og:title", "Healthy Hair Project");
+        result.put("og:title", this.websiteName);
         result.put("og:image", String.format(
                 "%s://%s%s",
                 this.websiteScheme,
@@ -39,12 +53,11 @@ public class OpenGraphServiceImpl implements OpenGraphService {
                 this.logoPath
         ));
 
-
         final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
-            result.put("og:description", "Сайт за разни шампоани");
+            result.put("og:description", this.descriptionBg);
         } else {
-            result.put("og:description", "Website for shampoo and stuff");
+            result.put("og:description", this.descriptionEn);
         }
 
         if (StringUtils.trimToNull(this.facebookAppId) != null) {
@@ -76,6 +89,22 @@ public class OpenGraphServiceImpl implements OpenGraphService {
         } else {
             result.put("og:description", product.getDescriptionEn());
             result.put("product:category", product.getCategory().getNameEn());
+        }
+
+        return result;
+    }
+
+    @Override
+    public Map<String, String> getSEOTags(HttpSoletRequest request) {
+        final Map<String, String> result = this.getTags(request);
+
+        final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
+        if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
+            result.put("description", this.descriptionBg);
+            result.put("keywords", this.keywordsBg);
+        } else {
+            result.put("description", this.descriptionEn);
+            result.put("keywords", this.keywordsEn);
         }
 
         return result;

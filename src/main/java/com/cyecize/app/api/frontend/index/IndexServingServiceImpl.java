@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +57,8 @@ public class IndexServingServiceImpl implements IndexServingService {
     @Override
     public boolean serveIndexFile(HttpSoletRequest request,
             HttpSoletResponse response,
-            Map<String, String> metaTags) {
+            Map<String, String> metaTags,
+            Map<String, String> seoTags) {
         if (!Files.exists(this.indexPath1) && !Files.exists(this.indexPath2)) {
             return false;
         }
@@ -64,16 +66,20 @@ public class IndexServingServiceImpl implements IndexServingService {
         response.setStatusCode(HttpStatus.OK);
 
         final Context context = new Context();
-        final List<Pair> tags = metaTags.entrySet().stream()
+        final List<Pair> metas = metaTags.entrySet().stream()
+                .map(kvp -> new Pair(kvp.getKey(), kvp.getValue()))
+                .collect(Collectors.toList());
+        final List<Pair> seos = seoTags.entrySet().stream()
                 .map(kvp -> new Pair(kvp.getKey(), kvp.getValue()))
                 .collect(Collectors.toList());
 
-        context.setVariable("metaTags", tags);
-        if (request.getQueryParameters().containsKey(General.QUERY_PARAM_LANG)) {
-            context.setVariable("lang", request.getQueryParam(General.QUERY_PARAM_LANG));
-        }
+        context.setVariable("metaTags", metas);
+        context.setVariable("seoTags", seos);
+        final String queryLang = request.getQueryParam(General.QUERY_PARAM_LANG);
+        context.setVariable("lang", Objects.requireNonNullElse(queryLang, "en"));
 
-        final byte[] result = this.templateEngine.process("index.html", context)
+        final byte[] result = this.templateEngine
+                .process("index.html", context)
                 .getBytes(StandardCharsets.UTF_8);
 
         response.addHeader("Content-Type", "text/html");

@@ -81,7 +81,9 @@ public class ProductController {
             ogTags = new HashMap<>();
         }
 
-        if (!this.indexServingService.serveIndexFile(request, response, ogTags)) {
+        final Map<String, String> seoTags = this.openGraphService.getSEOTags(request);
+
+        if (!this.indexServingService.serveIndexFile(request, response, ogTags, seoTags)) {
             throw new ApiException("Could not load Front End!");
         }
     }

@@ -9,4 +9,6 @@ public interface OpenGraphService {
     Map<String, String> getTags(HttpSoletRequest request);
 
     Map<String, String> getTags(HttpSoletRequest request, Product product);
+
+    Map<String, String> getSEOTags(HttpSoletRequest request);
 }

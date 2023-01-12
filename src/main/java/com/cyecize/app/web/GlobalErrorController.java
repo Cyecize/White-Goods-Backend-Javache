@@ -40,7 +40,11 @@ public class GlobalErrorController {
     public Object handleNotFoundException(HttpSoletRequest req,
                                           HttpSoletResponse res,
                                           HttpNotFoundException ex) throws IOException {
-        if (this.indexServingService.serveIndexFile(req, res, this.openGraphService.getTags(req))) {
+        if (this.indexServingService.serveIndexFile(
+                req,
+                res,
+                this.openGraphService.getTags(req),
+                this.openGraphService.getSEOTags(req))) {
             return null;
         }
 

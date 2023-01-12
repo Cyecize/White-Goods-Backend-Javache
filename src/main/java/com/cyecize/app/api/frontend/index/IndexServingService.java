@@ -8,6 +8,7 @@ public interface IndexServingService {
 
     boolean serveIndexFile(HttpSoletRequest request,
             HttpSoletResponse response,
-            Map<String, String> metaTags
+            Map<String, String> metaTags,
+            Map<String, String> seoTags
     );
 }
