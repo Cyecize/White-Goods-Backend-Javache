@@ -62,7 +62,11 @@ public class MathUtil {
             da.add(value);
         }
 
-        return round(da.sum());
+        return da.sum();
+    }
+
+    public static double sumAllAndRound(Double... values) {
+        return round(sumAll(values));
     }
 
     public static double subtract(@Nullable Double n1, @Nullable Double n2) {

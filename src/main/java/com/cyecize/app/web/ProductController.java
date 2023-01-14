@@ -15,6 +15,7 @@ import com.cyecize.app.api.product.dto.EditProductDto;
 import com.cyecize.app.api.product.dto.ImageDto;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.product.dto.ProductDtoDetailed;
+import com.cyecize.app.api.store.promotion.PromotionService;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
@@ -37,13 +38,12 @@ import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
 import java.util.HashMap;
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Controller
 @PreAuthorize(role = General.ROLE_ADMIN)
@@ -61,6 +61,8 @@ public class ProductController {
 
     private final IndexServingService indexServingService;
 
+    private final PromotionService promotionService;
+
     /**
      * Endpoint for serving index.html file with preloaded open graph meta tags.
      *
@@ -71,7 +73,7 @@ public class ProductController {
     @GetMapping(Endpoints.PROD_FE)
     @PreAuthorize(AuthorizationType.ANY)
     public void searchProduct(@PathVariable(value = "id", required = false)
-                              @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
+    @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
             HttpSoletRequest request,
             HttpSoletResponse response) {
         final Map<String, String> ogTags;
@@ -92,7 +94,11 @@ public class ProductController {
     @PreAuthorize(AuthorizationType.ANY)
     public Page<ProductDto> searchProducts(@Valid ProductQuery productQuery, Principal principal) {
         return this.productService.searchProducts(productQuery, (User) principal.getUser())
-                .map(product -> this.modelMapper.map(product, ProductDto.class));
+                .map(product -> this.modelMapper.map(product, ProductDto.class))
+                .map(product -> {
+                    this.promotionService.applySingleProductDiscount(product);
+                    return product;
+                });
     }
 
     @PostMapping(Endpoints.PRODUCT_CREATE)
@@ -103,15 +109,18 @@ public class ProductController {
     @GetMapping(Endpoints.PRODUCT)
     @PreAuthorize(AuthorizationType.ANY)
     public ProductDtoDetailed getProduct(@PathVariable(value = "id")
-                                         @ConvertedBy(ProductIdDataAdapter.class) Product product) {
-        return this.modelMapper.map(product, ProductDtoDetailed.class);
+    @ConvertedBy(ProductIdDataAdapter.class) Product product) {
+        ProductDtoDetailed prod = this.modelMapper.map(product, ProductDtoDetailed.class);
+        this.promotionService.applySingleProductDiscount(prod);
+        return prod;
     }
 
     @PutMapping(Endpoints.PRODUCT)
     public ProductDtoDetailed editProduct(@PathVariable(value = "id")
-                                          @ConvertedBy(ProductIdDataAdapter.class) Product product,
-                                          @Valid EditProductDto dto) {
-        return this.modelMapper.map(this.productService.editProduct(product.getId(), dto), ProductDtoDetailed.class);
+    @ConvertedBy(ProductIdDataAdapter.class) Product product,
+            @Valid EditProductDto dto) {
+        return this.modelMapper.map(this.productService.editProduct(product.getId(), dto),
+                ProductDtoDetailed.class);
     }
 
     @GetMapping(Endpoints.PRODUCT_GALLERY_ITEMS)
@@ -124,7 +133,7 @@ public class ProductController {
 
     @DeleteMapping(Endpoints.PRODUCT_GALLERY_ITEM)
     public JsonResponse removeImage(@PathVariable("id") Long productId,
-                                    @ConvertedBy(ImageIdDataAdapter.class) @PathVariable("imageId") Image image) {
+            @ConvertedBy(ImageIdDataAdapter.class) @PathVariable("imageId") Image image) {
         if (!Objects.equals(productId, image.getProductId())) {
             throw new ApiException(String.format(
                     "Image with id %d does not belong to product with id %d",

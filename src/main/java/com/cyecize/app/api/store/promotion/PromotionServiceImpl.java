@@ -1,5 +1,6 @@
 package com.cyecize.app.api.store.promotion;
 
+import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.promotion.discounters.DiscounterPayloadDto;
 import com.cyecize.app.api.store.promotion.dto.DiscountDto;
@@ -56,9 +57,57 @@ public class PromotionServiceImpl implements PromotionService {
 
         return new DiscountsDto(
                 freeDelivery,
-                discounts.stream().map(DiscountDto::getValue).reduce(MathUtil::sum).orElse(0D),
+                MathUtil.sumAllAndRound(
+                        discounts.stream().map(DiscountDto::getValue).toArray(Double[]::new)
+                ),
                 discounts
         );
+    }
+
+    @Override
+    public void applySingleProductDiscount(ProductDto productDto) {
+        if (productDto.getPrice() == null) {
+            return;
+        }
+
+        final List<Promotion> applicablePromotions = CACHED_PROMOTIONS.stream()
+                .filter(p -> p.getPromotionType() == PromotionType.DISCOUNT_SPECIFIC_PRODUCTS_ALL)
+                .filter(p -> p.getProductItems().size() == 1)
+                .filter(p -> p.getProductItems().get(0).getProductId().equals(productDto.getId()))
+                .filter(p -> p.getProductItems().get(0).getMinQuantity() <= 1)
+                .collect(Collectors.toList());
+
+        if (applicablePromotions.isEmpty()) {
+            return;
+        }
+
+        final DiscounterPayloadDto payload = new DiscounterPayloadDto(List.of(
+                new ShoppingCartItemDetailedDto(
+                        productDto,
+                        1,
+                        MathUtil.calculatePrice(productDto.getPrice(), 1)
+                )
+        ));
+
+        final List<Double> totalDiscounts = new ArrayList<>();
+        for (Promotion promotion : applicablePromotions) {
+            final DiscountDto discount = promotion.getDiscountType()
+                    .applyDiscount(promotion, payload);
+
+            if (discount.getValue() > 0) {
+                totalDiscounts.add(discount.getValue());
+            }
+        }
+
+        if (totalDiscounts.isEmpty()) {
+            return;
+        }
+
+        final Double discountedPrice = MathUtil.subtract(
+                productDto.getPrice(),
+                MathUtil.sumAllAndRound(totalDiscounts.toArray(Double[]::new))
+        );
+        productDto.setDiscountedPrice(discountedPrice);
     }
 
     private void reloadCachedPromotions() {

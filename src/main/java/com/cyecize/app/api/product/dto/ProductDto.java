@@ -19,6 +19,9 @@ public class ProductDto {
 
     private Double price;
 
+    // Transient field, needs to be manually assigned
+    private Double discountedPrice;
+
     private String descriptionBg;
 
     private String descriptionEn;
