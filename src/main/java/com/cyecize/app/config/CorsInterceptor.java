@@ -11,13 +11,23 @@ import lombok.RequiredArgsConstructor;
 @Component
 @RequiredArgsConstructor
 public class CorsInterceptor implements InterceptorAdapter {
+
     @Configuration("cors.interceptor.order")
     private final int order;
 
+    @Configuration("cors.enabled")
+    private final boolean enabled;
+
     @Override
-    public boolean preHandle(HttpSoletRequest request, HttpSoletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpSoletRequest request, HttpSoletResponse response, Object handler)
+            throws Exception {
+        if (!this.enabled) {
+            return true;
+        }
+
         response.addHeader("Access-Control-Allow-Origin", "*");
-        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+        response.addHeader("Access-Control-Allow-Methods",
+                "GET, POST, PUT, PATCH, DELETE, OPTIONS");
         response.addHeader("Access-Control-Allow-Headers", "*");
         response.addHeader("Access-Control-Allow-Credentials", Boolean.TRUE.toString());
         response.addHeader("Access-Control-Max-Age", Integer.valueOf(180).toString());
