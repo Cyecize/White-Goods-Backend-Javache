@@ -19,11 +19,13 @@
 
     {% embed './partials/order-details.twig' %} {% endembed %}
 
-    <div style="margin-top: 20px; text-align: right">
-        <a href="{{ util.getOrderDetailsAddress(request, model.id) }}" class="btn">
-            {{ translate.getValue('view.on.website') }}
-        </a>
-    </div>
+    {% if util.isNotNull(model.userId) %}
+        <div style="margin-top: 20px; text-align: right">
+            <a href="{{ util.getOrderDetailsAddress(request, model.id) }}" class="btn">
+                {{ translate.getValue('view.on.website') }}
+            </a>
+        </div>
+    {% endif %}
 
     {% embed './partials/footer.twig' %} {% endembed %}
 </div>
