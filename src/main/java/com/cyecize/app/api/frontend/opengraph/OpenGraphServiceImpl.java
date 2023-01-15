@@ -8,6 +8,7 @@ import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,6 +28,9 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 
     @Configuration("website.name")
     private final String websiteName;
+
+    @Configuration("website.default.lang")
+    private final String defaultLang;
 
     @Configuration("website.description.bg")
     private final String descriptionBg;
@@ -82,7 +86,7 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 //        result.put("og:image:width", "400");
 //        result.put("og:image:height", "400");
 
-        final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
+        final String lang = this.getLang(request);
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
             result.put("og:description", product.getDescriptionBg());
             result.put("product:category", product.getCategory().getNameBg());
@@ -97,8 +101,8 @@ public class OpenGraphServiceImpl implements OpenGraphService {
     @Override
     public Map<String, String> getSEOTags(HttpSoletRequest request) {
         final Map<String, String> result = new HashMap<>();
-        final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
-        if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
+        final String lang = this.getLang(request);
+        if (lang.equalsIgnoreCase("bg")) {
             result.put("description", this.descriptionBg);
             result.put("keywords", this.keywordsBg);
         } else {
@@ -107,5 +111,12 @@ public class OpenGraphServiceImpl implements OpenGraphService {
         }
 
         return result;
+    }
+
+    private String getLang(HttpSoletRequest request) {
+        return Objects.requireNonNullElse(
+                StringUtils.trimToNull(request.getQueryParam(General.QUERY_PARAM_LANG)),
+                this.defaultLang
+        );
     }
 }
