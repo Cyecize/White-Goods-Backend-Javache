@@ -96,8 +96,7 @@ public class OpenGraphServiceImpl implements OpenGraphService {
 
     @Override
     public Map<String, String> getSEOTags(HttpSoletRequest request) {
-        final Map<String, String> result = this.getTags(request);
-
+        final Map<String, String> result = new HashMap<>();
         final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
             result.put("description", this.descriptionBg);
