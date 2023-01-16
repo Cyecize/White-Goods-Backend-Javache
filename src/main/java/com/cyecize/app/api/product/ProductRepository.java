@@ -39,4 +39,36 @@ public class ProductRepository {
                 .getSingleResult();
 
     }
+
+    @Transactional
+    public boolean existsByIdAndQuantityGreaterOrEqual(Long id, Integer quantity) {
+        if (id == null || quantity == null) {
+            return false;
+        }
+
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery(
+                        "select case when (count(p) > 0)  then true else false end from Product p "
+                                + "where p.id = :pid and p.quantity >= :qty",
+                        Boolean.class
+                )
+                .setParameter("pid", id)
+                .setParameter("qty", quantity)
+                .getSingleResult();
+    }
+
+    @Transactional
+    public boolean subtractQuantity(Long id, Integer quantity) {
+        if (id == null || quantity == null) {
+            return false;
+        }
+
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery(
+                        "update Product p set p.quantity = p.quantity - :qty "
+                                + "where p.id = :pid and p.quantity >= :qty")
+                .setParameter("pid", id)
+                .setParameter("qty", quantity)
+                .executeUpdate() >= 1;
+    }
 }

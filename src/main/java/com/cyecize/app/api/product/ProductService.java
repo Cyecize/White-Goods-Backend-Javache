@@ -11,6 +11,10 @@ public interface ProductService {
 
     boolean existsById(Long id);
 
+    boolean existsByIdAndMeetsQuantity(Long id, Integer quantity);
+
+    boolean subtractQuantity(Long productId, Integer quantity);
+
     Product findProductById(Long id, User currentUser);
 
     Page<Product> searchProducts(ProductQuery productQuery, User currentUser);

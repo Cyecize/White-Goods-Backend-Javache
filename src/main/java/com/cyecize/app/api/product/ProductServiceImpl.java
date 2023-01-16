@@ -39,6 +39,16 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public boolean existsByIdAndMeetsQuantity(Long id, Integer quantity) {
+        return this.repository.existsByIdAndQuantityGreaterOrEqual(id, quantity);
+    }
+
+    @Override
+    public boolean subtractQuantity(Long productId, Integer quantity) {
+        return this.repository.subtractQuantity(productId, quantity);
+    }
+
+    @Override
     public Product findProductById(Long id, User currentUser) {
         final Specification<Product> specification = ProductSpecifications.idEquals(id)
                 .and(ProductSpecifications.showHidden(true, currentUser));

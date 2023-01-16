@@ -20,6 +20,6 @@ public class OrderIdDataAdapter implements DataAdapter<Order> {
             return null;
         }
 
-        return this.orderService.findByIdNoFetch(Long.parseLong(idStr.trim()));
+        return this.orderService.findById(Long.parseLong(idStr.trim()));
     }
 }

@@ -13,6 +13,12 @@ public class SentOrderStatusValidator implements OrderStatusValidator {
             throw new ApiException("Order must be in progress to send it!");
         }
 
-        //TODO: check quantities
+        dto.getOrder().getItems().stream()
+                .filter(item -> !orderService.isQuantitySufficient(
+                        item.getProductId(),
+                        item.getQuantity()
+                )).findFirst().ifPresent(item -> {
+                    throw new ApiException("There are items with insufficient quantities!");
+                });
     }
 }

@@ -173,18 +173,14 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Order findByIdNoFetch(Long id) {
-        return this.specificationExecutor.findOne(
-                OrderSpecifications.idEquals(id),
-                Order.class,
-                null
-        );
+    public Order findById(Long id) {
+        return this.orderRepository.findById(id);
     }
 
     @Override
     @Transactional
     public OrderDto getOrder(Long orderId) {
-        final Order order = this.orderRepository.findById(orderId);
+        final Order order = this.findById(orderId);
         return this.getOrder(order);
     }
 
@@ -257,5 +253,15 @@ public class OrderServiceImpl implements OrderService {
                 Order.class,
                 null
         );
+    }
+
+    @Override
+    public boolean isQuantitySufficient(Long productId, Integer quantity) {
+        return this.productService.existsByIdAndMeetsQuantity(productId, quantity);
+    }
+
+    @Override
+    public boolean updateProductQty(Long productId, Integer quantity) {
+         return this.productService.subtractQuantity(productId, quantity);
     }
 }

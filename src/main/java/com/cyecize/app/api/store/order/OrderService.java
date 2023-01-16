@@ -13,11 +13,15 @@ public interface OrderService {
 
     void changeOrderStatus(UpdateOrderStatusDto dto);
 
-    Order findByIdNoFetch(Long id);
+    Order findById(Long id);
 
     OrderDto getOrder(Long orderId);
 
     OrderDto getOrder(Long orderId, Long userId);
 
     Page<Order> searchOrders(OrderQuery query, Long userId);
+
+    boolean isQuantitySufficient(Long productId, Integer quantity);
+
+    boolean updateProductQty(Long productId, Integer quantity);
 }
