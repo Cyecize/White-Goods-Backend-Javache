@@ -1,5 +1,6 @@
 package com.cyecize.app.api.frontend.index;
 
+import com.cyecize.app.api.frontend.opengraph.OpenGraphData;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.http.HttpStatus;
@@ -17,7 +18,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Data;
@@ -57,8 +57,7 @@ public class IndexServingServiceImpl implements IndexServingService {
     @Override
     public boolean serveIndexFile(HttpSoletRequest request,
             HttpSoletResponse response,
-            Map<String, String> metaTags,
-            Map<String, String> seoTags) {
+            OpenGraphData openGraphData) {
         if (!Files.exists(this.indexPath1) && !Files.exists(this.indexPath2)) {
             return false;
         }
@@ -66,10 +65,10 @@ public class IndexServingServiceImpl implements IndexServingService {
         response.setStatusCode(HttpStatus.OK);
 
         final Context context = new Context();
-        final List<Pair> metas = metaTags.entrySet().stream()
+        final List<Pair> metas = openGraphData.getOgTags().entrySet().stream()
                 .map(kvp -> new Pair(kvp.getKey(), kvp.getValue()))
                 .collect(Collectors.toList());
-        final List<Pair> seos = seoTags.entrySet().stream()
+        final List<Pair> seos = openGraphData.getSeoTags().entrySet().stream()
                 .map(kvp -> new Pair(kvp.getKey(), kvp.getValue()))
                 .collect(Collectors.toList());
 
@@ -77,6 +76,7 @@ public class IndexServingServiceImpl implements IndexServingService {
         context.setVariable("seoTags", seos);
         final String queryLang = request.getQueryParam(General.QUERY_PARAM_LANG);
         context.setVariable("lang", Objects.requireNonNullElse(queryLang, "en"));
+        context.setVariable("websiteTitle", openGraphData.getTitle());
 
         final byte[] result = this.templateEngine
                 .process("index.html", context)

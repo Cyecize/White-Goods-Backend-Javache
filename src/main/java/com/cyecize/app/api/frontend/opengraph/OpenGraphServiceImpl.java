@@ -44,39 +44,54 @@ public class OpenGraphServiceImpl implements OpenGraphService {
     @Configuration("website.keywords.en")
     private final String keywordsEn;
 
+    @Configuration("website.currency.name")
+    private final String currency;
+
     @Override
-    public Map<String, String> getTags(HttpSoletRequest request) {
+    public OpenGraphData getTags(HttpSoletRequest request) {
         final Map<String, String> result = new HashMap<>();
         result.put("og:type", "website");
         result.put("og:url", request.getRequestURI());
-        result.put("og:title", this.websiteName);
+
+        final String title = this.websiteName;
+        result.put("og:title", title);
         result.put("og:image", String.format(
                 "%s://%s%s",
                 this.websiteScheme,
                 request.getHost(),
                 this.logoPath
         ));
+        result.put("og:site_name", title);
+        result.put("twitter:card", "summary_large_image");
+        result.put("twitter:title", title);
 
         final String lang = request.getQueryParam(General.QUERY_PARAM_LANG);
+        final String description;
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
-            result.put("og:description", this.descriptionBg);
+            description = this.descriptionBg;
         } else {
-            result.put("og:description", this.descriptionEn);
+            description = this.descriptionEn;
         }
+
+        result.put("og:description", description);
+        result.put("twitter:description", description);
 
         if (StringUtils.trimToNull(this.facebookAppId) != null) {
             result.put("fb:app_id", this.facebookAppId);
         }
 
-        return result;
+        return new OpenGraphData(title, this.getSEOTags(request), result);
     }
 
     @Override
-    public Map<String, String> getTags(HttpSoletRequest request, Product product) {
-        final Map<String, String> result = this.getTags(request);
+    public OpenGraphData getTags(HttpSoletRequest request, Product product) {
+        final OpenGraphData pageData = this.getTags(request);
+        final Map<String, String> result = pageData.getOgTags();
         result.put("og:type", "product");
         result.put("product:is_product_shareable", "1");
-        result.put("og:title", product.getProductName());
+
+        final String title = String.format("%s - %s", product.getProductName(), this.websiteName);
+        result.put("og:title", title);
         result.put("og:image", String.format(
                 "%s://%s%s",
                 this.websiteScheme,
@@ -85,21 +100,30 @@ public class OpenGraphServiceImpl implements OpenGraphService {
         ));
 //        result.put("og:image:width", "400");
 //        result.put("og:image:height", "400");
+        result.put("twitter:title", title);
 
         final String lang = this.getLang(request);
+        final String description;
         if (StringUtils.trimToEmpty(lang).equalsIgnoreCase("bg")) {
-            result.put("og:description", product.getDescriptionBg());
             result.put("product:category", product.getCategory().getNameBg());
+            description = product.getDescriptionBg();
         } else {
-            result.put("og:description", product.getDescriptionEn());
+            description = product.getDescriptionEn();
             result.put("product:category", product.getCategory().getNameEn());
         }
 
-        return result;
+        result.put("og:description", description);
+        result.put("twitter:description", description);
+
+        if (product.getPrice() != null) {
+            result.put("og:price:amount", product.getPrice().toString());
+            result.put("og:price:currency", this.currency);
+        }
+
+        return new OpenGraphData(title, pageData.getSeoTags(), result);
     }
 
-    @Override
-    public Map<String, String> getSEOTags(HttpSoletRequest request) {
+    private Map<String, String> getSEOTags(HttpSoletRequest request) {
         final Map<String, String> result = new HashMap<>();
         final String lang = this.getLang(request);
         if (lang.equalsIgnoreCase("bg")) {

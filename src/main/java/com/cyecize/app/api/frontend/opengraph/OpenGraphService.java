@@ -6,9 +6,7 @@ import java.util.Map;
 
 public interface OpenGraphService {
 
-    Map<String, String> getTags(HttpSoletRequest request);
+    OpenGraphData getTags(HttpSoletRequest request);
 
-    Map<String, String> getTags(HttpSoletRequest request, Product product);
-
-    Map<String, String> getSEOTags(HttpSoletRequest request);
+    OpenGraphData getTags(HttpSoletRequest request, Product product);
 }

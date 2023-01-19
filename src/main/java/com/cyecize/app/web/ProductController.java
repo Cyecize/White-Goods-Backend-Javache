@@ -1,6 +1,7 @@
 package com.cyecize.app.web;
 
 import com.cyecize.app.api.frontend.index.IndexServingService;
+import com.cyecize.app.api.frontend.opengraph.OpenGraphData;
 import com.cyecize.app.api.frontend.opengraph.OpenGraphService;
 import com.cyecize.app.api.product.Image;
 import com.cyecize.app.api.product.ImageService;
@@ -37,9 +38,7 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -76,16 +75,14 @@ public class ProductController {
     @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
             HttpSoletRequest request,
             HttpSoletResponse response) {
-        final Map<String, String> ogTags;
+        final OpenGraphData openGraphData;
         if (product != null) {
-            ogTags = this.openGraphService.getTags(request, product);
+            openGraphData = this.openGraphService.getTags(request, product);
         } else {
-            ogTags = new HashMap<>();
+            openGraphData = this.openGraphService.getTags(request);
         }
 
-        final Map<String, String> seoTags = this.openGraphService.getSEOTags(request);
-
-        if (!this.indexServingService.serveIndexFile(request, response, ogTags, seoTags)) {
+        if (!this.indexServingService.serveIndexFile(request, response, openGraphData)) {
             throw new ApiException("Could not load Front End!");
         }
     }
