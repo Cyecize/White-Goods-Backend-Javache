@@ -49,4 +49,6 @@ public class Endpoints {
 
     public static final String USER_ADDRESSES               = "/user-addresses";
     public static final String USER_ADDRESS                 = "/user-addresses/{id}";
+
+    public static final String SEO_SITEMAP                  = "/seo/sitemap.xml";
 }

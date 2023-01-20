@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc th:text="${host} + '/'"></loc>
+    <lastmod>2023-01-20</lastmod>
+    <changefreq>Weekly</changefreq>
+    <priority>1</priority>
+  </url>
+  <url th:each="entry : ${additionalUrls}">
+    <loc th:text="${entry.url}"></loc>
+    <lastmod th:text="${entry.date}"></lastmod>
+    <changefreq th:text="${entry.changeFreq}"></changefreq>
+    <priority th:text="${entry.priority}"></priority>
+  </url>
+</urlset>

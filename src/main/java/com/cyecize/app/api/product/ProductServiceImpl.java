@@ -10,9 +10,13 @@ import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
+import com.cyecize.app.util.PageQuery;
+import com.cyecize.app.util.SortDirection;
+import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.ioc.annotations.Service;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -68,6 +72,16 @@ public class ProductServiceImpl implements ProductService {
         return this.specificationExecutor.findAll(
                 specification, productQuery.getPage(), Product.class, EntityGraphs.PRODUCT_FOR_SEARCH
         );
+    }
+
+    @Override
+    public List<Product> findAllForSitemap() {
+        final ProductQuery query = new ProductQuery();
+        query.setPage(new PageQuery(0, Integer.MAX_VALUE));
+        query.setShowHidden(false);
+        query.setSort(new SortQuery(Product_.ID, SortDirection.ASC));
+
+        return new ArrayList<>(this.searchProducts(query, null).getElements());
     }
 
     @Override

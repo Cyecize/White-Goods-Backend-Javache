@@ -19,6 +19,8 @@ public interface ProductService {
 
     Page<Product> searchProducts(ProductQuery productQuery, User currentUser);
 
+    List<Product> findAllForSitemap();
+
     List<Product> findAllByIdIn(Collection<Long> ids);
 
     Product createProduct(CreateProductDto createProductDto);
