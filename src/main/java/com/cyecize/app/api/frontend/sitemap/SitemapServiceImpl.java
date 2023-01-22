@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -71,13 +72,12 @@ public class SitemapServiceImpl implements SitemapService {
                 String.format("%s://%s", this.scheme, request.getHost())
         );
 
-        //TODO: add last modified date to products
-        final String date = "2023-01-20";
+        final var formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         final List<SitemapEntryDto> urls = this.productService.findAllForSitemap()
                 .stream()
                 .map(prod -> new SitemapEntryDto(
                         this.twigUtil.createProductUrl(request, prod.getId()),
-                        date,
+                        prod.getLastUpdated().format(formatter),
                         "Daily",
                         "1"
                 ))
