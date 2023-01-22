@@ -2,10 +2,8 @@ package com.cyecize.app.api.product;
 
 import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.constants.EntityGraphs;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import java.time.LocalDateTime;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,7 +19,9 @@ import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "products")
@@ -33,7 +33,7 @@ import java.util.Set;
         @NamedAttributeNode(value = "specifications", subgraph = "specificationTypes"),
         @NamedAttributeNode("category"),
         @NamedAttributeNode("images"),
-},subgraphs = {
+}, subgraphs = {
         @NamedSubgraph(name = "specificationTypes", attributeNodes = @NamedAttributeNode("specificationType"))
 })
 @NamedEntityGraph(name = EntityGraphs.PRODUCT_FOR_SEARCH, attributeNodes = {
@@ -74,6 +74,8 @@ public class Product {
     private Set<Tag> tags;
 
     private Boolean enabled;
+
+    private LocalDateTime lastUpdated;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude

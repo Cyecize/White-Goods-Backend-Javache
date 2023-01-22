@@ -16,6 +16,7 @@ import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.ioc.annotations.Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -105,6 +106,7 @@ public class ProductServiceImpl implements ProductService {
         product.setCategoryId(createProductDto.getCategory().getId());
         product.setTags(this.tagService.findOrCreate(createProductDto.getTagNames()));
         product.setImageUrl(this.base64FileService.saveFile(createProductDto.getImage()));
+        product.setLastUpdated(LocalDateTime.now());
 
         final Set<ProductSpecification> specifications = new HashSet<>();
         if (createProductDto.getProductSpecifications() != null) {
@@ -176,6 +178,7 @@ public class ProductServiceImpl implements ProductService {
             product.getImages().addAll(images);
         }
 
+        product.setLastUpdated(LocalDateTime.now());
         this.repository.merge(product);
 
         product.setSpecifications(new HashSet<>(specifications));
