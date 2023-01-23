@@ -5,10 +5,9 @@ import com.cyecize.app.api.user.User;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +23,8 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
 
     @Override
     public List<HomeCarousel> getHomeCarousel(boolean showHidden, User currentUser) {
-        final Specification<HomeCarousel> specification = HomeCarouselSpecifications.showHidden(showHidden, currentUser)
+        final Specification<HomeCarousel> specification = HomeCarouselSpecifications.showHidden(
+                        showHidden, currentUser)
                 .and(HomeCarouselSpecifications.applyOrder());
 
         return this.specificationExecutor.findAll(specification, HomeCarousel.class, null);
@@ -34,8 +34,13 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
     public HomeCarousel createCarouselItem(CreateCarouselDto dto) {
         final HomeCarousel homeCarousel = this.modelMapper.map(dto, HomeCarousel.class);
         final String imagePath = this.base64FileService.saveFile(dto.getImage());
-
         homeCarousel.setImageUrl(imagePath);
+
+        if (dto.getImageMobile() != null) {
+            final String imageMobilePath = this.base64FileService.saveFile(dto.getImageMobile());
+            homeCarousel.setImageMobileUrl(imageMobilePath);
+        }
+
         return this.homeCarouselRepository.persist(homeCarousel);
     }
 
@@ -56,6 +61,15 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
             this.base64FileService.removeFile(homeCarousel.getImageUrl());
             final String imagePath = this.base64FileService.saveFile(dto.getImage());
             homeCarousel.setImageUrl(imagePath);
+        }
+
+        if (dto.getImageMobile() != null) {
+            if (homeCarousel.getImageMobileUrl() != null) {
+                this.base64FileService.removeFile(homeCarousel.getImageMobileUrl());
+            }
+
+            final String imageMobilePath = this.base64FileService.saveFile(dto.getImageMobile());
+            homeCarousel.setImageMobileUrl(imageMobilePath);
         }
 
         this.homeCarouselRepository.merge(homeCarousel);

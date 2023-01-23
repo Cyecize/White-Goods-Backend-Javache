@@ -26,6 +26,10 @@ public class EditCarouselDto {
     @ImageTypeFile(message = ValidationMessages.INVALID_VALUE)
     private Base64FileBindingModel image;
 
+    @Valid
+    @ImageTypeFile(message = ValidationMessages.INVALID_VALUE)
+    private Base64FileBindingModel imageMobile;
+
     @MaxLength(length = General.MAX_VARCHAR, message = ValidationMessages.INVALID_VALUE)
     private String customLink;
 

@@ -14,6 +14,8 @@ public class HomeCarouselDto {
 
     private String imageUrl;
 
+    private String imageMobileUrl;
+
     private String customLink;
 
     private Boolean enabled;

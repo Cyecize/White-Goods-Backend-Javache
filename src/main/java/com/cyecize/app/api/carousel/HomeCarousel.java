@@ -31,6 +31,8 @@ public class HomeCarousel {
 
     private String imageUrl;
 
+    private String imageMobileUrl;
+
     private String customLink;
 
     private Boolean customLinkSamePage;
