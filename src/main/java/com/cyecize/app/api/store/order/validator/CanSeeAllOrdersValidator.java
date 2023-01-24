@@ -1,4 +1,4 @@
-package com.cyecize.app.api.store.order.validator.orderstatus;
+package com.cyecize.app.api.store.order.validator;
 
 import com.cyecize.app.api.store.order.validator.CanSeeAllOrders;
 import com.cyecize.app.constants.General;
