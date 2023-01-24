@@ -1,5 +1,6 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.util.BetweenQuery;
 import com.cyecize.app.util.PageQuery;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.summer.areas.validation.annotations.Valid;
@@ -22,9 +23,11 @@ public class ProductQuery {
 
     private List<Long> categoryIds;
 
-    private Map<Long,List<Long>> specifications;
+    private Map<Long, List<Long>> specifications;
 
     private String search;
 
     private Boolean showHidden;
+
+    private BetweenQuery<Long> id;
 }

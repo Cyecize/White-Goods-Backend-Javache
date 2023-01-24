@@ -4,6 +4,7 @@ import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecification_;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.util.AuthUtils;
+import com.cyecize.app.util.BetweenQuery;
 import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
@@ -52,6 +53,10 @@ public class ProductSpecifications {
         }
 
         return Specification.where(null);
+    }
+
+    public static Specification<Product> betweenId(BetweenQuery<Long> id) {
+        return QuerySpecifications.between(Product_.id, id);
     }
 
     public static Specification<Product> sort(SortQuery sortQuery) {

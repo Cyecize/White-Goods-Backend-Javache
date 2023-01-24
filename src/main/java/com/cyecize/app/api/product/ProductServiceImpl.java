@@ -65,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> searchProducts(ProductQuery productQuery, User currentUser) {
         final Specification<Product> specification = ProductSpecifications
                 .showHidden(productQuery.getShowHidden(), currentUser)
+                .and(ProductSpecifications.betweenId(productQuery.getId()))
                 .and(ProductSpecifications.sort(productQuery.getSort()))
                 .and(ProductSpecifications.categoryIdContains(productQuery.getCategoryIds()))
                 .and(ProductSpecifications.includesAllSpecifications(productQuery.getSpecifications()))
