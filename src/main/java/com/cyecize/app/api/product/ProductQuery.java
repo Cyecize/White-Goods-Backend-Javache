@@ -1,14 +1,14 @@
 package com.cyecize.app.api.product;
 
+import com.cyecize.app.api.product.validator.CanSeeHiddenProducts;
 import com.cyecize.app.util.BetweenQuery;
 import com.cyecize.app.util.PageQuery;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.util.List;
 import java.util.Map;
+import lombok.Data;
 
 @Data
 public class ProductQuery {
@@ -27,6 +27,7 @@ public class ProductQuery {
 
     private String search;
 
+    @CanSeeHiddenProducts
     private Boolean showHidden;
 
     private BetweenQuery<Long> id;
