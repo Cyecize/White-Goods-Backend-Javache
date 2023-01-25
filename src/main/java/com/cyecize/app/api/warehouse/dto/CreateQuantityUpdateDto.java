@@ -5,6 +5,7 @@ import com.cyecize.app.api.warehouse.QuantityUpdateType;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.converters.GenericEnumConverter;
 import com.cyecize.summer.areas.validation.constraints.Max;
+import com.cyecize.summer.areas.validation.constraints.Min;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -21,5 +22,6 @@ public class CreateQuantityUpdateDto {
 
     @NotNull(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
     @Max(value = Integer.MAX_VALUE, message = ValidationMessages.INVALID_VALUE)
+    @Min(value = 0, message = ValidationMessages.INVALID_VALUE)
     private Integer quantityValue;
 }
