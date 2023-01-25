@@ -49,9 +49,6 @@ public class EditProductDto {
 
     private Boolean enabled;
 
-    @Min(value = General.MIN_PROD_QUANTITY, message = ValidationMessages.INVALID_VALUE)
-    private Integer quantity;
-
     @Valid
     private List<CreateProductSpecificationDto> productSpecifications;
 
