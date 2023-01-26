@@ -52,7 +52,7 @@ public class CreateProductDto {
     private Boolean enabled;
 
     @Min(value = General.MIN_PROD_QUANTITY, message = ValidationMessages.INVALID_VALUE)
-    private Integer quantity;
+    private Integer initialQuantity;
 
     @Valid
     private List<CreateProductSpecificationDto> productSpecifications;
@@ -64,7 +64,7 @@ public class CreateProductDto {
     @Valid
     private List<Base64FileBindingModel> gallery;
 
-    public Integer getQuantity() {
-        return Objects.requireNonNullElse(this.quantity, 0);
+    public Integer getInitialQuantity() {
+        return Objects.requireNonNullElse(this.initialQuantity, 0);
     }
 }

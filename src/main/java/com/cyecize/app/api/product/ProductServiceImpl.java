@@ -7,6 +7,7 @@ import com.cyecize.app.api.product.productspec.CreateProductSpecificationDto;
 import com.cyecize.app.api.product.productspec.ProductSpecification;
 import com.cyecize.app.api.product.productspec.ProductSpecificationService;
 import com.cyecize.app.api.user.User;
+import com.cyecize.app.api.warehouse.WarehouseService;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
@@ -37,6 +38,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductSpecificationService productSpecificationService;
     private final ImageService imageService;
+
+    private final WarehouseService warehouseService;
 
     @Override
     public boolean existsById(Long id) {
@@ -108,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
         product.setTags(this.tagService.findOrCreate(createProductDto.getTagNames()));
         product.setImageUrl(this.base64FileService.saveFile(createProductDto.getImage()));
         product.setLastUpdated(LocalDateTime.now());
+        product.setQuantity(createProductDto.getInitialQuantity());
 
         final Set<ProductSpecification> specifications = new HashSet<>();
         if (createProductDto.getProductSpecifications() != null) {
@@ -123,6 +127,7 @@ public class ProductServiceImpl implements ProductService {
         product.setSpecifications(specifications);
 
         this.repository.persist(product);
+        this.warehouseService.initialize(product);
 
         final Set<Image> images = this.imageService.createImages(createProductDto.getGallery());
         if (!images.isEmpty()) {
