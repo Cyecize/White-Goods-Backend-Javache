@@ -71,4 +71,12 @@ public class ProductRepository {
                 .setParameter("qty", quantity)
                 .executeUpdate() >= 1;
     }
+
+    @Transactional
+    public Product find(Long productId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery("select p from Product p where p.id = :pid", Product.class)
+                .setParameter("pid", productId)
+                .getResultStream().findFirst().orElse(null);
+    }
 }
