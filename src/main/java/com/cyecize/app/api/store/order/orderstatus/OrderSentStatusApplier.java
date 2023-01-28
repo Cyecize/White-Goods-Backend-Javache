@@ -14,7 +14,7 @@ public class OrderSentStatusApplier implements OrderStatusApplier {
         order.setTrackingNumber(dto.getTrackingNumber());
 
         order.getItems().forEach(i -> {
-            final boolean succ = orderService.updateProductQty(i.getProductId(), i.getQuantity());
+            final boolean succ = orderService.updateStock(i.getProductId(), i.getQuantity(), order);
             if (!succ) {
                 throw new ApiException(String.format(
                         "Could not update product %s's qty!", i.getProductId())

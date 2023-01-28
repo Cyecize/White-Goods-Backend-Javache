@@ -2,6 +2,7 @@ package com.cyecize.app.api.warehouse;
 
 import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductRepository;
+import com.cyecize.app.api.store.order.Order;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.PerformWarehouseDeliveryDto;
 import com.cyecize.app.integration.transaction.Transactional;
@@ -37,6 +38,24 @@ public class WarehouseServiceImpl implements WarehouseService {
 
         this.quantityUpdateRepository.persist(quantityUpdate);
         QuantityUpdateType.updateQuantity(product, quantityUpdate);
+    }
+
+    @Override
+    public boolean updateQuantity(Order order, Long productId, Integer quantity) {
+        final QuantityUpdate quantityUpdate = new QuantityUpdate();
+        quantityUpdate.setDate(LocalDateTime.now());
+        quantityUpdate.setQuantityValue(quantity);
+        quantityUpdate.setUpdateType(QuantityUpdateType.ORDER_DECREASE);
+        quantityUpdate.setProductId(productId);
+        quantityUpdate.setOrderId(order.getId());
+
+        final boolean updated = this.productRepository.subtractQuantity(productId, quantity);
+
+        if (updated) {
+            this.quantityUpdateRepository.persist(quantityUpdate);
+        }
+
+        return updated;
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.api.user.UserService;
+import com.cyecize.app.api.warehouse.WarehouseService;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.Transactional;
@@ -58,6 +59,8 @@ public class OrderServiceImpl implements OrderService {
     private final MailService mailService;
 
     private final SpecificationExecutor specificationExecutor;
+
+    private final WarehouseService warehouseService;
 
     @Override
     @Transactional
@@ -261,7 +264,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean updateProductQty(Long productId, Integer quantity) {
-         return this.productService.subtractQuantity(productId, quantity);
+    public boolean updateStock(Long productId, Integer quantity, Order order) {
+        return this.warehouseService.updateQuantity(order, productId, quantity);
     }
 }

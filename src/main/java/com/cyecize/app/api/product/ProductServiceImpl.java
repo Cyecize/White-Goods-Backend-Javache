@@ -20,12 +20,11 @@ import com.cyecize.ioc.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -49,11 +48,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean existsByIdAndMeetsQuantity(Long id, Integer quantity) {
         return this.repository.existsByIdAndQuantityGreaterOrEqual(id, quantity);
-    }
-
-    @Override
-    public boolean subtractQuantity(Long productId, Integer quantity) {
-        return this.repository.subtractQuantity(productId, quantity);
     }
 
     @Override

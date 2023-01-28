@@ -23,5 +23,5 @@ public interface OrderService {
 
     boolean isQuantitySufficient(Long productId, Integer quantity);
 
-    boolean updateProductQty(Long productId, Integer quantity);
+    boolean updateStock(Long productId, Integer quantity, Order order);
 }
