@@ -8,6 +8,7 @@ import com.cyecize.app.api.warehouse.updaters.ReplaceUpdater;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+//TODO: Consider adding 'revertable' option to increase and decrease
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QuantityUpdateType {
     INCREASE(new IncreaseUpdater()),
