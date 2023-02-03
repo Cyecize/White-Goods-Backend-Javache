@@ -22,6 +22,7 @@ public class General {
     public static final int MAX_ALLOWED_TAGS = 5;
     public static final int MIN_PROD_QUANTITY = 0;
     public static final int MAX_PROD_QUANTITY = 50;
+    public static final int MAX_ALLOWED_BULK_UPDATE_ITEMS = 100;
 
     public static final String QUERY_PARAM_LANG = "lang";
 

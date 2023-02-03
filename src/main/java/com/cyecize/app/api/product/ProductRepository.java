@@ -3,6 +3,8 @@ package com.cyecize.app.api.product;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.Collection;
+import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +25,14 @@ public class ProductRepository {
     public void merge(Product product) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.merge(product);
+    }
+
+    @Transactional
+    public void mergeAll(List<Product> productsToSave) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        for (Product product : productsToSave) {
+            entityManager.merge(product);
+        }
     }
 
     @Transactional
@@ -78,5 +88,15 @@ public class ProductRepository {
         return entityManager.createQuery("select p from Product p where p.id = :pid", Product.class)
                 .setParameter("pid", productId)
                 .getResultStream().findFirst().orElse(null);
+    }
+
+    @Transactional
+    public List<Product> findAllNoFetch(Collection<Long> ids) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery(
+                        "select p from Product p where p.id in :ids",
+                        Product.class)
+                .setParameter("ids", ids)
+                .getResultList();
     }
 }

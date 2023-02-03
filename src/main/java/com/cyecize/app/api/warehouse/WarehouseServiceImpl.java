@@ -4,13 +4,18 @@ import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductRepository;
 import com.cyecize.app.api.store.order.Order;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
-import com.cyecize.app.api.warehouse.dto.PerformWarehouseDeliveryDto;
+import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.ioc.annotations.Service;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 
@@ -59,8 +64,35 @@ public class WarehouseServiceImpl implements WarehouseService {
     }
 
     @Override
-    public void performDelivery(PerformWarehouseDeliveryDto dto) {
+    @Transactional
+    public void performDelivery(CreateWarehouseDeliveryDto dto) {
+        final Set<Long> prodIds = dto.getItems().stream()
+                .map(CreateQuantityUpdateDto::getProductId)
+                .collect(Collectors.toSet());
 
+        final Map<Long, Product> products = this.productRepository.findAllNoFetch(prodIds).stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        final WarehouseDelivery delivery = new WarehouseDelivery();
+        final LocalDateTime date = LocalDateTime.now();
+        delivery.setDate(date);
+
+        this.warehouseDeliveryRepository.persist(delivery);
+
+        final List<Product> productsToSave = new ArrayList<>();
+        final List<QuantityUpdate> quantityUpdatesToSave = new ArrayList<>();
+        for (CreateQuantityUpdateDto item : dto.getItems()) {
+            final QuantityUpdate quantityUpdate = this.modelMapper.map(item, QuantityUpdate.class);
+            quantityUpdate.setDate(date);
+            quantityUpdate.setDeliveryId(delivery.getId());
+
+            quantityUpdatesToSave.add(quantityUpdate);
+            QuantityUpdateType.updateQuantity(products.get(item.getProductId()), quantityUpdate);
+            productsToSave.add(products.get(item.getProductId()));
+        }
+
+        this.quantityUpdateRepository.persistAll(quantityUpdatesToSave);
+        this.productRepository.mergeAll(productsToSave);
     }
 
     @Override

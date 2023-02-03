@@ -51,6 +51,7 @@ public class Endpoints {
     public static final String USER_ADDRESS                 = "/user-addresses/{id}";
 
     public static final String WAREHOUSE_ITEM               = "/warehouse/items/{id}";
+    public static final String WAREHOUSE_DELIVERY           = "/warehouse/delivery";
 
     public static final String SEO_SITEMAP                  = "/seo/sitemap.xml";
 }

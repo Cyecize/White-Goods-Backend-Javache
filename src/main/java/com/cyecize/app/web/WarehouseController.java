@@ -3,6 +3,7 @@ package com.cyecize.app.web;
 import com.cyecize.app.api.warehouse.QuantityUpdateQuery;
 import com.cyecize.app.api.warehouse.WarehouseService;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
+import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
 import com.cyecize.app.api.warehouse.dto.QuantityUpdateDto;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
@@ -12,7 +13,6 @@ import com.cyecize.http.HttpStatus;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
-import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
@@ -47,5 +47,12 @@ public class WarehouseController {
             @Valid QuantityUpdateQuery query) {
         return this.warehouseService.getQuantityUpdateHistory(productId, query)
                 .map(qu -> this.modelMapper.map(qu, QuantityUpdateDto.class));
+    }
+
+    @PostMapping(Endpoints.WAREHOUSE_DELIVERY)
+    public JsonResponse performDelivery(@Valid CreateWarehouseDeliveryDto dto) {
+        this.warehouseService.performDelivery(dto);
+        return new JsonResponse(HttpStatus.CREATED)
+                .addAttribute("message", "Delivery completed!");
     }
 }
