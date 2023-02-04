@@ -122,4 +122,26 @@ public class WarehouseServiceImpl implements WarehouseService {
                 null
         );
     }
+
+    @Override
+    public WarehouseDelivery findDeliveryById(Long id) {
+        if (id == null) {
+            return null;
+        }
+
+        return this.warehouseDeliveryRepository.find(id);
+    }
+
+    @Override
+    public List<QuantityUpdate> getDeliveryItems(Long deliveryId) {
+        final Specification<QuantityUpdate> specification = QuantityUpdateSpecifications
+                .deliveryIdEquals(deliveryId)
+                .and(QuantityUpdateSpecifications.sortByIdDesc());
+
+        return this.specificationExecutor.findAll(
+                specification,
+                QuantityUpdate.class,
+                null
+        );
+    }
 }

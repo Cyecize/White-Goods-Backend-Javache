@@ -5,6 +5,7 @@ import com.cyecize.app.api.store.order.Order;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
 import com.cyecize.app.util.Page;
+import java.util.List;
 
 public interface WarehouseService {
 
@@ -17,4 +18,8 @@ public interface WarehouseService {
     void initialize(Product product);
 
     Page<QuantityUpdate> getQuantityUpdateHistory(Long productId, QuantityUpdateQuery query);
+
+    WarehouseDelivery findDeliveryById(Long id);
+
+    List<QuantityUpdate> getDeliveryItems(Long deliveryId);
 }

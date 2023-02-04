@@ -14,6 +14,14 @@ public class QuantityUpdateSpecifications {
         return (root, query, cb) -> cb.equal(root.get(QuantityUpdate_.productId), prodId);
     }
 
+    public static Specification<QuantityUpdate> deliveryIdEquals(Long deliveryId) {
+        if (deliveryId == null) {
+            return Specification.not(null);
+        }
+
+        return (root, query, cb) -> cb.equal(root.get(QuantityUpdate_.deliveryId), deliveryId);
+    }
+
     public static Specification<QuantityUpdate> sortByIdDesc() {
         return (root, query, criteriaBuilder)
                 -> QuerySpecifications.sort(
