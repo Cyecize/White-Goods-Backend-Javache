@@ -17,6 +17,7 @@ import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.validation.annotations.ConvertedBy;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
+import com.cyecize.summer.common.annotations.routing.DeleteMapping;
 import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
@@ -78,5 +79,13 @@ public class WarehouseController {
                 warehouseDelivery.getDate(),
                 deliveryItems
         );
+    }
+
+    @DeleteMapping(Endpoints.WAREHOUSE_DELIVERY)
+    public JsonResponse undoDelivery(
+            @PathVariable("id") @ConvertedBy(WarehouseDeliveryIdDataAdapter.class)
+            WarehouseDelivery warehouseDelivery) {
+        this.warehouseService.undoDelivery(warehouseDelivery.getId());
+        return new JsonResponse(HttpStatus.OK).addAttribute("message", "Delivery undone!");
     }
 }

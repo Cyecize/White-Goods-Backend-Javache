@@ -34,4 +34,10 @@ public class WarehouseDeliveryRepository {
                 .setParameter("id", id)
                 .getResultStream().findFirst().orElse(null);
     }
+
+    @Transactional
+    public void remove(WarehouseDelivery delivery) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.remove(delivery);
+    }
 }

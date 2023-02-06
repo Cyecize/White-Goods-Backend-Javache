@@ -33,4 +33,12 @@ public class QuantityUpdateRepository {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.merge(quantityUpdate);
     }
+
+    @Transactional
+    public void removeByDeliveryId(Long deliveryId) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery("delete from QuantityUpdate where deliveryId = :did")
+                .setParameter("did", deliveryId)
+                .executeUpdate();
+    }
 }

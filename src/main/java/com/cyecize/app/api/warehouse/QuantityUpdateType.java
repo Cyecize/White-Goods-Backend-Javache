@@ -11,19 +11,35 @@ import lombok.RequiredArgsConstructor;
 //TODO: Consider adding 'revertable' option to increase and decrease
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public enum QuantityUpdateType {
-    INCREASE(new IncreaseUpdater()),
-    DECREASE(new DecreaseUpdater()),
-    ORDER_DECREASE(new DecreaseUpdater()),
-    REPLACE(new ReplaceUpdater()),
-    INITIAL_REPLACE(new ReplaceUpdater()),
-    REVISION_REPLACE(new ReplaceUpdater());
+    INCREASE(new IncreaseUpdater(), new DecreaseUpdater()),
+    DECREASE(new DecreaseUpdater(), new IncreaseUpdater()),
+    ORDER_DECREASE(new DecreaseUpdater(), null),
+    REPLACE(new ReplaceUpdater(), null),
+    INITIAL_REPLACE(new ReplaceUpdater(), null),
+    REVISION_REPLACE(new ReplaceUpdater(), null);
 
     private final QuantityUpdater quantityUpdater;
+    private final QuantityUpdater undoUpdater;
 
     public static void updateQuantity(Product product, QuantityUpdate quantityUpdate) {
         if (quantityUpdate.getUpdateType() == null) {
             throw new IllegalArgumentException("Update type required to update quantity!");
         }
         quantityUpdate.getUpdateType().quantityUpdater.updateQuantity(product, quantityUpdate);
+    }
+
+    public static void applyUndo(Product product, QuantityUpdate quantityUpdate) {
+        if (quantityUpdate.getUpdateType() == null) {
+            throw new IllegalArgumentException("Update type required to undo update quantity!");
+        }
+
+        if (quantityUpdate.getUpdateType().undoUpdater == null) {
+            throw new UnsupportedOperationException(String.format(
+                    "Quantity update type %s does not support undo!",
+                    quantityUpdate.getUpdateType()
+            ));
+        }
+
+        quantityUpdate.getUpdateType().undoUpdater.updateQuantity(product, quantityUpdate);
     }
 }

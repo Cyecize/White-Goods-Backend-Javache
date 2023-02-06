@@ -144,4 +144,29 @@ public class WarehouseServiceImpl implements WarehouseService {
                 null
         );
     }
+
+    @Override
+    @Transactional
+    public void undoDelivery(Long deliveryId) {
+        final WarehouseDelivery delivery = this.findDeliveryById(deliveryId);
+        final List<QuantityUpdate> deliveryItems = this.getDeliveryItems(deliveryId);
+
+        final Set<Long> prodIds = deliveryItems.stream()
+                .map(QuantityUpdate::getProductId)
+                .collect(Collectors.toSet());
+
+        final Map<Long, Product> products = this.productRepository.findAllNoFetch(prodIds)
+                .stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        final List<Product> productsToSave = new ArrayList<>();
+        for (QuantityUpdate item : deliveryItems) {
+            QuantityUpdateType.applyUndo(products.get(item.getProductId()), item);
+            productsToSave.add(products.get(item.getProductId()));
+        }
+
+        this.productRepository.mergeAll(productsToSave);
+        this.quantityUpdateRepository.removeByDeliveryId(deliveryId);
+        this.warehouseDeliveryRepository.remove(delivery);
+    }
 }
