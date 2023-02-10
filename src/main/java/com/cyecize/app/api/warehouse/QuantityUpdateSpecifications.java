@@ -22,6 +22,14 @@ public class QuantityUpdateSpecifications {
         return (root, query, cb) -> cb.equal(root.get(QuantityUpdate_.deliveryId), deliveryId);
     }
 
+    public static Specification<QuantityUpdate> revisionIdEquals(Long revisionId) {
+        if (revisionId == null) {
+            return Specification.not(null);
+        }
+
+        return (root, query, cb) -> cb.equal(root.get(QuantityUpdate_.revisionId), revisionId);
+    }
+
     public static Specification<QuantityUpdate> sortByIdDesc() {
         return (root, query, criteriaBuilder)
                 -> QuerySpecifications.sort(

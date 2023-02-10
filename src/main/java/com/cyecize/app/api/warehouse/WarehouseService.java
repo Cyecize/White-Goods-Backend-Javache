@@ -24,4 +24,8 @@ public interface WarehouseService {
     List<QuantityUpdate> getDeliveryItems(Long deliveryId);
 
     void undoDelivery(Long deliveryId);
+
+    WarehouseRevision findRevisionById(Long revisionId);
+
+    List<QuantityUpdate> getRevisionItems(Long revisionId);
 }

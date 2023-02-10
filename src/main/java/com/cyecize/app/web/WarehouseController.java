@@ -2,8 +2,10 @@ package com.cyecize.app.web;
 
 import com.cyecize.app.api.warehouse.QuantityUpdateQuery;
 import com.cyecize.app.api.warehouse.WarehouseDelivery;
+import com.cyecize.app.api.warehouse.WarehouseRevision;
 import com.cyecize.app.api.warehouse.WarehouseService;
 import com.cyecize.app.api.warehouse.converver.WarehouseDeliveryIdDataAdapter;
+import com.cyecize.app.api.warehouse.converver.WarehouseRevisionIdDataAdapter;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
 import com.cyecize.app.api.warehouse.dto.QuantityUpdateDto;
@@ -87,5 +89,22 @@ public class WarehouseController {
             WarehouseDelivery warehouseDelivery) {
         this.warehouseService.undoDelivery(warehouseDelivery.getId());
         return new JsonResponse(HttpStatus.OK).addAttribute("message", "Delivery undone!");
+    }
+
+    @GetMapping(Endpoints.WAREHOUSE_REVISION)
+    public WarehouseDeliveryDto getRevisionInfo(
+            @PathVariable("id") @ConvertedBy(WarehouseRevisionIdDataAdapter.class)
+            WarehouseRevision warehouseRevision) {
+        final List<QuantityUpdateDto> revisionItems = this.warehouseService
+                .getRevisionItems(warehouseRevision.getId())
+                .stream()
+                .map(qu -> this.modelMapper.map(qu, QuantityUpdateDto.class))
+                .collect(Collectors.toList());
+
+        return new WarehouseDeliveryDto(
+                warehouseRevision.getId(),
+                warehouseRevision.getDate(),
+                revisionItems
+        );
     }
 }

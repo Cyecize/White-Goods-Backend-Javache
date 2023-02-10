@@ -33,6 +33,8 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     private final SpecificationExecutor specificationExecutor;
 
+    private final WarehouseRevisionRepository warehouseRevisionRepository;
+
     @Override
     @Transactional
     public void updateQuantity(CreateQuantityUpdateDto dto) {
@@ -168,5 +170,27 @@ public class WarehouseServiceImpl implements WarehouseService {
         this.productRepository.mergeAll(productsToSave);
         this.quantityUpdateRepository.removeByDeliveryId(deliveryId);
         this.warehouseDeliveryRepository.remove(delivery);
+    }
+
+    @Override
+    public WarehouseRevision findRevisionById(Long revisionId) {
+        if (revisionId == null) {
+            return null;
+        }
+
+        return this.warehouseRevisionRepository.find(revisionId);
+    }
+
+    @Override
+    public List<QuantityUpdate> getRevisionItems(Long revisionId) {
+        final Specification<QuantityUpdate> specification = QuantityUpdateSpecifications
+                .revisionIdEquals(revisionId)
+                .and(QuantityUpdateSpecifications.sortByIdDesc());
+
+        return this.specificationExecutor.findAll(
+                specification,
+                QuantityUpdate.class,
+                null
+        );
     }
 }
