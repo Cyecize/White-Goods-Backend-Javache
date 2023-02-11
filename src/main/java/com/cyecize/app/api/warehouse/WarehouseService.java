@@ -4,6 +4,7 @@ import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.store.order.Order;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
+import com.cyecize.app.api.warehouse.dto.CreateWarehouseRevisionDto;
 import com.cyecize.app.util.Page;
 import java.util.List;
 
@@ -28,4 +29,6 @@ public interface WarehouseService {
     WarehouseRevision findRevisionById(Long revisionId);
 
     List<QuantityUpdate> getRevisionItems(Long revisionId);
+
+    void performRevision(CreateWarehouseRevisionDto dto);
 }

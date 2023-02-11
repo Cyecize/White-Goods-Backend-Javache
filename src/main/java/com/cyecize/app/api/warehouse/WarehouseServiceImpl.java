@@ -5,6 +5,7 @@ import com.cyecize.app.api.product.ProductRepository;
 import com.cyecize.app.api.store.order.Order;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
+import com.cyecize.app.api.warehouse.dto.CreateWarehouseRevisionDto;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.Page;
 import com.cyecize.app.util.Specification;
@@ -192,5 +193,38 @@ public class WarehouseServiceImpl implements WarehouseService {
                 QuantityUpdate.class,
                 null
         );
+    }
+
+    @Override
+    @Transactional
+    public void performRevision(CreateWarehouseRevisionDto dto) {
+        final Set<Long> prodIds = dto.getItems().stream()
+                .map(CreateQuantityUpdateDto::getProductId)
+                .collect(Collectors.toSet());
+
+        final Map<Long, Product> products = this.productRepository.findAllNoFetch(prodIds).stream()
+                .collect(Collectors.toMap(Product::getId, p -> p));
+
+        final WarehouseRevision revision = new WarehouseRevision();
+        final LocalDateTime date = LocalDateTime.now();
+        revision.setDate(date);
+
+        this.warehouseRevisionRepository.persist(revision);
+
+        final List<Product> productsToSave = new ArrayList<>();
+        final List<QuantityUpdate> quantityUpdatesToSave = new ArrayList<>();
+        for (CreateQuantityUpdateDto item : dto.getItems()) {
+            final QuantityUpdate quantityUpdate = this.modelMapper.map(item, QuantityUpdate.class);
+            quantityUpdate.setDate(date);
+            quantityUpdate.setRevisionId(revision.getId());
+            quantityUpdate.setUpdateType(QuantityUpdateType.REVISION_REPLACE);
+
+            quantityUpdatesToSave.add(quantityUpdate);
+            QuantityUpdateType.updateQuantity(products.get(item.getProductId()), quantityUpdate);
+            productsToSave.add(products.get(item.getProductId()));
+        }
+
+        this.quantityUpdateRepository.persistAll(quantityUpdatesToSave);
+        this.productRepository.mergeAll(productsToSave);
     }
 }

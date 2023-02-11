@@ -8,6 +8,7 @@ import com.cyecize.app.api.warehouse.converver.WarehouseDeliveryIdDataAdapter;
 import com.cyecize.app.api.warehouse.converver.WarehouseRevisionIdDataAdapter;
 import com.cyecize.app.api.warehouse.dto.CreateQuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.CreateWarehouseDeliveryDto;
+import com.cyecize.app.api.warehouse.dto.CreateWarehouseRevisionDto;
 import com.cyecize.app.api.warehouse.dto.QuantityUpdateDto;
 import com.cyecize.app.api.warehouse.dto.WarehouseDeliveryDto;
 import com.cyecize.app.constants.Endpoints;
@@ -89,6 +90,13 @@ public class WarehouseController {
             WarehouseDelivery warehouseDelivery) {
         this.warehouseService.undoDelivery(warehouseDelivery.getId());
         return new JsonResponse(HttpStatus.OK).addAttribute("message", "Delivery undone!");
+    }
+
+    @PostMapping(Endpoints.WAREHOUSE_REVISIONS)
+    public JsonResponse performRevision(@Valid CreateWarehouseRevisionDto dto) {
+        this.warehouseService.performRevision(dto);
+        return new JsonResponse(HttpStatus.CREATED)
+                .addAttribute("message", "Revision completed!");
     }
 
     @GetMapping(Endpoints.WAREHOUSE_REVISION)
