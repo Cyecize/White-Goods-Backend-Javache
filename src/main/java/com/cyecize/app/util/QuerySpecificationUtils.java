@@ -60,6 +60,10 @@ public final class QuerySpecificationUtils {
                                                                                   CriteriaBuilder cb,
                                                                                   Path<T> root,
                                                                                   boolean inclusive) {
+        if (query == null) {
+            return cb.conjunction();
+        }
+
         boolean notBetween = BooleanUtils.isTrue(query.getNotBetween());
 
         if (query.getMin() != null && query.getMax() != null && inclusive && !notBetween) {
