@@ -61,7 +61,7 @@ public class ProductSpecifications {
 
     public static Specification<Product> sort(SortQuery sortQuery) {
         if (!ReflectionUtils.fieldExists(Product.class, sortQuery.getField())) {
-            sortQuery.setField(Product_.ID);
+            sortQuery.setField(Product_.DEFAULT_DISPLAY_ORDER);
         }
 
         return (root, query, criteriaBuilder)

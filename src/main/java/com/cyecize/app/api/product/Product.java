@@ -77,6 +77,8 @@ public class Product {
 
     private LocalDateTime lastUpdated;
 
+    private int defaultDisplayOrder;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude
     @JoinTable(name = "products_specifications",
