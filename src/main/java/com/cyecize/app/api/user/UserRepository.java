@@ -3,7 +3,6 @@ package com.cyecize.app.api.user;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
-import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -12,18 +11,6 @@ import lombok.RequiredArgsConstructor;
 public class UserRepository {
 
     private final TransactionContext transactionContext;
-
-    @Transactional
-    public List<String> selectEmailWhereRoleEquals(RoleType role) {
-        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-
-        return entityManager.createQuery(
-                        "select u.email from User u join u.roles r where r.role = ?1",
-                        String.class
-                )
-                .setParameter(1, role)
-                .getResultList();
-    }
 
     @Transactional
     public User persist(User user) {

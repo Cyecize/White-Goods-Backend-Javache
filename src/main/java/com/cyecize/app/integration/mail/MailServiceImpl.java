@@ -26,6 +26,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -38,6 +39,7 @@ import org.w3c.dom.css.CSSStyleRule;
 import org.w3c.dom.css.CSSStyleSheet;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class MailServiceImpl implements MailService {
 
@@ -58,6 +60,11 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public <T> void sendEmail(EmailTemplate<T> template, T viewModel, List<String> receivers) {
+        if (receivers.isEmpty()) {
+            log.warn("Trying to send email to 0 receivers!");
+            return;
+        }
+
         if (!this.mailsEnabled) {
             return;
         }

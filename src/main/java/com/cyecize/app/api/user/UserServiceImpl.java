@@ -2,6 +2,7 @@ package com.cyecize.app.api.user;
 
 import com.cyecize.app.api.auth.ResetPasswordDto;
 import com.cyecize.app.api.auth.recoverykey.RecoveryKeyService;
+import com.cyecize.app.api.mail.subscriber.MailSubscriberService;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
@@ -26,11 +27,14 @@ import org.mindrot.jbcrypt.BCrypt;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
     private final SpecificationExecutor specificationExecutor;
 
     private final RoleRepository roleRepository;
 
     private final RecoveryKeyService recoveryKeyService;
+
+    private final MailSubscriberService mailSubscriberService;
 
     private Map<RoleType, Role> allRoles;
 
@@ -47,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<String> getEmailsOfAdmins() {
-        return this.userRepository.selectEmailWhereRoleEquals(RoleType.ROLE_ADMIN);
+        return this.mailSubscriberService.getAdminEmails();
     }
 
     @Override
