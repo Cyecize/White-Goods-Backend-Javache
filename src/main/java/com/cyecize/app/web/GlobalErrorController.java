@@ -21,7 +21,9 @@ import com.cyecize.summer.common.annotations.routing.ExceptionListener;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class GlobalErrorController {
@@ -62,6 +64,7 @@ public class GlobalErrorController {
                                            BindingResult bindingResult,
                                            HttpSoletResponse response) {
         response.setStatusCode(HttpStatus.NOT_ACCEPTABLE);
+        log.trace("Constraint errors: {}", bindingResult.getErrors());
         return bindingResult.getErrors();
     }
 
