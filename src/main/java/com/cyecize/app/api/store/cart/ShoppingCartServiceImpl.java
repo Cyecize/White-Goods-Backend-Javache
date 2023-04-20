@@ -25,8 +25,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -138,6 +140,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
         }
 
+        log.trace("Added item {} to shopping cart {}", item.getProductId(), sessionId);
         return this.fetchItems(shoppingCartFromSession.getItems());
     }
 
