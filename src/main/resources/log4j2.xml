@@ -1,13 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="INFO">
+<Configuration status="WARN">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%tid] %-5level %logger{36} - %msg%n"/>
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{1} - %msg%n"/>
         </Console>
+
+        <!-- Simple appender, allowing info and up -->
+        <RollingFile name="RollingFileInfo" fileName="logs/app.log" filePattern="app-%d{MM-dd-yyyy}.log">
+            <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{1} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- Simple appender, allowing only trace and debug log levels -->
+        <RollingFile name="RollingFileTrace" fileName="logs/app.log" filePattern="app-%d{MM-dd-yyyy}.log">
+            <LevelRangeFilter minLevel="DEBUG" maxLevel="TRACE" onMatch="ACCEPT" onMismatch="DENY">
+            </LevelRangeFilter>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{1} - %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+                <SizeBasedTriggeringPolicy size="10 MB"/>
+            </Policies>
+        </RollingFile>
     </Appenders>
     <Loggers>
-        <Root level="INFO">
+        <!-- General idea of the log config:
+             Console logs everything info and up (trace, warn, error...)
+             File logs everything info and up + trace and debug, but only from com.cyecize packages
+         -->
+
+        <!-- Logger for all classes containing package com.cyecize -->
+        <Logger level="trace" name="com.cyecize">
+            <AppenderRef ref="RollingFileTrace"/>
+        </Logger>
+
+        <!-- Default logger -->
+        <Root level="info">
             <AppenderRef ref="Console"/>
+            <AppenderRef ref="RollingFileInfo"/>
         </Root>
     </Loggers>
 </Configuration>

@@ -4,3 +4,4 @@ out/
 !src/main/resources/webapp/assets-be/images/uploaded
 src/main/resources/webapp/assets-be/images/uploaded/*
 !src/main/resources/webapp/assets-be/images/uploaded/.gitkeep
+logs/app.log
