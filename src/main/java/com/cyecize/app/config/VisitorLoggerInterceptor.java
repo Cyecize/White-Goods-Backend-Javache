@@ -20,7 +20,7 @@ public class VisitorLoggerInterceptor implements InterceptorAdapter {
         }
 
         final String addr;
-        // Well known header for delivery real ip to server when using proxy servers.
+        // Well known header for delivery of real ip to server when proxies are used.
         if (request.getHeaders().containsKey("X-Forwarded-For")) {
             addr = request.getHeader("X-Forwarded-For");
         } else {
