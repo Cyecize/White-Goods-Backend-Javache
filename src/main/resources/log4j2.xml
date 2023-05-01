@@ -6,7 +6,7 @@
         </Console>
 
         <!-- Simple appender, allowing info and up -->
-        <RollingFile name="RollingFileInfo" fileName="logs/app.log" filePattern="app-%d{MM-dd-yyyy}.log">
+        <RollingFile name="RollingFileInfo" fileName="logs/app.log" filePattern="logs/general/app-%d{MM-dd-yyyy}.log">
             <ThresholdFilter level="INFO" onMatch="ACCEPT" onMismatch="DENY"/>
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{1} - %msg%n"/>
             <Policies>
@@ -16,7 +16,7 @@
         </RollingFile>
 
         <!-- Simple appender, allowing only trace and debug log levels -->
-        <RollingFile name="RollingFileTrace" fileName="logs/app.log" filePattern="app-%d{MM-dd-yyyy}.log">
+        <RollingFile name="RollingFileTrace" fileName="logs/app.log" filePattern="logs/general/app-%d{MM-dd-yyyy}.log">
             <LevelRangeFilter minLevel="DEBUG" maxLevel="TRACE" onMatch="ACCEPT" onMismatch="DENY">
             </LevelRangeFilter>
             <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger{1} - %msg%n"/>
@@ -24,6 +24,16 @@
                 <TimeBasedTriggeringPolicy />
                 <SizeBasedTriggeringPolicy size="10 MB"/>
             </Policies>
+        </RollingFile>
+
+        <!-- Appender, intended to log visitors. Each day a new file will be created -->
+        <RollingFile name="RollingFileVisitors" fileName="logs/visitors.log"
+          filePattern="logs/visitors/visitors-%d{yyyy-MM-dd}.log">
+            <PatternLayout pattern="%msg @ %d{yyyy-MM-dd HH:mm:ss}%n" />
+            <Policies>
+                <TimeBasedTriggeringPolicy />
+            </Policies>
+            <DefaultRolloverStrategy max="30" />
         </RollingFile>
     </Appenders>
     <Loggers>
@@ -35,6 +45,11 @@
         <!-- Logger for all classes containing package com.cyecize -->
         <Logger level="trace" name="com.cyecize">
             <AppenderRef ref="RollingFileTrace"/>
+        </Logger>
+
+        <!-- Logger for just VisitorLoggerInterceptor. The logs from this class will be ignored by the root logger -->
+        <Logger level="info" name="com.cyecize.app.config.VisitorLoggerInterceptor" additivity="false">
+            <AppenderRef ref="RollingFileVisitors"/>
         </Logger>
 
         <!-- Default logger -->
