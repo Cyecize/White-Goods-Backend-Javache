@@ -27,7 +27,7 @@ public class VisitorLoggerInterceptor implements InterceptorAdapter {
             addr = request.getRemoteAddress();
         }
 
-        log.info(addr);
+        log.info(String.format("%s | %s", request.getRequestURL(), addr));
         return true;
     }
 }

@@ -29,7 +29,7 @@
         <!-- Appender, intended to log visitors. Each day a new file will be created -->
         <RollingFile name="RollingFileVisitors" fileName="logs/visitors.log"
           filePattern="logs/visitors/visitors-%d{yyyy-MM-dd}.log">
-            <PatternLayout pattern="%msg @ %d{yyyy-MM-dd HH:mm:ss}%n" />
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} | %msg %n" />
             <Policies>
                 <TimeBasedTriggeringPolicy />
             </Policies>
