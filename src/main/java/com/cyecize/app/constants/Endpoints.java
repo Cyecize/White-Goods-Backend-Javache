@@ -57,4 +57,6 @@ public class Endpoints {
     public static final String WAREHOUSE_REVISION           = "/warehouse/revisions/{id}";
 
     public static final String SEO_SITEMAP                  = "/seo/sitemap.xml";
+
+    public static final String PROCESS_VISITORS             = "/process-visitors";
 }
