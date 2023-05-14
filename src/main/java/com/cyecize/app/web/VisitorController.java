@@ -26,7 +26,7 @@ public class VisitorController {
     private final DailyLogFileService dailyLogFileService;
 
     @PreAuthorize(AuthorizationType.ANY)
-    @PostMapping(Endpoints.WAREHOUSE_REVISIONS)
+    @PostMapping(Endpoints.PROCESS_VISITORS)
     public JsonResponse processVisitorFiles(@RequestParam("pwd") String pwd) {
         if (!visitorPassword.equals(pwd)) {
             log.warn("Cannot process visitor files, wrong password!");
