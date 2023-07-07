@@ -1,8 +1,12 @@
 package com.cyecize.app.api.visitors;
 
+import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
+import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
+import java.time.LocalDateTime;
+import java.util.List;
 import javax.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -11,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 public class DailyLogFileRepository {
 
     private final TransactionContext transactionContext;
-
+    private final SpecificationExecutor specificationExecutor;
 
     @Transactional
     public DailyLogFile persist(DailyLogFile dailyLogFile) {
@@ -39,5 +43,14 @@ public class DailyLogFileRepository {
                         DailyLogFile.class)
                 .setMaxResults(1)
                 .getResultStream().findFirst().orElse(null);
+    }
+
+    @Transactional
+    public List<DailyLogFile> searchByDateFetchAll(LocalDateTime start, LocalDateTime end) {
+        return this.specificationExecutor.findAll(
+                DailyLogFileSpecifications.betweenDate(start, end),
+                DailyLogFile.class,
+                EntityGraphs.DAILY_LOG_FILE_ALL
+        );
     }
 }

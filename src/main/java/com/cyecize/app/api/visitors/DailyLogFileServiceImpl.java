@@ -7,7 +7,10 @@ import com.cyecize.app.api.visitors.dailyvisitordata.VisitorHitsPerIpRepository;
 import com.cyecize.app.api.visitors.dailyvisitordata.VisitorHitsPerPage;
 import com.cyecize.app.api.visitors.dailyvisitordata.VisitorHitsPerPageRepository;
 import com.cyecize.app.api.visitors.dto.AnalyzedVisitorLogDto;
+import com.cyecize.app.api.visitors.dto.DailyStatisticDto;
+import com.cyecize.app.api.visitors.dto.MonthlyStatisticDto;
 import com.cyecize.app.integration.transaction.TransactionExecutor;
+import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.ioc.annotations.Service;
 import com.cyecize.solet.SoletConstants;
 import com.cyecize.summer.common.annotations.Configuration;
@@ -20,9 +23,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 
 @Slf4j
 @Service
@@ -50,6 +56,8 @@ public class DailyLogFileServiceImpl implements DailyLogFileService {
 
     @Configuration(SoletConstants.SOLET_CFG_WORKING_DIR)
     private final String workingDir;
+
+    private final ModelMapper modelMapper;
 
     @Override
     public void processDailyFiles() {
@@ -108,7 +116,7 @@ public class DailyLogFileServiceImpl implements DailyLogFileService {
     private void saveDailyLogFile(AnalyzedVisitorLogDto visitorLogDto, LocalDate date,
             String fileName) {
         final DailyLogFile dailyLogFile = new DailyLogFile();
-        dailyLogFile.setDateProcessed(LocalDateTime.of(date, LocalTime.MIN));
+        dailyLogFile.setDateProcessed(constructDateTime(date));
         dailyLogFile.setUniqueVisitors(visitorLogDto.getUniqueVisitors());
         dailyLogFile.setFilename(fileName);
 
@@ -145,5 +153,28 @@ public class DailyLogFileServiceImpl implements DailyLogFileService {
 
             this.visitorHitsPerPageRepository.persist(hitsPerPage);
         });
+    }
+
+    @Override
+    @Transactional
+    public MonthlyStatisticDto getVisitorStatistics(Integer year, Integer month) {
+        final LocalDateTime startDate = constructDateTime(LocalDate.of(year, month, 1));
+        final LocalDateTime endDate = startDate.plusMonths(1).minusDays(1);
+
+        final List<DailyLogFile> dailyLogFiles = this.dailyLogFileRepository.searchByDateFetchAll(
+                startDate, endDate
+        );
+
+        return new MonthlyStatisticDto(
+                year,
+                month,
+                dailyLogFiles.stream()
+                        .map(dlf -> this.modelMapper.map(dlf, DailyStatisticDto.class))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    private static LocalDateTime constructDateTime(LocalDate localDate) {
+        return LocalDateTime.of(localDate, LocalTime.MIN);
     }
 }

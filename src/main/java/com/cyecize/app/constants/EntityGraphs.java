@@ -20,4 +20,6 @@ public class EntityGraphs {
     public static final String PROMOTION_WITH_ITEMS = "promotionWithItems";
 
     public static final String ORDER_ALL = "orderAll";
+
+    public static final String DAILY_LOG_FILE_ALL = "dailyLogFileAll";
 }
