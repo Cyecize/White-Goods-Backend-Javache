@@ -1,17 +1,18 @@
 package com.cyecize.app.api.store.promotion;
 
+import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.api.store.promotion.discounters.Discounter;
 import com.cyecize.app.api.store.promotion.discounters.DiscounterBase;
-import com.cyecize.app.api.store.promotion.discounters.DiscounterPayloadDto;
+import com.cyecize.app.api.store.promotion.discounters.FixedAmountPerProductDiscounter;
 import com.cyecize.app.api.store.promotion.discounters.FreeDeliveryDiscounter;
 import com.cyecize.app.api.store.promotion.discounters.PercentPerProductDiscounter;
 import com.cyecize.app.api.store.promotion.discounters.SubtotalFixedAmountDiscounter;
-import com.cyecize.app.api.store.promotion.dto.DiscountDto;
 import lombok.Getter;
 
 public enum DiscountType {
     //Apply price discount based on a percentage value for each qualifying product.
     PERCENT_PER_PRODUCT(0, new PercentPerProductDiscounter()),
+    FIXED_AMOUNT_PER_PRODUCT(0, new FixedAmountPerProductDiscounter()),
 
     // Apply price discount to the final price based on a fixed value.
     SUBTOTAL_FIXED_AMOUNT(1, new SubtotalFixedAmountDiscounter()),
@@ -27,7 +28,7 @@ public enum DiscountType {
         this.discounter = discounter;
     }
 
-    public DiscountDto applyDiscount(Promotion promotion, DiscounterPayloadDto payload) {
+    public void applyDiscount(Promotion promotion, PriceBag priceBag) {
         if (!this.equals(promotion.getDiscountType())) {
             throw new IllegalArgumentException(String.format(
                     "Trying to apply discount with type %s but promotion with type %s is used",
@@ -36,6 +37,6 @@ public enum DiscountType {
             ));
         }
 
-        return this.discounter.applyDiscount(promotion, payload);
+        this.discounter.applyDiscount(promotion, priceBag);
     }
 }

@@ -1,7 +1,7 @@
 package com.cyecize.app.api.store.order.validator;
 
-import com.cyecize.app.api.store.cart.ShoppingCartPricingDto;
-import com.cyecize.app.api.store.cart.ShoppingCartService;
+import com.cyecize.app.api.store.pricing.Price;
+import com.cyecize.app.api.store.pricing.PricingService;
 import com.cyecize.summer.areas.validation.interfaces.ConstraintValidator;
 import com.cyecize.summer.common.annotations.Component;
 import java.lang.reflect.Field;
@@ -12,7 +12,7 @@ import lombok.RequiredArgsConstructor;
 public class ValidConfirmedPriceValidator implements
         ConstraintValidator<ValidConfirmedPrice, Double> {
 
-    private final ShoppingCartService shoppingCartService;
+    private final PricingService pricingService;
 
     private String sessionIdFieldName;
 
@@ -40,7 +40,7 @@ public class ValidConfirmedPriceValidator implements
             return false;
         }
 
-        final ShoppingCartPricingDto pricing = this.shoppingCartService.getPricing(sessionId);
-        return Double.compare(val, pricing.getTotal()) == 0;
+        final Price price = this.pricingService.getPrice(sessionId);
+        return Double.compare(val, price.getTotal()) == 0;
     }
 }

@@ -2,8 +2,9 @@ package com.cyecize.app.web;
 
 import com.cyecize.app.api.store.cart.AddShoppingCartItemDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
-import com.cyecize.app.api.store.cart.ShoppingCartPricingDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
+import com.cyecize.app.api.store.pricing.Price;
+import com.cyecize.app.api.store.pricing.PricingService;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.http.HttpStatus;
@@ -29,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
+    private final PricingService pricingService;
 
     @PostMapping(Endpoints.SHOPPING_CART_SESSION)
     public SessionDto createShoppingSession() {
@@ -65,8 +67,8 @@ public class ShoppingCartController {
     }
 
     @GetMapping(Endpoints.SHOPPING_CART_PRICING)
-    public ShoppingCartPricingDto getPricing(@PathVariable("session") String session) {
-        return this.shoppingCartService.getPricing(session);
+    public Price getPricing(@PathVariable("session") String session) {
+        return this.pricingService.getPrice(session);
     }
 
     @Data

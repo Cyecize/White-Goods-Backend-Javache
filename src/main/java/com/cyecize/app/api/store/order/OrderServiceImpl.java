@@ -6,13 +6,14 @@ import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
-import com.cyecize.app.api.store.cart.ShoppingCartPricingDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.delivery.DeliveryAddress;
 import com.cyecize.app.api.store.delivery.DeliveryAddressService;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
+import com.cyecize.app.api.store.pricing.Price;
+import com.cyecize.app.api.store.pricing.PricingService;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.api.warehouse.WarehouseService;
@@ -23,7 +24,6 @@ import com.cyecize.app.util.MathUtil;
 import com.cyecize.app.util.Page;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
-import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -43,8 +43,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final ShoppingCartService shoppingCartService;
 
-    @Configuration("delivery.price")
-    private final Double deliveryPrince;
+    private final PricingService pricingService;
 
     private final OrderRepository orderRepository;
 
@@ -114,7 +113,7 @@ public class OrderServiceImpl implements OrderService {
             String cartSessionId,
             Long userId,
             Double userAgreedPrice) {
-        final ShoppingCartPricingDto pricing = this.shoppingCartService.getPricing(cartSessionId);
+        final Price price = this.pricingService.getPrice(cartSessionId);
         final Order order = new Order();
         order.setAddressId(address.getId());
         order.setAddress(address);
@@ -122,8 +121,8 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.WAITING);
         order.setUserId(userId);
-        order.setDeliveryPrice(pricing.getDiscounts().isFreeDelivery() ? 0D : this.deliveryPrince);
-        order.setTotalDiscounts(pricing.getDiscounts().getTotalDiscounts());
+        order.setDeliveryPrice(price.isFreeDelivery() ? 0D : price.getDeliveryPrice());
+        order.setTotalDiscounts(price.getTotalDiscounts());
         this.orderRepository.persist(order);
 
         final List<OrderItem> orderItems = new ArrayList<>(items.size());

@@ -9,7 +9,7 @@ import com.cyecize.app.util.MathUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PercentPerProductDiscounter extends DiscounterBase {
+public class FixedAmountPerProductDiscounter extends DiscounterBase {
 
     @Override
     protected void doApply(Promotion promotion, PriceBag priceBag) {
@@ -26,12 +26,8 @@ public class PercentPerProductDiscounter extends DiscounterBase {
             );
 
             discountItems.add(discountItem);
-
             final double discount = MathUtil.calculatePrice(
-                    MathUtil.round(MathUtil.calcPercentDiscountNoRound(
-                            item.getProduct().getPrice(),
-                            promotion.getDiscount()
-                    )),
+                    promotion.getDiscount(),
                     item.getQuantity(),
                     false
             );

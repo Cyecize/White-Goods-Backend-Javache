@@ -1,6 +1,5 @@
 package com.cyecize.app.api.store.order.validator;
 
-import com.cyecize.app.api.store.order.validator.CanSeeAllOrders;
 import com.cyecize.app.constants.General;
 import com.cyecize.summer.areas.security.models.Principal;
 import com.cyecize.summer.areas.validation.interfaces.ConstraintValidator;

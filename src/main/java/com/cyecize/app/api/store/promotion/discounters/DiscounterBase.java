@@ -1,8 +1,8 @@
 package com.cyecize.app.api.store.promotion.discounters;
 
+import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.api.store.promotion.DiscountType;
 import com.cyecize.app.api.store.promotion.Promotion;
-import com.cyecize.app.api.store.promotion.dto.DiscountDto;
 
 
 public abstract class DiscounterBase implements Discounter {
@@ -10,7 +10,7 @@ public abstract class DiscounterBase implements Discounter {
     private DiscountType discountType;
 
     @Override
-    public DiscountDto applyDiscount(Promotion promotion, DiscounterPayloadDto payload) {
+    public final void applyDiscount(Promotion promotion, PriceBag priceBag) {
         if (promotion.getDiscountType() != this.discountType) {
             throw new IllegalArgumentException(String.format(
                     "Trying to apply discount type %s on discounter for %s type.",
@@ -19,10 +19,10 @@ public abstract class DiscounterBase implements Discounter {
             ));
         }
 
-        return this.doApply(promotion, payload);
+        this.doApply(promotion, priceBag);
     }
 
-    protected abstract DiscountDto doApply(Promotion promotion, DiscounterPayloadDto payload);
+    protected abstract void doApply(Promotion promotion, PriceBag priceBag);
 
     public void setDiscountType(DiscountType discountType) {
         this.discountType = discountType;

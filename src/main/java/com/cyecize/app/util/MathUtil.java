@@ -65,10 +65,6 @@ public class MathUtil {
         return da.sum();
     }
 
-    public static double sumAllAndRound(Double... values) {
-        return round(sumAll(values));
-    }
-
     public static double subtract(@Nullable Double n1, @Nullable Double n2) {
         n1 = Objects.requireNonNullElse(n1, 0D);
         n2 = Objects.requireNonNullElse(n2, 0D);

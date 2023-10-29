@@ -2,7 +2,6 @@ package com.cyecize.app.api.store.order.validator;
 
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.summer.areas.validation.annotations.Constraint;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

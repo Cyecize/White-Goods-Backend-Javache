@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store.promotion.promotionfilters;
 
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.api.store.promotion.Promotion;
 import com.cyecize.app.api.store.promotion.PromotionProductItem;
 import java.util.List;
@@ -10,12 +11,12 @@ import java.util.stream.Collectors;
 public class DiscountSpecificProductsAllFilter extends PromotionFilterBase {
 
     @Override
-    protected boolean doTest(Promotion promotion, FilterPayloadDto payload) {
-        if (payload.getItems().isEmpty()) {
+    protected boolean doTest(Promotion promotion, PriceBag priceBag) {
+        if (priceBag.getItems().isEmpty()) {
             return false;
         }
 
-        final Map<Long, Integer> itemQtyMap = payload.getItems().stream()
+        final Map<Long, Integer> itemQtyMap = priceBag.getItems().stream()
                 .collect(Collectors.toMap(
                         o -> o.getProduct().getId(),
                         ShoppingCartItemDetailedDto::getQuantity

@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store.promotion.promotionfilters;
 
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.api.store.promotion.Promotion;
 import com.cyecize.app.api.store.promotion.PromotionType;
 import java.util.ArrayList;
@@ -15,7 +16,7 @@ public abstract class PromotionFilterBase implements PromotionFilter {
     }
 
     @Override
-    public boolean test(Promotion promotion, FilterPayloadDto payload) {
+    public final boolean test(Promotion promotion, PriceBag priceBag) {
         if (promotion.getPromotionType() != this.promotionType) {
             throw new IllegalArgumentException(String.format(
                     "Trying to test %s on filter for %s promotion type.",
@@ -24,13 +25,13 @@ public abstract class PromotionFilterBase implements PromotionFilter {
             ));
         }
 
-        return this.doTest(promotion, payload);
+        return this.doTest(promotion, priceBag);
     }
 
-    protected abstract boolean doTest(Promotion promotion, FilterPayloadDto payload);
+    protected abstract boolean doTest(Promotion promotion, PriceBag priceBag);
 
     @Override
-    public List<ShoppingCartItemDetailedDto> filterApplicableItems(Promotion promotion,
+    public final List<ShoppingCartItemDetailedDto> filterApplicableItems(Promotion promotion,
             List<ShoppingCartItemDetailedDto> items) {
         if (promotion.getPromotionType() != this.promotionType) {
             throw new IllegalArgumentException(String.format(
