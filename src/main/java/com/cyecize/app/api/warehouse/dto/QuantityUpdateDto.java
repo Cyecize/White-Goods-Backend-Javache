@@ -14,6 +14,8 @@ public class QuantityUpdateDto {
 
     private Long deliveryId;
 
+    private Long revisionId;
+
     private Long orderId;
 
     private QuantityUpdateType updateType;
