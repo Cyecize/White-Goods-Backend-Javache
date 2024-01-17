@@ -59,5 +59,9 @@ public class Endpoints {
     public static final String SEO_SITEMAP                  = "/seo/sitemap.xml";
 
     public static final String PROCESS_VISITORS             = "/process-visitors";
-    public static final String VISITORS_MONTH                 = "/visitors/{year}/{month}";
+    public static final String VISITORS_MONTH               = "/visitors/{year}/{month}";
+
+    public static final String PROMOTIONS_SEARCH            = "/promotions/search";
+    public static final String PROMOTIONS                   = "/promotions";
+    public static final String PROMOTION                    = "/promotions/{id}";
 }

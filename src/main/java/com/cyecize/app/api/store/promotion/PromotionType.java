@@ -12,33 +12,65 @@ import com.cyecize.app.api.store.promotion.promotionfilters.DiscountSpecificProd
 import com.cyecize.app.api.store.promotion.promotionfilters.DiscountSpecificProductsAnyFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.PromotionFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.PromotionFilterBase;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountOverSubtotalValidator;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountOverTotalValidator;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountSpecificCategoryValidator;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountSpecificProductsAllValidator;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountSpecificProductsAnyValidator;
+import com.cyecize.app.api.store.promotion.validators.promotype.PromotionTypeValidator;
 import java.util.List;
+import lombok.Getter;
 
 public enum PromotionType {
 
     // Discount, applied if subtotal is over a given amount.
-    DISCOUNT_OVER_SUBTOTAL(new DiscountOverSubtotalFilter(), REGULAR),
+    DISCOUNT_OVER_SUBTOTAL(
+            new DiscountOverSubtotalFilter(),
+            REGULAR,
+            DiscountOverSubtotalValidator.class
+    ),
 
     // Discount, applied if the total is over a given amount.
-    DISCOUNT_OVER_TOTAL(new DiscountOverTotalFilter(), ADDITIONAL),
+    DISCOUNT_OVER_TOTAL(
+            new DiscountOverTotalFilter(),
+            ADDITIONAL,
+            DiscountOverTotalValidator.class
+    ),
 
     // Discount, applied if shopping cart contains any of the specified products.
-    DISCOUNT_SPECIFIC_PRODUCTS_ANY(new DiscountSpecificProductsAnyFilter(), REGULAR),
+    DISCOUNT_SPECIFIC_PRODUCTS_ANY(
+            new DiscountSpecificProductsAnyFilter(),
+            REGULAR,
+            DiscountSpecificProductsAnyValidator.class
+    ),
 
     // Discount, applied if shopping cart contains all the specified products.
-    DISCOUNT_SPECIFIC_PRODUCTS_ALL(new DiscountSpecificProductsAllFilter(), REGULAR),
+    DISCOUNT_SPECIFIC_PRODUCTS_ALL(
+            new DiscountSpecificProductsAllFilter(),
+            REGULAR,
+            DiscountSpecificProductsAllValidator.class
+    ),
 
     // Discount, applied if shopping cart contains products from a given category.
-    DISCOUNT_SPECIFIC_CATEGORY(new DiscountSpecificCategoryFilter(), REGULAR);
+    DISCOUNT_SPECIFIC_CATEGORY(
+            new DiscountSpecificCategoryFilter(),
+            REGULAR,
+            DiscountSpecificCategoryValidator.class
+    );
     // FUTURE: COUPON_CODE
 
     private final PromotionFilter filter;
     private final PromotionStage stage;
+    @Getter
+    private final Class<? extends PromotionTypeValidator> validatorType;
 
-    PromotionType(PromotionFilterBase filter, PromotionStage stage) {
+    PromotionType(PromotionFilterBase filter,
+            PromotionStage stage,
+            Class<? extends PromotionTypeValidator> validatorType) {
         this.filter = filter;
         this.stage = stage;
         filter.setPromotionType(this);
+        this.validatorType = validatorType;
     }
 
     public boolean test(Promotion promotion, PriceBag priceBag) {

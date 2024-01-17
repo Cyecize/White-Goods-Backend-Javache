@@ -3,7 +3,14 @@ package com.cyecize.app.api.store.promotion;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.pricing.PriceBag;
+import com.cyecize.app.api.store.promotion.dto.CreatePromotionDto;
+import com.cyecize.app.api.store.promotion.dto.PromotionQuery;
+import com.cyecize.app.constants.EntityGraphs;
+import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.MathUtil;
+import com.cyecize.app.util.Page;
+import com.cyecize.app.util.Specification;
+import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.PostConstruct;
 import com.cyecize.summer.common.annotations.Service;
 import java.util.ArrayList;
@@ -13,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +32,12 @@ public class PromotionServiceImpl implements PromotionService {
     private final PromotionRepository promotionRepository;
 
     private final PromotionProductItemRepository promotionProductItemRepository;
+
+    private final PromotionValidator promotionValidator;
+
+    private final ModelMapper modelMapper;
+
+    private final SpecificationExecutor specificationExecutor;
 
     @PostConstruct
     public void init() {
@@ -83,6 +97,25 @@ public class PromotionServiceImpl implements PromotionService {
         ));
     }
 
+    @Override
+    @Transactional
+    public void createPromotion(CreatePromotionDto dto) {
+        this.promotionValidator.validatePromoBusinessRules(dto);
+
+        final Promotion promotion = this.modelMapper.map(dto, Promotion.class);
+
+        this.promotionRepository.persist(promotion);
+
+        if (promotion.getProductItems() != null && !promotion.getProductItems().isEmpty()) {
+            for (PromotionProductItem productItem : promotion.getProductItems()) {
+                productItem.setPromotionId(promotion.getId());
+                this.promotionProductItemRepository.persist(productItem);
+            }
+        }
+
+        this.reloadCachedPromotions();
+    }
+
     private void reloadCachedPromotions() {
         final List<Promotion> promotions = this.promotionRepository.findAllFetchItems();
         CACHED_PROMOTIONS.clear();
@@ -97,5 +130,16 @@ public class PromotionServiceImpl implements PromotionService {
                             .collect(Collectors.toList())
             );
         }
+    }
+
+    @Override
+    public Page<Promotion> searchPromotions(PromotionQuery query) {
+        final Specification<Promotion> specification = PromotionSpecifications
+                .sort(query.getSort());
+
+        return this.specificationExecutor.findAll(
+                specification, query.getPage(), Promotion.class,
+                EntityGraphs.PROMOTION_WITH_ITEMS
+        );
     }
 }

@@ -21,12 +21,14 @@ import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.util.MathUtil;
+import com.cyecize.app.util.SpecificationExecutor;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 
 @ExtendWith(MockitoExtension.class)
 public class PromotionServiceTests {
@@ -39,12 +41,23 @@ public class PromotionServiceTests {
     @Mock
     private PromotionProductItemRepository promotionProductItemRepository;
 
+    @Mock
+    private PromotionValidator promotionValidator;
+
+    @Mock
+    private ModelMapper modelMapper;
+
+    @Mock
+    private SpecificationExecutor specificationExecutor;
 
     @BeforeEach
     public void init() {
         this.promotionService = new PromotionServiceImpl(
                 this.promotionRepository,
-                this.promotionProductItemRepository
+                this.promotionProductItemRepository,
+                this.promotionValidator,
+                this.modelMapper,
+                this.specificationExecutor
         );
     }
 

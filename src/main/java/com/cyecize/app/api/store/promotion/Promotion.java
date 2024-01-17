@@ -56,5 +56,6 @@ public class Promotion {
             targetEntity = PromotionProductItem.class,
             fetch = FetchType.LAZY,
             mappedBy = "promotionId")
+    @ToString.Exclude
     private List<PromotionProductItem> productItems;
 }
