@@ -1,6 +1,7 @@
 package com.cyecize.app.web;
 
 import com.cyecize.app.api.store.promotion.PromotionService;
+import com.cyecize.app.api.store.promotion.dto.CreatePromotionDto;
 import com.cyecize.app.api.store.promotion.dto.PromotionDto;
 import com.cyecize.app.api.store.promotion.dto.PromotionQuery;
 import com.cyecize.app.constants.Endpoints;
@@ -30,5 +31,10 @@ public class PromotionController {
         return this.promotionService
                 .searchPromotions(query)
                 .map(promo -> this.modelMapper.map(promo, PromotionDto.class));
+    }
+
+    @PostMapping(Endpoints.PROMOTIONS)
+    public PromotionDto createPromotion(@Valid CreatePromotionDto dto) {
+        return this.promotionService.createPromotion(dto);
     }
 }

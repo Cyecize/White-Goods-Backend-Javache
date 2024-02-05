@@ -4,6 +4,7 @@ import com.cyecize.app.api.store.promotion.DiscountType;
 import com.cyecize.app.api.store.promotion.PromotionType;
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.converters.GenericEnumConverter;
+import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.areas.validation.constraints.NotEmpty;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import java.util.List;
@@ -32,5 +33,6 @@ public class CreatePromotionDto {
 
     private Double minSubtotal;
 
+    @Valid
     private List<CreatePromotionProductItemDto> productItems;
 }
