@@ -16,4 +16,8 @@ public interface PromotionService {
     PromotionDto createPromotion(CreatePromotionDto dto);
 
     Page<Promotion> searchPromotions(PromotionQuery query);
+
+    void deletePromotion(Promotion promotion);
+
+    Promotion findPromoById(Long id);
 }

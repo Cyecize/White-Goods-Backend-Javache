@@ -145,4 +145,21 @@ public class PromotionServiceImpl implements PromotionService {
                 EntityGraphs.PROMOTION_WITH_ITEMS
         );
     }
+
+    @Override
+    public void deletePromotion(Promotion promotion) {
+        this.promotionRepository.delete(promotion);
+        this.reloadCachedPromotions();
+    }
+
+    @Override
+    public Promotion findPromoById(Long id) {
+        final Specification<Promotion> specification = PromotionSpecifications.idEquals(id);
+
+        return this.specificationExecutor.findOne(
+                specification,
+                Promotion.class,
+                EntityGraphs.PROMOTION_WITH_ITEMS
+        );
+    }
 }

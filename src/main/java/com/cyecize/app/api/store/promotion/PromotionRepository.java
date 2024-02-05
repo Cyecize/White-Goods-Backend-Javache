@@ -33,4 +33,12 @@ public class PromotionRepository {
                 )
                 .getResultList();
     }
+
+    @Transactional
+    public void delete(Promotion promo) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery("delete from Promotion where id = ?1")
+                .setParameter(1, promo.getId())
+                .executeUpdate();
+    }
 }

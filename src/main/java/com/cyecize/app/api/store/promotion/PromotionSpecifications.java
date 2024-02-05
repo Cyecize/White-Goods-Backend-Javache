@@ -20,4 +20,8 @@ public class PromotionSpecifications {
                 )
                 .toPredicate(root, query, criteriaBuilder);
     }
+
+    public static Specification<Promotion> idEquals(Long id) {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Promotion_.id), id);
+    }
 }
