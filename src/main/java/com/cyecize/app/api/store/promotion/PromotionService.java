@@ -20,4 +20,6 @@ public interface PromotionService {
     void deletePromotion(Promotion promotion);
 
     Promotion findPromoById(Long id);
+
+    PromotionDto editPromotion(Long promoId, CreatePromotionDto dto);
 }

@@ -19,6 +19,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -161,5 +163,47 @@ public class PromotionServiceImpl implements PromotionService {
                 Promotion.class,
                 EntityGraphs.PROMOTION_WITH_ITEMS
         );
+    }
+
+    @Override
+    @Transactional
+    public PromotionDto editPromotion(Long promoId, CreatePromotionDto dto) {
+        this.promotionValidator.validatePromoBusinessRules(dto);
+
+        final Promotion promotion = this.findPromoById(promoId);
+        Objects.requireNonNull(promotion);
+
+        final Set<Long> oldProdItemIds = this.getProductItemIds(promotion);
+        promotion.getProductItems().clear();
+
+        this.modelMapper.map(dto, promotion);
+        promotion.getProductItems().forEach(prodItem -> prodItem.setPromotionId(promotion.getId()));
+
+        // Persist new product items
+        promotion.getProductItems().stream()
+                .filter(prodItem -> !oldProdItemIds.contains(prodItem.getProductId()))
+                .forEach(this.promotionProductItemRepository::persist);
+
+        // Merge existing items
+        promotion.getProductItems().stream()
+                .filter(prodItem -> oldProdItemIds.contains(prodItem.getProductId()))
+                .forEach(this.promotionProductItemRepository::merge);
+
+        // Remove old product items
+        final Set<Long> newProdItemIds = this.getProductItemIds(promotion);
+        oldProdItemIds.removeAll(newProdItemIds);
+        if (!oldProdItemIds.isEmpty()) {
+            this.promotionProductItemRepository.removeAll(oldProdItemIds);
+        }
+
+        this.promotionRepository.merge(promotion);
+        this.reloadCachedPromotions();
+        return this.modelMapper.map(promotion, PromotionDto.class);
+    }
+
+    private Set<Long> getProductItemIds(Promotion promotion) {
+        return promotion.getProductItems().stream()
+                .map(PromotionProductItem::getProductId)
+                .collect(Collectors.toSet());
     }
 }

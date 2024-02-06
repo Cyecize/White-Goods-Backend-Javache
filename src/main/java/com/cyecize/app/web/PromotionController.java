@@ -8,6 +8,7 @@ import com.cyecize.app.api.store.promotion.dto.PromotionDto;
 import com.cyecize.app.api.store.promotion.dto.PromotionQuery;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
+import com.cyecize.app.error.NotFoundApiException;
 import com.cyecize.app.util.Page;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
@@ -15,8 +16,10 @@ import com.cyecize.summer.areas.validation.annotations.ConvertedBy;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.DeleteMapping;
+import com.cyecize.summer.common.annotations.routing.GetMapping;
 import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
+import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +53,23 @@ public class PromotionController {
         this.promotionService.deletePromotion(promotion);
         return new JsonResponse(HttpStatus.OK)
                 .addAttribute("message", "Promo removed successfully!");
+    }
+
+    @GetMapping(Endpoints.PROMOTION)
+    public PromotionDto getPromotion(@PathVariable("id") Long promoId) {
+        final Promotion promotion = this.promotionService.findPromoById(promoId);
+
+        if (promotion == null) {
+            throw new NotFoundApiException("Promo not found!");
+        }
+
+        return this.modelMapper.map(promotion, PromotionDto.class);
+    }
+
+    @PutMapping(Endpoints.PROMOTION)
+    public PromotionDto editPromotion(
+            @ConvertedBy(PromotionIdDataAdapter.class) @PathVariable("id") Promotion promotion,
+            @Valid CreatePromotionDto dto) {
+        return this.promotionService.editPromotion(promotion.getId(), dto);
     }
 }

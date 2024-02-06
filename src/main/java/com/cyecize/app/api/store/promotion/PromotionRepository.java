@@ -41,4 +41,10 @@ public class PromotionRepository {
                 .setParameter(1, promo.getId())
                 .executeUpdate();
     }
+
+    @Transactional
+    public void merge(Promotion promotion) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.merge(promotion);
+    }
 }
