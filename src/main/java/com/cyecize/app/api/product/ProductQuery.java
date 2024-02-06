@@ -31,4 +31,6 @@ public class ProductQuery {
     private Boolean showHidden;
 
     private BetweenQuery<Long> id;
+
+    private List<Long> ids;
 }

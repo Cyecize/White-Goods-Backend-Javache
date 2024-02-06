@@ -65,6 +65,7 @@ public class ProductServiceImpl implements ProductService {
                 .and(ProductSpecifications.betweenId(productQuery.getId()))
                 .and(ProductSpecifications.sort(productQuery.getSort()))
                 .and(ProductSpecifications.categoryIdContains(productQuery.getCategoryIds()))
+                .and(ProductSpecifications.idContains(productQuery.getIds(), false))
                 .and(ProductSpecifications.includesAllSpecifications(productQuery.getSpecifications()))
                 .and(ProductSpecifications.containsText(productQuery.getSearch()));
 

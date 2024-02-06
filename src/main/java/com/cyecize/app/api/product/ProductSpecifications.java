@@ -10,16 +10,15 @@ import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
 import java.util.Collection;
-import org.apache.commons.lang3.BooleanUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import java.util.List;
+import java.util.Map;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.SetJoin;
 import javax.persistence.criteria.Subquery;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.lang3.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ProductSpecifications {
 
@@ -32,8 +31,12 @@ public class ProductSpecifications {
     }
 
     public static Specification<Product> idContains(Collection<Long> ids) {
+        return idContains(ids, true);
+    }
+
+    public static Specification<Product> idContains(Collection<Long> ids, boolean fail) {
         if (ids == null || ids.isEmpty()) {
-            return Specification.not(null);
+            return fail ? Specification.not(null) : Specification.where(null);
         }
 
         return (root, query, criteriaBuilder) -> root.get(Product_.id).in(ids);
