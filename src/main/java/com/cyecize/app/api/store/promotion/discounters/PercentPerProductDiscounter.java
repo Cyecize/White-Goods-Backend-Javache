@@ -14,7 +14,7 @@ public class PercentPerProductDiscounter extends DiscounterBase {
     @Override
     protected void doApply(Promotion promotion, PriceBag priceBag) {
         final List<ShoppingCartItemDetailedDto> items = promotion.getPromotionType()
-                .filterApplicableItems(promotion, priceBag.getItems());
+                .filterApplicableItems(promotion, priceBag.getShoppingCart().getItems());
 
         final List<DiscountProductItemDto> discountItems = new ArrayList<>();
         final List<Double> discountedValues = new ArrayList<>(items.size());

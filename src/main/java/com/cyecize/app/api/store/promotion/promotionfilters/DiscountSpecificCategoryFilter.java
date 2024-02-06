@@ -11,7 +11,9 @@ public class DiscountSpecificCategoryFilter extends PromotionFilterBase {
 
     @Override
     protected boolean doTest(Promotion promotion, PriceBag priceBag) {
-        return !this.doFilterApplicableItems(promotion, priceBag.getItems()).isEmpty();
+        return !this.doFilterApplicableItems(
+                promotion, priceBag.getShoppingCart().getItems()
+        ).isEmpty();
     }
 
     @Override

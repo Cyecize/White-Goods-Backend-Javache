@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store.promotion;
 
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.api.store.promotion.dto.CreatePromotionDto;
@@ -14,6 +15,7 @@ import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.PostConstruct;
 import com.cyecize.summer.common.annotations.Service;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -80,7 +82,11 @@ public class PromotionServiceImpl implements PromotionService {
 
         final Double prodPrice = MathUtil.calculatePrice(productDto.getPrice(), 1);
         final PriceBag priceBag = new PriceBag(
-                List.of(new ShoppingCartItemDetailedDto(productDto, 1, prodPrice)),
+                new ShoppingCartDetailedDto(
+                        LocalDateTime.now(),
+                        null,
+                        List.of(new ShoppingCartItemDetailedDto(productDto, 1, prodPrice))
+                ),
                 prodPrice
         );
 
@@ -139,8 +145,9 @@ public class PromotionServiceImpl implements PromotionService {
 
     @Override
     public Page<Promotion> searchPromotions(PromotionQuery query) {
-        final Specification<Promotion> specification = PromotionSpecifications
-                .sort(query.getSort());
+        final Specification<Promotion> specification =
+                PromotionSpecifications.promotionTypeIn(query.getPromotionTypes())
+                        .and(PromotionSpecifications.sort(query.getSort()));
 
         return this.specificationExecutor.findAll(
                 specification, query.getPage(), Promotion.class,

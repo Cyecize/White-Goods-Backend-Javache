@@ -68,7 +68,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             }
         }
 
-        final ShoppingCartDto cart = new ShoppingCartDto();
+        final ShoppingCartDto cart = new ShoppingCartDto(new ArrayList<>());
         cart.setLastModified(LocalDateTime.now());
         cart.setItems(new ArrayList<>());
 
@@ -87,17 +87,23 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             this.shoppingCartRepository.deleteByUserId(this.getUser().getId());
         }
         this.sessionItems
-                .getOrDefault(sessionId, new ShoppingCartDto())
+                .getOrDefault(sessionId, new ShoppingCartDto(new ArrayList<>()))
                 .setItems(new ArrayList<>());
     }
 
     @Override
-    public List<ShoppingCartItemDetailedDto> getShoppingCartItems(String sessionId, boolean merge) {
+    public ShoppingCartDetailedDto getShoppingCart(String sessionId, boolean merge) {
         if (this.principal.isUserPresent() && merge) {
-            return this.fetchItems(this.mergeIntoSession(sessionId));
+            this.mergeIntoSession(sessionId);
         }
 
-        return this.fetchItems(this.getShoppingCartFromSession(sessionId).getItems());
+        final ShoppingCartDto shoppingCartDto = this.getShoppingCartFromSession(sessionId);
+
+        return new ShoppingCartDetailedDto(
+                shoppingCartDto.getLastModified(),
+                null,
+                this.fetchItems(shoppingCartDto.getItems())
+        );
     }
 
     @Override
@@ -294,5 +300,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         private List<ShoppingCartItemDto> items;
 
         private LocalDateTime lastModified;
+
+        private ShoppingCartCouponCodeDto couponCode;
+
+        public ShoppingCartDto(List<ShoppingCartItemDto> items) {
+            this.items = items;
+            this.lastModified = LocalDateTime.now();
+        }
     }
 }

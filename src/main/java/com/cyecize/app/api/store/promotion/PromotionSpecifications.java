@@ -4,6 +4,7 @@ import com.cyecize.app.util.QuerySpecifications;
 import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
+import java.util.Collection;
 
 public class PromotionSpecifications {
 
@@ -23,5 +24,13 @@ public class PromotionSpecifications {
 
     public static Specification<Promotion> idEquals(Long id) {
         return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Promotion_.id), id);
+    }
+
+    public static Specification<Promotion> promotionTypeIn(Collection<PromotionType> types) {
+        if (types == null || types.isEmpty()) {
+            return Specification.where(null);
+        }
+
+        return (root, query, criteriaBuilder) -> root.get(Promotion_.promotionType).in(types);
     }
 }

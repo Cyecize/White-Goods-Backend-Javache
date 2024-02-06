@@ -10,7 +10,7 @@ public interface ShoppingCartService {
 
     void removeAllItems(String sessionId);
 
-    List<ShoppingCartItemDetailedDto> getShoppingCartItems(String sessionId, boolean mergeFromDb);
+    ShoppingCartDetailedDto getShoppingCart(String sessionId, boolean mergeFromDb);
 
     List<ShoppingCartItemDetailedDto> addItem(String sessionId, AddShoppingCartItemDto dto);
 

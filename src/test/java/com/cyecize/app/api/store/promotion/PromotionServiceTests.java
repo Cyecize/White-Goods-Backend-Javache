@@ -18,10 +18,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.pricing.PriceBag;
 import com.cyecize.app.util.MathUtil;
 import com.cyecize.app.util.SpecificationExecutor;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -777,7 +779,8 @@ public class PromotionServiceTests {
     }
 
     private PriceBag createPriceBag(List<ShoppingCartItemDetailedDto> items) {
-        return new PriceBag(items,
+        return new PriceBag(
+                new ShoppingCartDetailedDto(LocalDateTime.now(), null, items),
                 items.stream().map(ShoppingCartItemDetailedDto::getCalculatedPrice)
                         .reduce(Double::sum).orElse(0D));
     }

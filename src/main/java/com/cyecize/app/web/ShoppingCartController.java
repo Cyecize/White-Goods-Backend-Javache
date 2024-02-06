@@ -41,7 +41,7 @@ public class ShoppingCartController {
     public List<ShoppingCartItemDetailedDto> getShoppingCartItems(
             @PathVariable("session") String session,
             @RequestParam(value = "syncWithAccount") boolean mergeDb) {
-        return this.shoppingCartService.getShoppingCartItems(session, mergeDb);
+        return this.shoppingCartService.getShoppingCart(session, mergeDb).getItems();
     }
 
     @PostMapping(Endpoints.SHOPPING_CART)

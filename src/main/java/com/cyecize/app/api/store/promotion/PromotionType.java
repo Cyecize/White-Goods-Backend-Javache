@@ -5,6 +5,7 @@ import static com.cyecize.app.api.store.promotion.PromotionStage.REGULAR;
 
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.pricing.PriceBag;
+import com.cyecize.app.api.store.promotion.promotionfilters.DiscountCouponCodeFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.DiscountOverSubtotalFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.DiscountOverTotalFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.DiscountSpecificCategoryFilter;
@@ -12,6 +13,7 @@ import com.cyecize.app.api.store.promotion.promotionfilters.DiscountSpecificProd
 import com.cyecize.app.api.store.promotion.promotionfilters.DiscountSpecificProductsAnyFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.PromotionFilter;
 import com.cyecize.app.api.store.promotion.promotionfilters.PromotionFilterBase;
+import com.cyecize.app.api.store.promotion.validators.promotype.DiscountCouponCodeValidator;
 import com.cyecize.app.api.store.promotion.validators.promotype.DiscountOverSubtotalValidator;
 import com.cyecize.app.api.store.promotion.validators.promotype.DiscountOverTotalValidator;
 import com.cyecize.app.api.store.promotion.validators.promotype.DiscountSpecificCategoryValidator;
@@ -56,8 +58,14 @@ public enum PromotionType {
             new DiscountSpecificCategoryFilter(),
             REGULAR,
             DiscountSpecificCategoryValidator.class
+    ),
+
+    // Discount, not applied unless user enters a coupon code created for that promotion.
+    DISCOUNT_COUPON_CODE(
+            new DiscountCouponCodeFilter(),
+            REGULAR,
+            DiscountCouponCodeValidator.class
     );
-    // FUTURE: COUPON_CODE
 
     private final PromotionFilter filter;
     private final PromotionStage stage;

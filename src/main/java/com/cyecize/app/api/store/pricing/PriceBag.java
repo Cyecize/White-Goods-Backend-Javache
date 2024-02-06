@@ -1,6 +1,6 @@
 package com.cyecize.app.api.store.pricing;
 
-import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.promotion.dto.DiscountDto;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import lombok.Setter;
 public class PriceBag {
 
     @Getter
-    private final List<ShoppingCartItemDetailedDto> items;
+    private final ShoppingCartDetailedDto shoppingCart;
 
     @Getter
     private final Double subtotal;

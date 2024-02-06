@@ -18,7 +18,7 @@ public class DiscountSpecificProductsAnyFilter extends PromotionFilterBase {
                         PromotionProductItem::getProductId, PromotionProductItem::getMinQuantity
                 ));
 
-        for (ShoppingCartItemDetailedDto item : priceBag.getItems()) {
+        for (ShoppingCartItemDetailedDto item : priceBag.getShoppingCart().getItems()) {
             final Integer minQty = prodQtyMap.get(item.getProduct().getId());
             if (minQty == null) {
                 continue;

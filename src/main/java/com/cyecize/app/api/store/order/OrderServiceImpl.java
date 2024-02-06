@@ -5,6 +5,7 @@ import com.cyecize.app.api.mail.MailService;
 import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.delivery.DeliveryAddress;
@@ -64,16 +65,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void createOrder(CreateOrderAnonDto dto) {
-        final List<ShoppingCartItemDetailedDto> items = this.shoppingCartService
-                .getShoppingCartItems(dto.getSessionId(), false);
+        final ShoppingCartDetailedDto shoppingCart = this.shoppingCartService
+                .getShoppingCart(dto.getSessionId(), false);
 
-        if (items.isEmpty()) {
+        if (shoppingCart.getItems().isEmpty()) {
             throw new ApiException(ValidationMessages.SHOPPING_CART_EMPTY);
         }
 
         final DeliveryAddress address = this.addressService.createAddress(dto.getAddress());
         final Order order = this.createOrder(
-                items, address, dto.getSessionId(), null, dto.getUserAgreedPrice()
+                shoppingCart.getItems(), address, dto.getSessionId(), null, dto.getUserAgreedPrice()
         );
         this.postOrderCreated(dto.getSessionId(), order, null);
     }
@@ -81,16 +82,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public void createOrder(CreateOrderLoggedInDto dto, User currentUser) {
-        final List<ShoppingCartItemDetailedDto> items = this.shoppingCartService
-                .getShoppingCartItems(dto.getSessionId(), false);
+        final ShoppingCartDetailedDto shoppingCart = this.shoppingCartService
+                .getShoppingCart(dto.getSessionId(), false);
 
-        if (items.isEmpty()) {
+        if (shoppingCart.getItems().isEmpty()) {
             throw new ApiException(ValidationMessages.SHOPPING_CART_EMPTY);
         }
 
         final DeliveryAddress address = this.addressService.createAddress(dto.getUserAddress());
         final Order order = this.createOrder(
-                items, address, dto.getSessionId(), currentUser.getId(), dto.getUserAgreedPrice()
+                shoppingCart.getItems(),
+                address,
+                dto.getSessionId(),
+                currentUser.getId(),
+                dto.getUserAgreedPrice()
         );
         this.postOrderCreated(dto.getSessionId(), order, currentUser.getId());
     }

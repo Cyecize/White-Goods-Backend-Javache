@@ -1,13 +1,12 @@
 package com.cyecize.app.api.store.pricing;
 
-import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.promotion.PromotionService;
 import com.cyecize.app.api.store.promotion.PromotionStage;
 import com.cyecize.app.util.MathUtil;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -22,11 +21,11 @@ public class PricingServiceImpl implements PricingService {
 
     @Override
     public Price getPrice(String shoppingCartId) {
-        final List<ShoppingCartItemDetailedDto> items = this.shoppingCartService
-                .getShoppingCartItems(shoppingCartId, false);
-        final Double subtotal = MathUtil.calculateTotal(items);
+        final ShoppingCartDetailedDto shoppingCart = this.shoppingCartService
+                .getShoppingCart(shoppingCartId, false);
+        final Double subtotal = MathUtil.calculateTotal(shoppingCart.getItems());
 
-        final PriceBag priceBag = new PriceBag(items, subtotal);
+        final PriceBag priceBag = new PriceBag(shoppingCart, subtotal);
         this.promotionService.calculateDiscounts(priceBag, PromotionStage.REGULAR);
 
         this.setTotal(priceBag);

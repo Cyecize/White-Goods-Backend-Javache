@@ -12,11 +12,11 @@ public class DiscountSpecificProductsAllFilter extends PromotionFilterBase {
 
     @Override
     protected boolean doTest(Promotion promotion, PriceBag priceBag) {
-        if (priceBag.getItems().isEmpty()) {
+        if (priceBag.getShoppingCart().getItems().isEmpty()) {
             return false;
         }
 
-        final Map<Long, Integer> itemQtyMap = priceBag.getItems().stream()
+        final Map<Long, Integer> itemQtyMap = priceBag.getShoppingCart().getItems().stream()
                 .collect(Collectors.toMap(
                         o -> o.getProduct().getId(),
                         ShoppingCartItemDetailedDto::getQuantity
