@@ -21,5 +21,7 @@ public interface PromotionService {
 
     Promotion findPromoById(Long id);
 
+    boolean existsById(Long id);
+
     PromotionDto editPromotion(Long promoId, CreatePromotionDto dto);
 }

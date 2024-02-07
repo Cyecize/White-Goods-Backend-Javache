@@ -173,6 +173,11 @@ public class PromotionServiceImpl implements PromotionService {
     }
 
     @Override
+    public boolean existsById(Long id) {
+        return this.promotionRepository.existsById(id);
+    }
+
+    @Override
     @Transactional
     public PromotionDto editPromotion(Long promoId, CreatePromotionDto dto) {
         this.promotionValidator.validatePromoBusinessRules(dto);

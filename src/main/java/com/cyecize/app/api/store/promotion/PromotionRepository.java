@@ -47,4 +47,20 @@ public class PromotionRepository {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         entityManager.merge(promotion);
     }
+
+    @Transactional
+    public boolean existsById(Long id) {
+        if (id == null) {
+            return false;
+        }
+
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        return entityManager.createQuery(
+                        "select case when (count(p) > 0)  then true else false end from Promotion p where p.id = ?1",
+                        Boolean.class
+                ).setParameter(1, id)
+                .getSingleResult();
+
+
+    }
 }

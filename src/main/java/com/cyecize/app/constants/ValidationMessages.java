@@ -17,4 +17,6 @@ public class ValidationMessages {
     public static final String CANNOT_DELETE_ADMIN = "cannotDeleteAdmin";
     public static final String INVALID_RECOVERY_KEY = "invalidRecoveryKey";
     public static final String ADMIN_REQUIRED = "adminRequired";
+    public static final String COUPON_CODE_PAYLOAD_INVALID = "couponCodePayloadInvalid";
+    public static final String COUPON_CODE_RANDOMIZE_FAILED = "couponCodeRandomizeFailed";
 }
