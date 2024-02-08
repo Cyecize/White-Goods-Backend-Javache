@@ -1,5 +1,6 @@
 package com.cyecize.app.api.store.promotion.coupon;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,7 +17,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public class CouponCode {
+public class CouponCode implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

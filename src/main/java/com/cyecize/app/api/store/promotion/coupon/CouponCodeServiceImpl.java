@@ -7,15 +7,17 @@ import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.modelmapper.ModelMapper;
 
 @Service
@@ -33,6 +35,9 @@ public class CouponCodeServiceImpl implements CouponCodeService {
     @Configuration("coupon.code.randomizer.max.attempts")
     private final int couponCodeRandomizeMaxAttempts;
 
+    @Configuration("coupon.code.default.validity.days")
+    private final int defaultCodeValidityDays;
+
     @Override
     public void deleteAllDisabledCodes() {
         this.couponCodeRepository.deleteByEnabledFalse();
@@ -47,7 +52,7 @@ public class CouponCodeServiceImpl implements CouponCodeService {
 
             this.couponCodeRepository.merge(couponCode);
 
-            log.info("Used coupon code {}", code);
+            log.info("Used coupon code {} for promotion {}.", code, couponCode.getPromotionId());
             return true;
         }).orElse(false);
     }
@@ -82,13 +87,21 @@ public class CouponCodeServiceImpl implements CouponCodeService {
             throw new ApiException(ValidationMessages.COUPON_CODE_PAYLOAD_INVALID);
         }
 
+        final boolean generateNewCodesForReplicas = dto.getCode() == null;
         final List<CouponCode> codesToSave = this.createReplicas(
-                templateCouponCode, dto.getNumberOfCopies()
+                templateCouponCode,
+                dto.getNumberOfCopies(),
+                generateNewCodesForReplicas
         );
 
         this.ensureUniqueCodes(codesToSave, 1);
 
         codesToSave.forEach(this.couponCodeRepository::persist);
+
+        log.info("Created {} coupon codes for promotion {}.",
+                dto.getNumberOfCopies(),
+                dto.getPromotionId()
+        );
 
         return codesToSave.stream()
                 .map(couponCode -> this.modelMapper.map(couponCode, CouponCodeDto.class))
@@ -106,26 +119,39 @@ public class CouponCodeServiceImpl implements CouponCodeService {
             return;
         }
 
-        final List<CouponCode> fixedCodes = new ArrayList<>(existingCodes.size());
+        final Set<String> newCodes = new HashSet<>(existingCodes.size(), 1);
         for (String existingCode : existingCodes) {
             final CouponCode couponCode = codeMap.get(existingCode);
-            couponCode.setCode(this.randomizeCode(existingCode, attempt));
-            fixedCodes.add(couponCode);
+
+            String newCode = this.randomizeCode(existingCode, attempt);
+            int tryCount = 0;
+            while (codeMap.containsKey(newCode) || newCodes.contains(newCode)) {
+                newCode = this.randomizeCode(existingCode, tryCount++);
+            }
+
+            couponCode.setCode(newCode);
+            newCodes.add(newCode);
         }
 
-        this.ensureUniqueCodes(fixedCodes, attempt + 1);
+        this.ensureUniqueCodes(codes, attempt + 1);
     }
 
-    private List<CouponCode> createReplicas(CouponCode template, int copies) {
+    private List<CouponCode> createReplicas(CouponCode template,
+            int copies,
+            boolean generateNewCodes) {
         final List<CouponCode> result = new ArrayList<>();
 
         String nextCode = template.getCode();
-        for (int copyCount = 0; copyCount < copies; copyCount++) {
-            final CouponCode newCode = ObjectUtils.clone(template);
+        for (int copyCount = 1; copyCount <= copies; copyCount++) {
+            final CouponCode newCode = SerializationUtils.clone(template);
             newCode.setCode(nextCode);
             result.add(newCode);
 
-            nextCode = template.getCode() + (copyCount + 1);
+            if (generateNewCodes) {
+                nextCode = this.generatePromoCode();
+            } else {
+                nextCode = template.getCode() + (copyCount + 1);
+            }
         }
 
         return result;
@@ -137,12 +163,15 @@ public class CouponCodeServiceImpl implements CouponCodeService {
         ));
 
         couponCode.setExpiryDate(Objects.requireNonNullElse(
-                couponCode.getExpiryDate(), LocalDateTime.MAX
+                couponCode.getExpiryDate(),
+                LocalDateTime.now().plusDays(this.defaultCodeValidityDays)
         ));
 
-        couponCode.setCode(Objects.requireNonNullElse(
-                couponCode.getCode(), this.generatePromoCode()
-        ));
+        couponCode.setCode(
+                Objects.requireNonNullElse(
+                        couponCode.getCode(), this.generatePromoCode()
+                ).toUpperCase()
+        );
 
         couponCode.setCreateDate(LocalDateTime.now());
         couponCode.setEnabled(true);
@@ -158,8 +187,10 @@ public class CouponCodeServiceImpl implements CouponCodeService {
             throw new ApiException(ValidationMessages.COUPON_CODE_RANDOMIZE_FAILED);
         }
 
-        final String randomChar = UUID.randomUUID().toString().substring(0, 1);
-        return code.substring(0, code.length() - 1) + randomChar;
+        final int charsToRandomize = code.length() < 2 ? 1 : 2;
+
+        final String randomChar = UUID.randomUUID().toString().substring(0, charsToRandomize);
+        return (code.substring(0, code.length() - charsToRandomize) + randomChar).toUpperCase();
     }
 
     private static boolean isValidCouponCode(CouponCode couponCode) {
