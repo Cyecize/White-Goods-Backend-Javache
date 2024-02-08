@@ -159,7 +159,7 @@ public class CouponCodeServiceImpl implements CouponCodeService {
 
     private void setUpCouponCode(CouponCode couponCode) {
         couponCode.setMaxUsages(Objects.requireNonNullElse(
-                couponCode.getCurrentUsages(), Integer.MAX_VALUE
+                couponCode.getMaxUsages(), Integer.MAX_VALUE
         ));
 
         couponCode.setExpiryDate(Objects.requireNonNullElse(
