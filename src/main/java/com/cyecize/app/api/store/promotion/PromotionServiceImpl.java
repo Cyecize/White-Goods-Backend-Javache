@@ -147,7 +147,8 @@ public class PromotionServiceImpl implements PromotionService {
     public Page<Promotion> searchPromotions(PromotionQuery query) {
         final Specification<Promotion> specification =
                 PromotionSpecifications.promotionTypeIn(query.getPromotionTypes())
-                        .and(PromotionSpecifications.sort(query.getSort()));
+                        .and(PromotionSpecifications.sort(query.getSort()))
+                        .and(PromotionSpecifications.nameContains(query.getName()));
 
         return this.specificationExecutor.findAll(
                 specification, query.getPage(), Promotion.class,

@@ -5,6 +5,7 @@ import com.cyecize.app.util.ReflectionUtils;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.app.util.Specification;
 import java.util.Collection;
+import org.apache.commons.lang3.StringUtils;
 
 public class PromotionSpecifications {
 
@@ -32,5 +33,15 @@ public class PromotionSpecifications {
         }
 
         return (root, query, criteriaBuilder) -> root.get(Promotion_.promotionType).in(types);
+    }
+
+    public static Specification<Promotion> nameContains(String name) {
+        name = StringUtils.trimToNull(name);
+        if (name == null) {
+            return Specification.where(null);
+        }
+
+        return QuerySpecifications.contains(Promotion_.nameEn, name)
+                .or(QuerySpecifications.contains(Promotion_.nameBg, name));
     }
 }

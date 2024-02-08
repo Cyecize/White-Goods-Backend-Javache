@@ -1,9 +1,11 @@
 package com.cyecize.app.api.store.promotion.dto;
 
 import com.cyecize.app.api.store.promotion.PromotionType;
+import com.cyecize.app.constants.General;
 import com.cyecize.app.util.PageQuery;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.summer.areas.validation.annotations.Valid;
+import com.cyecize.summer.areas.validation.constraints.MaxLength;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import java.util.List;
 import lombok.Data;
@@ -20,4 +22,7 @@ public class PromotionQuery {
     private PageQuery page;
 
     private List<PromotionType> promotionTypes;
+
+    @MaxLength(length = General.MAX_NAME)
+    private String name;
 }
