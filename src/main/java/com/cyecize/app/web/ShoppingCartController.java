@@ -1,7 +1,7 @@
 package com.cyecize.app.web;
 
 import com.cyecize.app.api.store.cart.AddShoppingCartItemDto;
-import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
+import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.pricing.Price;
 import com.cyecize.app.api.store.pricing.PricingService;
@@ -19,7 +19,6 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.annotations.routing.RequestParam;
 import com.cyecize.summer.common.models.JsonResponse;
-import java.util.List;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -38,14 +37,14 @@ public class ShoppingCartController {
     }
 
     @GetMapping(Endpoints.SHOPPING_CART)
-    public List<ShoppingCartItemDetailedDto> getShoppingCartItems(
+    public ShoppingCartDetailedDto getShoppingCart(
             @PathVariable("session") String session,
             @RequestParam(value = "syncWithAccount") boolean mergeDb) {
-        return this.shoppingCartService.getShoppingCart(session, mergeDb).getItems();
+        return this.shoppingCartService.getShoppingCart(session, mergeDb);
     }
 
     @PostMapping(Endpoints.SHOPPING_CART)
-    public List<ShoppingCartItemDetailedDto> addItemToCart(
+    public ShoppingCartDetailedDto addItemToCart(
             @PathVariable("session") String session,
             @Valid AddShoppingCartItemDto dto) {
         return this.shoppingCartService.addItem(session, dto);
@@ -60,7 +59,7 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping(Endpoints.SHOPPING_CART_ITEM)
-    public List<ShoppingCartItemDetailedDto> removeItem(
+    public ShoppingCartDetailedDto removeItem(
             @PathVariable("session") String session,
             @PathVariable("prodId") Long productId) {
         return this.shoppingCartService.removeItem(session, productId);

@@ -1,7 +1,5 @@
 package com.cyecize.app.api.store.cart;
 
-import java.util.List;
-
 public interface ShoppingCartService {
 
     void removeExpiredSessions();
@@ -12,7 +10,7 @@ public interface ShoppingCartService {
 
     ShoppingCartDetailedDto getShoppingCart(String sessionId, boolean mergeFromDb);
 
-    List<ShoppingCartItemDetailedDto> addItem(String sessionId, AddShoppingCartItemDto dto);
+    ShoppingCartDetailedDto addItem(String sessionId, AddShoppingCartItemDto dto);
 
-    List<ShoppingCartItemDetailedDto> removeItem(String sessionId, Long productId);
+    ShoppingCartDetailedDto removeItem(String sessionId, Long productId);
 }

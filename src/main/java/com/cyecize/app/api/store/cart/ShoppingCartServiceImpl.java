@@ -99,16 +99,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
         final ShoppingCartDto shoppingCartDto = this.getShoppingCartFromSession(sessionId);
 
-        return new ShoppingCartDetailedDto(
-                shoppingCartDto.getLastModified(),
-                null,
-                this.fetchItems(shoppingCartDto.getItems())
-        );
+        return this.buildDetailedCart(shoppingCartDto);
     }
 
     @Override
     @Transactional
-    public List<ShoppingCartItemDetailedDto> addItem(String sessionId, AddShoppingCartItemDto dto) {
+    public ShoppingCartDetailedDto addItem(String sessionId, AddShoppingCartItemDto dto) {
         if (this.principal.isUserPresent()) {
             this.mergeIntoSession(sessionId);
         }
@@ -140,12 +136,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
 
         log.trace("Added item {} to shopping cart {}", item.getProductId(), sessionId);
-        return this.fetchItems(shoppingCartFromSession.getItems());
+        return this.buildDetailedCart(shoppingCartFromSession);
     }
 
     @Override
     @Transactional
-    public List<ShoppingCartItemDetailedDto> removeItem(String sessionId, Long productId) {
+    public ShoppingCartDetailedDto removeItem(String sessionId, Long productId) {
         if (this.principal.isUserPresent()) {
             this.mergeIntoSession(sessionId);
         }
@@ -158,22 +154,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
             this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
         }
 
-        return this.fetchItems(shoppingCartFromSession.getItems());
+        return this.buildDetailedCart(shoppingCartFromSession);
     }
 
-    private List<ShoppingCartItemDto> mergeIntoSession(String sessionId) {
+    private void mergeIntoSession(String sessionId) {
         final User user = this.getUser();
 
         final ShoppingCartDto shoppingCartFromSession = this.getShoppingCartFromSession(sessionId);
         final ShoppingCart shoppingCart = this.shoppingCartRepository.findByUserId(user.getId());
 
         if (shoppingCart == null) {
-            return shoppingCartFromSession.getItems();
+            return;
         }
 
         this.mergeIntoSession(shoppingCart, shoppingCartFromSession);
-
-        return shoppingCartFromSession.getItems();
     }
 
     private void mergeIntoSession(ShoppingCart db, ShoppingCartDto session) {
@@ -282,6 +276,20 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         this.shoppingCartRepository.persist(shoppingCart);
 
         return shoppingCart;
+    }
+
+    private ShoppingCartDetailedDto buildDetailedCart(ShoppingCartDto shoppingCart) {
+        return this.buildDetailedCart(shoppingCart, this.fetchItems(shoppingCart.getItems()));
+    }
+
+    private ShoppingCartDetailedDto buildDetailedCart(
+            ShoppingCartDto shoppingCart,
+            List<ShoppingCartItemDetailedDto> items) {
+        return new ShoppingCartDetailedDto(
+                shoppingCart.getLastModified(),
+                shoppingCart.getCouponCode(),
+                items
+        );
     }
 
     private User getUser() {
