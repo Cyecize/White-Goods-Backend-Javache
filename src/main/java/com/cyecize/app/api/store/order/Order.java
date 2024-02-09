@@ -49,6 +49,8 @@ public class Order {
 
     private Long addressId;
 
+    private String couponCode;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "addressId", insertable = false, updatable = false)
     private DeliveryAddress address;

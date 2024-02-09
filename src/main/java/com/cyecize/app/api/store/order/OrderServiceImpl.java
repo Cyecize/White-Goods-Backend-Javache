@@ -5,6 +5,7 @@ import com.cyecize.app.api.mail.MailService;
 import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.cart.ShoppingCartCouponCodeDto;
 import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
@@ -15,6 +16,7 @@ import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.store.pricing.Price;
 import com.cyecize.app.api.store.pricing.PricingService;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeService;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.api.warehouse.WarehouseService;
@@ -34,9 +36,11 @@ import java.util.Objects;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
 
@@ -62,62 +66,68 @@ public class OrderServiceImpl implements OrderService {
 
     private final WarehouseService warehouseService;
 
-    @Override
-    @Transactional
-    public void createOrder(CreateOrderAnonDto dto) {
-        final ShoppingCartDetailedDto shoppingCart = this.shoppingCartService
-                .getShoppingCart(dto.getSessionId(), false);
-
-        if (shoppingCart.getItems().isEmpty()) {
-            throw new ApiException(ValidationMessages.SHOPPING_CART_EMPTY);
-        }
-
-        final DeliveryAddress address = this.addressService.createAddress(dto.getAddress());
-        final Order order = this.createOrder(
-                shoppingCart.getItems(), address, dto.getSessionId(), null, dto.getUserAgreedPrice()
-        );
-        this.postOrderCreated(dto.getSessionId(), order, null);
-    }
+    private final CouponCodeService couponCodeService;
 
     @Override
     @Transactional
     public void createOrder(CreateOrderLoggedInDto dto, User currentUser) {
-        final ShoppingCartDetailedDto shoppingCart = this.shoppingCartService
-                .getShoppingCart(dto.getSessionId(), false);
-
-        if (shoppingCart.getItems().isEmpty()) {
+        if (!this.shoppingCartService.hasItems(dto.getSessionId())) {
             throw new ApiException(ValidationMessages.SHOPPING_CART_EMPTY);
         }
 
+        final Long userId = currentUser != null ? currentUser.getId() : null;
+
         final DeliveryAddress address = this.addressService.createAddress(dto.getUserAddress());
         final Order order = this.createOrder(
-                shoppingCart.getItems(),
                 address,
                 dto.getSessionId(),
-                currentUser.getId(),
+                userId,
                 dto.getUserAgreedPrice()
         );
-        this.postOrderCreated(dto.getSessionId(), order, currentUser.getId());
+        this.postOrderCreated(dto.getSessionId(), order, userId);
     }
 
     private void postOrderCreated(String cartSessionId, Order order, Long userId) {
+        log.info("Order {} was created! Executing post order procedures.", order.getId());
         final List<String> emailsOfAdmins = this.userService.getEmailsOfAdmins();
         final OrderDto orderDto = this.getOrder(order.getId());
 
-        this.mailService.sendEmail(EmailTemplate.NEW_ORDER_ADMINS, orderDto, emailsOfAdmins);
-        this.mailService.sendEmail(
-                EmailTemplate.NEW_ORDER_CUSTOMER,
-                orderDto,
-                List.of(order.getAddress().getEmail())
-        );
-        this.shoppingCartService.removeAllItems(cartSessionId);
+        try {
+            log.info("Sending emails to admins '{}' and customer '{}' for order {}.",
+                    emailsOfAdmins,
+                    order.getAddress().getEmail(),
+                    order.getId()
+            );
+            this.mailService.sendEmail(EmailTemplate.NEW_ORDER_ADMINS, orderDto, emailsOfAdmins);
+            this.mailService.sendEmail(
+                    EmailTemplate.NEW_ORDER_CUSTOMER,
+                    orderDto,
+                    List.of(order.getAddress().getEmail())
+            );
+            this.shoppingCartService.removeAllItems(cartSessionId);
+        } catch (RuntimeException ex) {
+            log.error("Order {} creation will be aborted due to post order procedure failure.",
+                    order.getId(),
+                    ex
+            );
+            throw ex;
+        }
     }
 
-    private Order createOrder(List<ShoppingCartItemDetailedDto> items,
-            DeliveryAddress address,
+    private Order createOrder(DeliveryAddress address,
             String cartSessionId,
             Long userId,
             Double userAgreedPrice) {
+        final ShoppingCartDetailedDto cart = this.shoppingCartService
+                .getShoppingCart(cartSessionId, false);
+
+        final ShoppingCartCouponCodeDto couponCode = cart.getCouponCode();
+        if (couponCode != null && !this.couponCodeService.useCouponCode(couponCode.getCode())) {
+            this.shoppingCartService.removeCouponCode(cartSessionId);
+            log.error("Invalid coupon code {} prevented order submission!", couponCode.getCode());
+            throw new ApiException(ValidationMessages.COUPON_CODE_INVALID);
+        }
+
         final Price price = this.pricingService.getPrice(cartSessionId);
         final Order order = new Order();
         order.setAddressId(address.getId());
@@ -128,10 +138,13 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(userId);
         order.setDeliveryPrice(price.isFreeDelivery() ? 0D : price.getDeliveryPrice());
         order.setTotalDiscounts(price.getTotalDiscounts());
+        if (couponCode != null) {
+            order.setCouponCode(couponCode.getCode());
+        }
         this.orderRepository.persist(order);
 
-        final List<OrderItem> orderItems = new ArrayList<>(items.size());
-        for (ShoppingCartItemDetailedDto itemDto : items) {
+        final List<OrderItem> orderItems = new ArrayList<>(cart.getItems().size());
+        for (ShoppingCartItemDetailedDto itemDto : cart.getItems()) {
             final OrderItem orderItem = new OrderItem();
             orderItem.setOrderId(order.getId());
             orderItem.setProductId(itemDto.getProduct().getId());
@@ -149,6 +162,10 @@ public class OrderServiceImpl implements OrderService {
         // Do a final verification of the total price. Theoretically this should not happen.
         final Double orderTotal = this.calculateTotal(order);
         if (Double.compare(orderTotal, userAgreedPrice) != 0) {
+            log.error("Order price differs from agreed use price! Order: {}, User Agreed: {}",
+                    orderTotal,
+                    userAgreedPrice
+            );
             throw new ApiException(String.format(
                     "Order price differs from agreed use price! Order: %s, User Agreed: %s",
                     orderTotal,

@@ -7,8 +7,6 @@ import com.cyecize.app.util.Page;
 
 public interface OrderService {
 
-    void createOrder(CreateOrderAnonDto dto);
-
     void createOrder(CreateOrderLoggedInDto dto, User currentUser);
 
     void changeOrderStatus(UpdateOrderStatusDto dto);

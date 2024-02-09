@@ -10,4 +10,8 @@ public class TransactionExecutor {
         runnable.run();
     }
 
+    @Transactional(requiresNew = true)
+    public void executeNew(Runnable runnable) {
+        runnable.run();
+    }
 }

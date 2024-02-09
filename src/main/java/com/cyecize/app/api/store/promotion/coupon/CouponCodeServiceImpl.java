@@ -2,6 +2,7 @@ package com.cyecize.app.api.store.promotion.coupon;
 
 import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
+import com.cyecize.app.integration.transaction.TransactionExecutor;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
@@ -14,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,8 @@ public class CouponCodeServiceImpl implements CouponCodeService {
     @Configuration("coupon.code.default.validity.days")
     private final int defaultCodeValidityDays;
 
+    private final TransactionExecutor transactionExecutor;
+
     @Override
     public void deleteAllDisabledCodes() {
         this.couponCodeRepository.deleteByEnabledFalse();
@@ -46,15 +50,28 @@ public class CouponCodeServiceImpl implements CouponCodeService {
     @Override
     @Transactional
     public boolean useCouponCode(String code) {
-        return this.getAndValidateCouponCode(code).map(couponCode -> {
-            couponCode.setCurrentUsages(couponCode.getCurrentUsages() + 1);
-            couponCode.setEnabled(isValidCouponCode(couponCode));
+        final AtomicBoolean isValid = new AtomicBoolean(false);
 
-            this.couponCodeRepository.merge(couponCode);
+        // Run getAndValidate in new transaction so that it will ensure code gets set to disabled
+        // Otherwise the following exceptions will cause the transaction to roll back and
+        // the code will not be updated.
+        this.transactionExecutor.executeNew(() -> {
+            isValid.set(this.getAndValidateCouponCode(code).isPresent());
+        });
 
-            log.info("Used coupon code {} for promotion {}.", code, couponCode.getPromotionId());
-            return true;
-        }).orElse(false);
+        if (!isValid.get()) {
+            return false;
+        }
+
+        final CouponCode couponCode = this.couponCodeRepository.findByCodeEnabled(code);
+        Objects.requireNonNull(code);
+        couponCode.setCurrentUsages(couponCode.getCurrentUsages() + 1);
+        couponCode.setEnabled(isValidCouponCode(couponCode));
+        this.couponCodeRepository.merge(couponCode);
+
+        log.info("Used coupon code {} for promotion {}.", code, couponCode.getPromotionId());
+
+        return true;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.cyecize.app.api.store.order.dto.OrderDtoSimple;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.user.RoleType;
 import com.cyecize.app.api.user.User;
+import com.cyecize.app.api.user.address.UserAddress;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.NotFoundApiException;
@@ -40,7 +41,14 @@ public class OrderController {
     @PostMapping(Endpoints.ORDERS_ANON)
     @PreAuthorize(AuthorizationType.ANONYMOUS)
     public JsonResponse checkOutAnon(@Valid CreateOrderAnonDto dto) {
-        this.orderService.createOrder(dto);
+        final CreateOrderLoggedInDto loggedInDto = new CreateOrderLoggedInDto(
+                dto.getSessionId(),
+                this.modelMapper.map(dto.getAddress(), UserAddress.class),
+                dto.getUserAgreedPrice()
+        );
+
+        this.orderService.createOrder(loggedInDto, null);
+
         return this.successfulOrderResponse();
     }
 

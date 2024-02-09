@@ -56,5 +56,6 @@
   "password.recovery.key.received": "Получихме заявка за възтановяване на вашата парола.",
   "ignore.recovery.key.if.not.you": "Ако не сте изпращали такава заявка, моля извинете ни за неудобството!",
   "change.password": "Смяна на парола",
-  "view.on.website": "Преглед в сайта"
+  "view.on.website": "Преглед в сайта",
+  "coupon.code": "Промо код"
 }

@@ -96,6 +96,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    public boolean hasItems(String sessionId) {
+        return this.getShoppingCartFromSession(sessionId).getItems().size() > 0;
+    }
+
+    @Override
     public ShoppingCartDetailedDto getShoppingCart(String sessionId, boolean merge) {
         if (this.principal.isUserPresent() && merge) {
             this.mergeIntoSession(sessionId);
@@ -163,10 +168,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartDetailedDto applyCouponCode(String sessionId, String code) {
-        if (this.principal.isUserPresent()) {
-            this.mergeIntoSession(sessionId);
-        }
-
         final ShoppingCartDto shoppingCartFromSession = this.getShoppingCartFromSession(sessionId);
         this.couponCodeService.getValidCouponCode(code)
                 .ifPresent(couponCode -> shoppingCartFromSession.setCouponCode(
@@ -175,29 +176,13 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
                                 couponCode.getPromotionId()
                         ))
                 );
-
-        if (this.principal.isUserPresent()) {
-            final ShoppingCart shoppingCart = this.getOrCreateShoppingCart();
-            this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
-        }
-
         return this.buildDetailedCart(shoppingCartFromSession);
     }
 
     @Override
     public ShoppingCartDetailedDto removeCouponCode(String sessionId) {
-        if (this.principal.isUserPresent()) {
-            this.mergeIntoSession(sessionId);
-        }
-
         final ShoppingCartDto shoppingCartFromSession = this.getShoppingCartFromSession(sessionId);
         shoppingCartFromSession.setCouponCode(null);
-
-        if (this.principal.isUserPresent()) {
-            final ShoppingCart shoppingCart = this.getOrCreateShoppingCart();
-            this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
-        }
-
         return this.buildDetailedCart(shoppingCartFromSession);
     }
 

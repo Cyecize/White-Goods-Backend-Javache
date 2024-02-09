@@ -8,6 +8,8 @@ public interface ShoppingCartService {
 
     void removeAllItems(String sessionId);
 
+    boolean hasItems(String sessionId);
+
     ShoppingCartDetailedDto getShoppingCart(String sessionId, boolean mergeFromDb);
 
     ShoppingCartDetailedDto addItem(String sessionId, AddShoppingCartItemDto dto);

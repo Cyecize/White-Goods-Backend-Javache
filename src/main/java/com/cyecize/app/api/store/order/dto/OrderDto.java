@@ -36,6 +36,8 @@ public class OrderDto {
 
     private Long addressId;
 
+    private String couponCode;
+
     private DeliveryAddressDto address;
 
     private List<OrderItemDto> items;
