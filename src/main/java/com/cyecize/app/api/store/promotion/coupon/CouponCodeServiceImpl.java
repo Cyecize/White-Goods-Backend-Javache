@@ -174,17 +174,28 @@ public class CouponCodeServiceImpl implements CouponCodeService {
             boolean generateNewCodes) {
         final List<CouponCode> result = new ArrayList<>();
 
+        final Set<String> generatedCodes = new HashSet<>();
         String nextCode = template.getCode();
         for (int copyCount = 1; copyCount <= copies; copyCount++) {
             final CouponCode newCode = SerializationUtils.clone(template);
             newCode.setCode(nextCode);
+            generatedCodes.add(nextCode);
             result.add(newCode);
 
-            if (generateNewCodes) {
-                nextCode = this.generatePromoCode();
-            } else {
-                nextCode = template.getCode() + (copyCount + 1);
+            int codeGenAttempt = 0;
+            do {
+                if (generateNewCodes) {
+                    nextCode = this.generatePromoCode();
+                } else {
+                    nextCode = template.getCode() + (copyCount + 1);
+                }
+                codeGenAttempt++;
+
+                if (codeGenAttempt > this.couponCodeRandomizeMaxAttempts) {
+                    throw new ApiException(ValidationMessages.COUPON_CODE_RANDOMIZE_FAILED);
+                }
             }
+            while (generatedCodes.contains(nextCode));
         }
 
         return result;

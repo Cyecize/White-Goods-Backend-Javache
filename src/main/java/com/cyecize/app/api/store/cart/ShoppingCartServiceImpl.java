@@ -90,9 +90,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         if (this.principal.isUserPresent()) {
             this.shoppingCartRepository.deleteByUserId(this.getUser().getId());
         }
-        this.sessionItems
-                .getOrDefault(sessionId, new ShoppingCartDto(new ArrayList<>()))
-                .setItems(new ArrayList<>());
+        final ShoppingCartDto cart = this.sessionItems.getOrDefault(
+                sessionId, new ShoppingCartDto(new ArrayList<>())
+        );
+
+        cart.setItems(new ArrayList<>());
+        cart.setCouponCode(null);
     }
 
     @Override
