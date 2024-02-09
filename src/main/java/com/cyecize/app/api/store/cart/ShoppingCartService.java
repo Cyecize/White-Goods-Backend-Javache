@@ -13,4 +13,8 @@ public interface ShoppingCartService {
     ShoppingCartDetailedDto addItem(String sessionId, AddShoppingCartItemDto dto);
 
     ShoppingCartDetailedDto removeItem(String sessionId, Long productId);
+
+    ShoppingCartDetailedDto applyCouponCode(String sessionId, String code);
+
+    ShoppingCartDetailedDto removeCouponCode(String sessionId);
 }

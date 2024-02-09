@@ -59,14 +59,17 @@ public class CouponCodeServiceImpl implements CouponCodeService {
 
     @Override
     @Transactional(requiresNew = true)
-    public CouponCodeDto getValidCouponCode(String code) {
+    public Optional<CouponCodeDto> getValidCouponCode(String code) {
         return this.getAndValidateCouponCode(code)
-                .map(couponCode -> this.modelMapper.map(couponCode, CouponCodeDto.class))
-                .orElse(null);
+                .map(couponCode -> this.modelMapper.map(couponCode, CouponCodeDto.class));
     }
 
     private Optional<CouponCode> getAndValidateCouponCode(String code) {
         final CouponCode couponCode = this.couponCodeRepository.findByCodeEnabled(code);
+
+        if (couponCode == null) {
+            return Optional.empty();
+        }
 
         if (!isValidCouponCode(couponCode)) {
             couponCode.setEnabled(false);

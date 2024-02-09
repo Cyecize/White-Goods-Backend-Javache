@@ -5,12 +5,15 @@ import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.pricing.Price;
 import com.cyecize.app.api.store.pricing.PricingService;
+import com.cyecize.app.api.store.promotion.coupon.validators.ValidCouponCode;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
+import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.security.enums.AuthorizationType;
 import com.cyecize.summer.areas.validation.annotations.Valid;
+import com.cyecize.summer.areas.validation.constraints.MaxLength;
 import com.cyecize.summer.common.annotations.Controller;
 import com.cyecize.summer.common.annotations.routing.DeleteMapping;
 import com.cyecize.summer.common.annotations.routing.GetMapping;
@@ -70,9 +73,29 @@ public class ShoppingCartController {
         return this.pricingService.getPrice(session);
     }
 
+    @PostMapping(Endpoints.SHOPPING_CART_COUPON_CODE)
+    public ShoppingCartDetailedDto applyCouponCode(@PathVariable("session") String session,
+            @Valid ApplyCouponCodeDto dto) {
+        return this.shoppingCartService.applyCouponCode(session, dto.getCode());
+    }
+
+    @DeleteMapping(Endpoints.SHOPPING_CART_COUPON_CODE)
+    public ShoppingCartDetailedDto removeCouponCode(@PathVariable("session") String session) {
+        return this.shoppingCartService.removeCouponCode(session);
+    }
+
     @Data
     static class SessionDto {
 
         private final String sessionId;
+    }
+
+    @Data
+    public static class ApplyCouponCodeDto {
+
+        @Valid
+        @ValidCouponCode
+        @MaxLength(length = General.MAX_NAME, message = ValidationMessages.INVALID_VALUE)
+        private String code;
     }
 }

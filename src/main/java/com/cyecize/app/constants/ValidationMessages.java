@@ -19,4 +19,5 @@ public class ValidationMessages {
     public static final String ADMIN_REQUIRED = "adminRequired";
     public static final String COUPON_CODE_PAYLOAD_INVALID = "couponCodePayloadInvalid";
     public static final String COUPON_CODE_RANDOMIZE_FAILED = "couponCodeRandomizeFailed";
+    public static final String COUPON_CODE_INVALID = "couponCodeInvalid";
 }

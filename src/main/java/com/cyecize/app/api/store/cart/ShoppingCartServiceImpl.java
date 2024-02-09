@@ -4,6 +4,8 @@ import static com.cyecize.app.constants.ValidationMessages.INVALID_SHOPPING_CART
 
 import com.cyecize.app.api.product.ProductService;
 import com.cyecize.app.api.product.dto.ProductDto;
+import com.cyecize.app.api.store.promotion.coupon.CouponCode;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeService;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
@@ -45,6 +47,8 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Configuration("shopping.cart.session.lifetime.hours")
     private final int sessionLifetimeHours;
+
+    private final CouponCodeService couponCodeService;
 
     @Override
     public void removeExpiredSessions() {
@@ -157,6 +161,46 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return this.buildDetailedCart(shoppingCartFromSession);
     }
 
+    @Override
+    public ShoppingCartDetailedDto applyCouponCode(String sessionId, String code) {
+        if (this.principal.isUserPresent()) {
+            this.mergeIntoSession(sessionId);
+        }
+
+        final ShoppingCartDto shoppingCartFromSession = this.getShoppingCartFromSession(sessionId);
+        this.couponCodeService.getValidCouponCode(code)
+                .ifPresent(couponCode -> shoppingCartFromSession.setCouponCode(
+                        new ShoppingCartCouponCodeDto(
+                                couponCode.getCode(),
+                                couponCode.getPromotionId()
+                        ))
+                );
+
+        if (this.principal.isUserPresent()) {
+            final ShoppingCart shoppingCart = this.getOrCreateShoppingCart();
+            this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
+        }
+
+        return this.buildDetailedCart(shoppingCartFromSession);
+    }
+
+    @Override
+    public ShoppingCartDetailedDto removeCouponCode(String sessionId) {
+        if (this.principal.isUserPresent()) {
+            this.mergeIntoSession(sessionId);
+        }
+
+        final ShoppingCartDto shoppingCartFromSession = this.getShoppingCartFromSession(sessionId);
+        shoppingCartFromSession.setCouponCode(null);
+
+        if (this.principal.isUserPresent()) {
+            final ShoppingCart shoppingCart = this.getOrCreateShoppingCart();
+            this.mergeIntoDb(shoppingCart, shoppingCartFromSession);
+        }
+
+        return this.buildDetailedCart(shoppingCartFromSession);
+    }
+
     private void mergeIntoSession(String sessionId) {
         final User user = this.getUser();
 
@@ -184,6 +228,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         }
     }
 
+    /**
+     * Merges the state from the shopping cart stored in memory to the one stored in DB.
+     * <p>
+     * Items such as {@link CouponCode} are intentionally not stored in DB as such values that are
+     * sensitive to expiration and validity are not are better stored as the least amount as
+     * possible.
+     *
+     * @param db      - state of the shopping cart in DB
+     * @param session - state of the shopping cart in memory
+     */
     private void mergeIntoDb(ShoppingCart db, ShoppingCartDto session) {
         final Set<Long> sessionProductIds = session.getItems().stream()
                 .map(ShoppingCartItemDto::getProductId)

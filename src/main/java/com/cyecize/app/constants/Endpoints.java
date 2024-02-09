@@ -16,6 +16,7 @@ public class Endpoints {
     public static final String SHOPPING_CART                = "/shopping-cart/{session}";
     public static final String SHOPPING_CART_ITEM           = "/shopping-cart/{session}/items/{prodId}";
     public static final String SHOPPING_CART_PRICING        = "/shopping-cart/{session}/pricing";
+    public static final String SHOPPING_CART_COUPON_CODE    = "/shopping-cart/{session}/coupon-code";
 
     public static final String ORDERS_ANON                  = "/orders-anon";
     public static final String ORDERS                       = "/orders";

@@ -35,7 +35,7 @@ public class CouponCodeRepository {
                         CouponCode.class
                 )
                 .setParameter("code", code)
-                .getSingleResult();
+                .getResultStream().findFirst().orElse(null);
     }
 
     @Transactional

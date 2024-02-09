@@ -1,6 +1,7 @@
 package com.cyecize.app.api.store.promotion.coupon;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CouponCodeService {
 
@@ -8,7 +9,7 @@ public interface CouponCodeService {
 
     boolean useCouponCode(String code);
 
-    CouponCodeDto getValidCouponCode(String code);
+    Optional<CouponCodeDto> getValidCouponCode(String code);
 
     List<CouponCodeDto> createCouponCodes(CreateCouponCodeDto dto);
 }
