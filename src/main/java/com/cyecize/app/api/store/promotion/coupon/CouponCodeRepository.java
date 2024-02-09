@@ -2,6 +2,10 @@ package com.cyecize.app.api.store.promotion.coupon;
 
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
+import com.cyecize.app.util.Page;
+import com.cyecize.app.util.PageQuery;
+import com.cyecize.app.util.Specification;
+import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 public class CouponCodeRepository {
 
     private final TransactionContext transactionContext;
+    private final SpecificationExecutor specificationExecutor;
 
     @Transactional
     public CouponCode persist(CouponCode couponCode) {
@@ -53,5 +58,10 @@ public class CouponCodeRepository {
                 )
                 .setParameter("codes", codes)
                 .getResultList();
+    }
+
+    @Transactional
+    public Page<CouponCode> search(Specification<CouponCode> spec, PageQuery page) {
+        return this.specificationExecutor.findAll(spec, page, CouponCode.class, null);
     }
 }

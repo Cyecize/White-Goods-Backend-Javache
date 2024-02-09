@@ -4,6 +4,8 @@ import com.cyecize.app.constants.ValidationMessages;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.app.integration.transaction.TransactionExecutor;
 import com.cyecize.app.integration.transaction.Transactional;
+import com.cyecize.app.util.Page;
+import com.cyecize.app.util.Specification;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import java.time.LocalDateTime;
@@ -126,6 +128,17 @@ public class CouponCodeServiceImpl implements CouponCodeService {
         return codesToSave.stream()
                 .map(couponCode -> this.modelMapper.map(couponCode, CouponCodeDto.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<CouponCode> search(CouponCodeQuery query) {
+        final Specification<CouponCode> spec = CouponCodeSpecifications.sort(query.getSort())
+                .and(CouponCodeSpecifications.containsCode(query.getCode()))
+                .and(CouponCodeSpecifications.promotionIdEquals(query.getPromotionId()))
+                .and(CouponCodeSpecifications.expiryDateBetween(query.getExpiryDate()))
+                .and(CouponCodeSpecifications.enabled(query.getEnabled()));
+
+        return this.couponCodeRepository.search(spec, query.getPage());
     }
 
     private void ensureUniqueCodes(List<CouponCode> codes, int attempt) {
