@@ -1,6 +1,7 @@
 package com.cyecize.app.constants;
 
 public class Endpoints {
+
     //@formatter:off
     public static final String CATEGORIES                   = "/categories";
     public static final String CATEGORY                     = "/category/{id}";
@@ -11,6 +12,8 @@ public class Endpoints {
     public static final String PRODUCT_CREATE               = "/product/create";
     public static final String PRODUCT_GALLERY_ITEMS        = "/product/{id}/gallery_items";
     public static final String PRODUCT_GALLERY_ITEM         = "/product/{id}/gallery_items/{imageId}";
+    public static final String PRODUCTS_SELECTIONS          = "/products/selections";
+    public static final String PRODUCTS_SELECTION           = "/products/selections/{id}";
 
     public static final String SHOPPING_CART_SESSION        = "/shopping-cart/session";
     public static final String SHOPPING_CART                = "/shopping-cart/{session}";

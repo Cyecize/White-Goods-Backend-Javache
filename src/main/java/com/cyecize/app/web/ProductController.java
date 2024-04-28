@@ -16,11 +16,17 @@ import com.cyecize.app.api.product.dto.EditProductDto;
 import com.cyecize.app.api.product.dto.ImageDto;
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.product.dto.ProductDtoDetailed;
+import com.cyecize.app.api.product.selection.CreateProductSelectionDto;
+import com.cyecize.app.api.product.selection.ProductSelection;
+import com.cyecize.app.api.product.selection.ProductSelectionDto;
+import com.cyecize.app.api.product.selection.ProductSelectionService;
 import com.cyecize.app.api.store.promotion.PromotionService;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
+import com.cyecize.app.error.NotFoundApiException;
+import com.cyecize.app.util.AuthUtils;
 import com.cyecize.app.util.Page;
 import com.cyecize.http.HttpStatus;
 import com.cyecize.solet.HttpSoletRequest;
@@ -37,6 +43,7 @@ import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
+import com.cyecize.summer.common.annotations.routing.RequestParam;
 import com.cyecize.summer.common.models.JsonResponse;
 import java.util.List;
 import java.util.Objects;
@@ -61,6 +68,8 @@ public class ProductController {
     private final IndexServingService indexServingService;
 
     private final PromotionService promotionService;
+
+    private final ProductSelectionService productSelectionService;
 
     /**
      * Endpoint for serving index.html file with preloaded open graph meta tags.
@@ -141,5 +150,49 @@ public class ProductController {
 
         this.imageService.removeImage(image);
         return new JsonResponse(HttpStatus.OK).addAttribute("message", "Image was removed!");
+    }
+
+    @GetMapping(Endpoints.PRODUCTS_SELECTIONS)
+    @PreAuthorize(AuthorizationType.ANY)
+    public List<ProductDto> getProductSelection(Principal principal,
+            @RequestParam("onlyEnabled") boolean onlyEnabled) {
+        if (!onlyEnabled) {
+            onlyEnabled = !AuthUtils.hasAdminRole((User) principal.getUser());
+        }
+
+        return this.productSelectionService.getAll(onlyEnabled)
+                .stream()
+                .map(ProductSelection::getProduct)
+                .map(product -> this.modelMapper.map(product, ProductDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @PutMapping(Endpoints.PRODUCTS_SELECTIONS)
+    public ProductSelectionDto upsertProductSelection(@Valid CreateProductSelectionDto dto) {
+        return this.modelMapper.map(
+                this.productSelectionService.save(dto),
+                ProductSelectionDto.class
+        );
+    }
+
+    @DeleteMapping(Endpoints.PRODUCTS_SELECTION)
+    public JsonResponse removeProductSelection(@PathVariable("id") Long id) {
+        this.productSelectionService.remove(id);
+        return new JsonResponse()
+                .setStatusCode(HttpStatus.OK)
+                .addAttribute("message", "Product selection removed");
+    }
+
+    @GetMapping(Endpoints.PRODUCTS_SELECTION)
+    public ProductSelectionDto getProductSelection(@PathVariable("id") Long id) {
+        final ProductSelection selection = this.productSelectionService.get(id);
+        if (selection == null) {
+            throw new NotFoundApiException("Invalid selection id!");
+        }
+
+        return this.modelMapper.map(
+                selection,
+                ProductSelectionDto.class
+        );
     }
 }
