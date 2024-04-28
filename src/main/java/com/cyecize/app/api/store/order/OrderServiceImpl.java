@@ -261,7 +261,9 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Page<Order> searchOrders(OrderQuery query, Long userId) {
         Specification<Order> specification = OrderSpecifications.sort(query.getSort())
-                .and(OrderSpecifications.statusContains(query.getStatuses()));
+                .and(OrderSpecifications.statusContains(query.getStatuses()))
+                .and(OrderSpecifications.couponCodeEquals(query.getCouponCode()))
+                .and(OrderSpecifications.betweenDate(query.getDate()));
 
         if (query.isShowOnlyMine()) {
             specification = specification.and(OrderSpecifications.userIdEquals(userId));

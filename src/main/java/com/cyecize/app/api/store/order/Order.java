@@ -53,8 +53,10 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "addressId", insertable = false, updatable = false)
+    @ToString.Exclude
     private DeliveryAddress address;
 
     @OneToMany(mappedBy = "orderId", fetch = FetchType.LAZY)
+    @ToString.Exclude
     private List<OrderItem> items;
 }

@@ -2,6 +2,7 @@ package com.cyecize.app.api.store.order;
 
 import com.cyecize.app.api.store.order.validator.CanSeeAllOrders;
 import com.cyecize.app.util.BetweenQuery;
+import com.cyecize.app.util.BetweenQueryDate;
 import com.cyecize.app.util.PageQuery;
 import com.cyecize.app.util.SortQuery;
 import com.cyecize.summer.areas.validation.annotations.Valid;
@@ -23,6 +24,10 @@ public class OrderQuery {
     private List<OrderStatus> statuses;
 
     private BetweenQuery<Long> orderId;
+
+    private String couponCode;
+
+    private BetweenQueryDate date;
 
     @CanSeeAllOrders
     private boolean showOnlyMine;
