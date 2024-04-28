@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 
 @Service
@@ -47,6 +48,15 @@ public class CouponCodeServiceImpl implements CouponCodeService {
     @Override
     public void deleteAllDisabledCodes() {
         this.couponCodeRepository.deleteByEnabledFalse();
+    }
+
+    @Override
+    public void deleteCode(String code) {
+        code = StringUtils.trimToNull(code);
+        if (code == null) {
+            return;
+        }
+        this.couponCodeRepository.deleteByCode(code);
     }
 
     @Override

@@ -8,6 +8,8 @@ public interface CouponCodeService {
 
     void deleteAllDisabledCodes();
 
+    void deleteCode(String code);
+
     boolean useCouponCode(String code);
 
     Optional<CouponCodeDto> getValidCouponCode(String code);

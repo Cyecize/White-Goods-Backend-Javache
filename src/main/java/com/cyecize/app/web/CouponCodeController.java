@@ -11,8 +11,11 @@ import com.cyecize.app.util.Page;
 import com.cyecize.summer.areas.security.annotations.PreAuthorize;
 import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.common.annotations.Controller;
+import com.cyecize.summer.common.annotations.routing.DeleteMapping;
+import com.cyecize.summer.common.annotations.routing.PathVariable;
 import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
+import com.cyecize.summer.common.models.JsonResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -35,5 +38,11 @@ public class CouponCodeController {
     public Page<CouponCodeDetailedDto> searchCouponCodes(@Valid CouponCodeQuery query) {
         return this.couponCodeService.search(query)
                 .map(code -> this.modelMapper.map(code, CouponCodeDetailedDto.class));
+    }
+
+    @DeleteMapping(Endpoints.COUPON_CODE)
+    public JsonResponse deleteCode(@PathVariable("code") String code) {
+        this.couponCodeService.deleteCode(code);
+        return new JsonResponse().addAttribute("message", "Code is removed!");
     }
 }

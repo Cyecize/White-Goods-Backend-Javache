@@ -50,6 +50,14 @@ public class CouponCodeRepository {
     }
 
     @Transactional
+    public void deleteByCode(String code) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery("delete from CouponCode where code = :code ")
+                .setParameter("code", code)
+                .executeUpdate();
+    }
+
+    @Transactional
     public List<String> selectCodeFindByCodeContaining(Collection<String> codes) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         return entityManager.createQuery(
