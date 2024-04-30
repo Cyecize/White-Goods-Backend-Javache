@@ -1,7 +1,9 @@
 package com.cyecize.app.api.store.order;
 
+import com.cyecize.app.api.store.order.dto.OrderCouponCodeStatisticsDto;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeStatisticQuery;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.util.Page;
 
@@ -22,4 +24,6 @@ public interface OrderService {
     boolean isQuantitySufficient(Long productId, Integer quantity);
 
     boolean updateStock(Long productId, Integer quantity, Order order);
+
+    OrderCouponCodeStatisticsDto getCouponCodeStatistics(CouponCodeStatisticQuery query);
 }

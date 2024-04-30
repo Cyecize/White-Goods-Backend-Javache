@@ -72,4 +72,5 @@ public class Endpoints {
     public static final String COUPON_CODES_SEARCH          = "/coupon-codes/search";
     public static final String COUPON_CODES                 = "/coupon-codes";
     public static final String COUPON_CODE                  = "/coupon-code/{code}";
+    public static final String COUPON_CODE_STATISTICS       = "/coupon-code/{code}/statistics";
 }

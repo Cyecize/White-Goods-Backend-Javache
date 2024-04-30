@@ -11,12 +11,14 @@ import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.delivery.DeliveryAddress;
 import com.cyecize.app.api.store.delivery.DeliveryAddressService;
+import com.cyecize.app.api.store.order.dto.OrderCouponCodeStatisticsDto;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import com.cyecize.app.api.store.order.dto.OrderItemDto;
 import com.cyecize.app.api.store.order.dto.UpdateOrderStatusDto;
 import com.cyecize.app.api.store.pricing.Price;
 import com.cyecize.app.api.store.pricing.PricingService;
 import com.cyecize.app.api.store.promotion.coupon.CouponCodeService;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeStatisticQuery;
 import com.cyecize.app.api.user.User;
 import com.cyecize.app.api.user.UserService;
 import com.cyecize.app.api.warehouse.WarehouseService;
@@ -138,6 +140,8 @@ public class OrderServiceImpl implements OrderService {
         order.setUserId(userId);
         order.setDeliveryPrice(price.isFreeDelivery() ? 0D : price.getDeliveryPrice());
         order.setTotalDiscounts(price.getTotalDiscounts());
+        order.setSubtotal(price.getSubtotal());
+        order.setTotalPrice(price.getTotal());
         if (couponCode != null) {
             order.setCouponCode(couponCode.getCode());
         }
@@ -221,8 +225,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         final OrderDto orderDto = this.modelMapper.map(order, OrderDto.class);
-        orderDto.setTotalPrice(this.calculateTotal(order));
-        orderDto.setSubtotal(this.calculateSubtotal(order));
+        if (order.getTotalPrice().equals(0D)) {
+            // Required for legacy orders which did not keep their total / subtotal
+            orderDto.setTotalPrice(this.calculateTotal(order));
+            orderDto.setSubtotal(this.calculateSubtotal(order));
+        }
 
         final List<Long> productIds = orderDto.getItems().stream()
                 .map(OrderItemDto::getProductId)
@@ -289,5 +296,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean updateStock(Long productId, Integer quantity, Order order) {
         return this.warehouseService.updateQuantity(order, productId, quantity);
+    }
+
+    @Override
+    public OrderCouponCodeStatisticsDto getCouponCodeStatistics(CouponCodeStatisticQuery query) {
+        return this.orderRepository.getStatistics(
+                query.getCode(),
+                query.getDate().getMin(),
+                query.getDate().getMax(),
+                query.getStatuses()
+        );
     }
 }

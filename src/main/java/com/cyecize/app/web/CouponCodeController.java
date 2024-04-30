@@ -1,9 +1,12 @@
 package com.cyecize.app.web;
 
+import com.cyecize.app.api.store.order.OrderService;
 import com.cyecize.app.api.store.promotion.coupon.CouponCodeDetailedDto;
 import com.cyecize.app.api.store.promotion.coupon.CouponCodeDto;
 import com.cyecize.app.api.store.promotion.coupon.CouponCodeQuery;
 import com.cyecize.app.api.store.promotion.coupon.CouponCodeService;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeStatisticDto;
+import com.cyecize.app.api.store.promotion.coupon.CouponCodeStatisticQuery;
 import com.cyecize.app.api.store.promotion.coupon.CreateCouponCodeDto;
 import com.cyecize.app.constants.Endpoints;
 import com.cyecize.app.constants.General;
@@ -27,6 +30,7 @@ import org.modelmapper.ModelMapper;
 public class CouponCodeController {
 
     private final CouponCodeService couponCodeService;
+    private final OrderService orderService;
     private final ModelMapper modelMapper;
 
     @PostMapping(Endpoints.COUPON_CODES)
@@ -44,5 +48,12 @@ public class CouponCodeController {
     public JsonResponse deleteCode(@PathVariable("code") String code) {
         this.couponCodeService.deleteCode(code);
         return new JsonResponse().addAttribute("message", "Code is removed!");
+    }
+
+    @PostMapping(Endpoints.COUPON_CODE_STATISTICS)
+    public CouponCodeStatisticDto getCouponCodeStatistic(@Valid CouponCodeStatisticQuery query) {
+        return new CouponCodeStatisticDto(
+                this.orderService.getCouponCodeStatistics(query)
+        );
     }
 }

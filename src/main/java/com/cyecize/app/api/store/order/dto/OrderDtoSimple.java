@@ -18,4 +18,8 @@ public class OrderDtoSimple {
 
     @DateTimeConverter
     private LocalDateTime date;
+
+    private Double subtotal;
+
+    private Double totalPrice;
 }
