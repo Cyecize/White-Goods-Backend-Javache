@@ -1,5 +1,6 @@
 package com.cyecize.app.config.db;
 
+import com.cyecize.ioc.annotations.Nullable;
 import com.cyecize.summer.common.annotations.Bean;
 import com.cyecize.summer.common.annotations.BeanConfig;
 import com.cyecize.summer.common.annotations.Configuration;
@@ -21,6 +22,7 @@ public class DataSourceBeanConfig {
     @Configuration("database.username")
     private final String databaseUsername;
 
+    @Nullable
     @Configuration("database.password")
     private final String databasePassword;
 
