@@ -56,6 +56,7 @@ public class HomeCarouselServiceImpl implements HomeCarouselService {
         homeCarousel.setCustomLink(dto.getCustomLink());
         homeCarousel.setCustomLinkSamePage(dto.getCustomLinkSamePage());
         homeCarousel.setProductId(dto.getProductId());
+        homeCarousel.setDim(dto.getDim());
 
         if (dto.getImage() != null) {
             this.base64FileService.removeFile(homeCarousel.getImageUrl());

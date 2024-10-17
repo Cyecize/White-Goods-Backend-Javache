@@ -23,4 +23,6 @@ public class HomeCarouselDto {
     private Boolean customLinkSamePage;
 
     private Integer orderNumber;
+
+    private Integer dim;
 }

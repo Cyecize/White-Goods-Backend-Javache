@@ -40,4 +40,6 @@ public class HomeCarousel {
     private Boolean enabled;
 
     private Integer orderNumber;
+
+    private Integer dim;
 }
