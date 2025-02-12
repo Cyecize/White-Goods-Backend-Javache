@@ -82,7 +82,7 @@ public class IndexServingServiceImpl implements IndexServingService {
         final String queryLang = request.getQueryParam(General.QUERY_PARAM_LANG);
         context.setVariable("lang", Objects.requireNonNullElse(queryLang, "en"));
         context.setVariable("websiteTitle", openGraphData.getTitle());
-        context.setVariable("gtag", this.gtagId);
+        context.setVariable("gtagId", this.gtagId);
 
         final byte[] result = this.templateEngine
                 .process("index.html", context)
