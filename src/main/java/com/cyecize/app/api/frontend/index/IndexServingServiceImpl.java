@@ -4,6 +4,7 @@ import com.cyecize.app.api.frontend.opengraph.OpenGraphData;
 import com.cyecize.app.constants.General;
 import com.cyecize.app.error.ApiException;
 import com.cyecize.http.HttpStatus;
+import com.cyecize.ioc.annotations.Nullable;
 import com.cyecize.javache.JavacheConfigValue;
 import com.cyecize.javache.services.JavacheConfigService;
 import com.cyecize.solet.HttpSoletRequest;
@@ -39,6 +40,10 @@ public class IndexServingServiceImpl implements IndexServingService {
     private final JavacheConfigService serverCfg;
 
     private final TemplateEngine templateEngine;
+
+    @Nullable
+    @Configuration("google.gtag.id")
+    private final String gtagId;
 
     private Path indexPath1;
     private Path indexPath2;
@@ -77,6 +82,7 @@ public class IndexServingServiceImpl implements IndexServingService {
         final String queryLang = request.getQueryParam(General.QUERY_PARAM_LANG);
         context.setVariable("lang", Objects.requireNonNullElse(queryLang, "en"));
         context.setVariable("websiteTitle", openGraphData.getTitle());
+        context.setVariable("gtag", this.gtagId);
 
         final byte[] result = this.templateEngine
                 .process("index.html", context)
