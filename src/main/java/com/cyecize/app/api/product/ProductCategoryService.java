@@ -13,4 +13,6 @@ public interface ProductCategoryService {
     ProductCategory getCategory(Long categoryId);
 
     ProductCategory editCategory(Long categoryId, CreateCategoryDto dto);
+
+    void removeCategory(Long categoryId);
 }

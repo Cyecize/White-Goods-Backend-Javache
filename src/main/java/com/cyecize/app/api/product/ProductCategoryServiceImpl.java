@@ -66,4 +66,16 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         this.productCategoryRepository.merge(productCategory);
         return productCategory;
     }
+
+    @Override
+    public void removeCategory(Long categoryId) {
+        final ProductCategory productCategory = this.productCategoryRepository.find(categoryId);
+        if (productCategory == null) {
+            throw new NotFoundApiException(String.format(
+                    "Category with id %d was not found!", categoryId
+            ));
+        }
+
+        this.productCategoryRepository.deleteById(categoryId);
+    }
 }

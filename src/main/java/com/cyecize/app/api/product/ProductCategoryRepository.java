@@ -49,4 +49,12 @@ public class ProductCategoryRepository {
                 .setParameter(1, id)
                 .getResultStream().findFirst().orElse(null);
     }
+
+    @Transactional
+    public void deleteById(Long id) {
+        final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
+        entityManager.createQuery("delete from ProductCategory where id = :id")
+                .setParameter("id", id)
+                .executeUpdate();
+    }
 }
