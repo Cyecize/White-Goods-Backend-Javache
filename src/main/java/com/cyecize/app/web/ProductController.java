@@ -164,6 +164,10 @@ public class ProductController {
                 .stream()
                 .map(ProductSelection::getProduct)
                 .map(product -> this.modelMapper.map(product, ProductDto.class))
+                .map(dto -> {
+                    this.promotionService.applySingleProductDiscount(dto);
+                    return dto;
+                })
                 .collect(Collectors.toList());
     }
 
