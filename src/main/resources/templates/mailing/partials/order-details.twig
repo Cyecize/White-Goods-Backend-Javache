@@ -64,7 +64,9 @@
         {% endif %}
         <tr>
             <td class="text-total-price">{{ translate.getValue('final.price') }}</td>
-            <td class="text-total-price text-right">{{ util.formatNumber(model.totalPrice) }}</td>
+            <td class="text-total-price text-right">{{ util.formatNumber(model.totalPrice) }}
+              ({{ util.convertEur(model.totalPrice) }})
+            </td>
         </tr>
     </table>
 

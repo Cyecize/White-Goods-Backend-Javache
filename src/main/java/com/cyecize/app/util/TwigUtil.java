@@ -46,6 +46,10 @@ public class TwigUtil {
         return String.format("%.2f %s", number, this.currency);
     }
 
+    public String convertEur(Double number) {
+        return String.format("%.2f EUR", number * 0.511292);
+    }
+
     public String createImageUrl(HttpSoletRequest request, String imagePath) {
         return String.format("%s://%s%s", this.scheme, request.getHost(), imagePath);
     }
