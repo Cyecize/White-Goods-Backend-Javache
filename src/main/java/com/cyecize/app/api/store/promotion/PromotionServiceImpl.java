@@ -122,7 +122,8 @@ public class PromotionServiceImpl implements PromotionService {
 
                     return MathUtil.round(Math.max(0, promo.getMinSubtotal() - total));
                 })
-                .findFirst().orElse(null);
+                .min(Double::compare)
+                .orElse(null);
     }
 
     @Override
@@ -146,7 +147,8 @@ public class PromotionServiceImpl implements PromotionService {
         return this.modelMapper.map(promotion, PromotionDto.class);
     }
 
-    private void reloadCachedPromotions() {
+    @Override
+    public void reloadCachedPromotions() {
         final List<Promotion> promotions = this.promotionRepository.findAllFetchItems();
         CACHED_PROMOTIONS.clear();
         CACHED_PROMOTIONS.addAll(promotions);

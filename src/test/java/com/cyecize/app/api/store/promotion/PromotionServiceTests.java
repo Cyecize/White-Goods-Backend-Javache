@@ -13,6 +13,7 @@ import static com.cyecize.app.api.store.promotion.PromotionType.DISCOUNT_SPECIFI
 import static com.cyecize.app.api.store.promotion.PromotionType.DISCOUNT_SPECIFIC_PRODUCTS_ANY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -662,6 +663,87 @@ public class PromotionServiceTests {
         assertEquals(0, priceBag.getAllDiscounts().size());
 
 
+    }
+
+    @Test
+    public void testGetFreeDeliveryThreshold_MultiplePromos_ShouldGetTheCustomerBest() {
+        Promotion promotion1 = this.buildPromo(
+                DISCOUNT_OVER_SUBTOTAL, FREE_DELIVERY, "fd 1", null
+        );
+        Promotion promotion2 = this.buildPromo(
+                DISCOUNT_OVER_SUBTOTAL, FREE_DELIVERY, "fd 2", null
+        );
+        Promotion promotion3 = this.buildPromo(
+                DISCOUNT_OVER_SUBTOTAL, FREE_DELIVERY, "fd 3", null
+        );
+
+        promotion1.setMinSubtotal(10D);
+        promotion2.setMinSubtotal(9D);
+        promotion3.setMinSubtotal(11D);
+
+        when(promotionRepository.findAllFetchItems()).thenReturn(
+                List.of(promotion1, promotion2, promotion3));
+
+        this.promotionService.reloadCachedPromotions();
+        final Double threshold = this.promotionService.getFreeDeliveryThreshold(4D, 0D);
+        assertEquals(5D, threshold);
+    }
+
+    @Test
+    public void testGetFreeDeliveryThreshold_PromoOverSubtotal_ShouldUseSubtotalToCalculate() {
+        Promotion promotion1 = this.buildPromo(
+                DISCOUNT_OVER_SUBTOTAL, FREE_DELIVERY, "fd 1", null
+        );
+
+        promotion1.setMinSubtotal(100D);
+
+        when(promotionRepository.findAllFetchItems()).thenReturn(List.of(promotion1));
+
+        this.promotionService.reloadCachedPromotions();
+        final Double threshold = this.promotionService.getFreeDeliveryThreshold(5D, 50D);
+        assertEquals(95D, threshold);
+    }
+
+    @Test
+    public void testGetFreeDeliveryThreshold_PromoOverTotal_ShouldUseSubtotalToCalculate() {
+        Promotion promotion1 = this.buildPromo(
+                DISCOUNT_OVER_TOTAL, FREE_DELIVERY, "fd 1", null
+        );
+
+        promotion1.setMinSubtotal(100D);
+
+        when(promotionRepository.findAllFetchItems()).thenReturn(List.of(promotion1));
+
+        this.promotionService.reloadCachedPromotions();
+        final Double threshold = this.promotionService.getFreeDeliveryThreshold(5D, 50D);
+        assertEquals(50D, threshold);
+    }
+
+    @Test
+    public void testGetFreeDeliveryThreshold_NoFreeDeliveryPromos_ShouldReturnNull() {
+        when(promotionRepository.findAllFetchItems()).thenReturn(List.of());
+
+        this.promotionService.reloadCachedPromotions();
+        final Double threshold = this.promotionService.getFreeDeliveryThreshold(5D, 50D);
+        assertNull(threshold);
+    }
+
+    @Test
+    public void testGetFreeDeliveryThreshold_PromoNeitherTotalOrSubtotal_ShouldReturnNull() {
+        Promotion promotion1 = this.buildPromoSpecificProductsAny(
+                "fd 1",
+                500D,
+                FREE_DELIVERY,
+                List.of(this.buildPromoProdItem(1L, 2))
+        );
+
+        promotion1.setMinSubtotal(100D);
+
+        when(promotionRepository.findAllFetchItems()).thenReturn(List.of(promotion1));
+
+        this.promotionService.reloadCachedPromotions();
+        final Double threshold = this.promotionService.getFreeDeliveryThreshold(5D, 50D);
+        assertNull(threshold);
     }
 
     private Promotion buildPromoCategory(
