@@ -1,5 +1,8 @@
 package com.cyecize.app.api.store.promotion;
 
+import static com.cyecize.app.api.store.promotion.PromotionType.DISCOUNT_OVER_SUBTOTAL;
+import static com.cyecize.app.api.store.promotion.PromotionType.DISCOUNT_OVER_TOTAL;
+
 import com.cyecize.app.api.product.dto.ProductDto;
 import com.cyecize.app.api.store.cart.ShoppingCartDetailedDto;
 import com.cyecize.app.api.store.cart.ShoppingCartItemDetailedDto;
@@ -104,6 +107,22 @@ public class PromotionServiceImpl implements PromotionService {
                 0D,
                 MathUtil.subtract(productDto.getPrice(), totalDiscounts)
         ));
+    }
+
+    @Override
+    public Double getFreeDeliveryThreshold(Double subtotal, Double total) {
+        final var validTypes = List.of(DISCOUNT_OVER_SUBTOTAL, DISCOUNT_OVER_TOTAL);
+        return CACHED_PROMOTIONS.stream()
+                .filter(promo -> validTypes.contains(promo.getPromotionType()))
+                .filter(promo -> promo.getDiscountType() == DiscountType.FREE_DELIVERY)
+                .map(promo -> {
+                    if (promo.getPromotionType() == DISCOUNT_OVER_SUBTOTAL) {
+                        return MathUtil.round(Math.max(0, promo.getMinSubtotal() - subtotal));
+                    }
+
+                    return MathUtil.round(Math.max(0, promo.getMinSubtotal() - total));
+                })
+                .findFirst().orElse(null);
     }
 
     @Override

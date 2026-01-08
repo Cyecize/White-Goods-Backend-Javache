@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class Price {
+
     private final Double subtotal;
     private final Double deliveryPrice;
     private final Double total;
     private final boolean freeDelivery;
+    private final Double remainingToFreeDelivery;
     private final Double totalDiscounts;
     private final List<DiscountDto> discounts;
 }

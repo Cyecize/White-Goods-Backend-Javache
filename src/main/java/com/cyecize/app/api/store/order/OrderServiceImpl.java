@@ -138,7 +138,10 @@ public class OrderServiceImpl implements OrderService {
         order.setDate(LocalDateTime.now());
         order.setStatus(OrderStatus.WAITING);
         order.setUserId(userId);
-        order.setDeliveryPrice(price.isFreeDelivery() ? 0D : price.getDeliveryPrice());
+        order.setDeliveryPrice(price.getDeliveryPrice());
+        if (price.isFreeDelivery()) {
+            order.setDeliveryPrice(0D);
+        }
         order.setTotalDiscounts(price.getTotalDiscounts());
         order.setSubtotal(price.getSubtotal());
         order.setTotalPrice(price.getTotal());
@@ -247,7 +250,9 @@ public class OrderServiceImpl implements OrderService {
 
     private Double calculateTotal(Order order) {
         final DoubleAdder da = new DoubleAdder();
-        da.add(order.getDeliveryPrice());
+        if (order.getDeliveryPrice() != null) {
+            da.add(order.getDeliveryPrice());
+        }
         da.add(order.getTotalDiscounts() * -1.0);
 
         da.add(this.calculateSubtotal(order));

@@ -5,8 +5,10 @@ import com.cyecize.app.api.store.cart.ShoppingCartService;
 import com.cyecize.app.api.store.promotion.PromotionService;
 import com.cyecize.app.api.store.promotion.PromotionStage;
 import com.cyecize.app.util.MathUtil;
+import com.cyecize.ioc.annotations.Nullable;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,6 +18,7 @@ public class PricingServiceImpl implements PricingService {
     private final ShoppingCartService shoppingCartService;
     private final PromotionService promotionService;
 
+    @Nullable
     @Configuration("delivery.price")
     private final Double deliveryPrice;
 
@@ -38,13 +41,18 @@ public class PricingServiceImpl implements PricingService {
                 deliveryPrice,
                 priceBag.getTotal(),
                 priceBag.isFreeDelivery(),
+                this.promotionService.getFreeDeliveryThreshold(priceBag.getSubtotal(),
+                        priceBag.getTotal()),
                 priceBag.sumAllDiscounts(),
                 priceBag.getAllDiscounts()
         );
     }
 
     private void setTotal(PriceBag priceBag) {
-        final double deliveryPrice = priceBag.isFreeDelivery() ? 0D : this.deliveryPrice;
+        final double deliveryPrice = priceBag.isFreeDelivery()
+                ? 0D
+                : Objects.requireNonNullElse(this.deliveryPrice, 0D);
+
         final double total = Math.max(
                 0D,
                 MathUtil.subtract(

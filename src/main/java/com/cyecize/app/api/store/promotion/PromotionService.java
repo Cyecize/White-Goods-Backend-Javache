@@ -13,6 +13,8 @@ public interface PromotionService {
 
     void applySingleProductDiscount(ProductDto productDto);
 
+    Double getFreeDeliveryThreshold(Double subtotal, Double total);
+
     PromotionDto createPromotion(CreatePromotionDto dto);
 
     Page<Promotion> searchPromotions(PromotionQuery query);
