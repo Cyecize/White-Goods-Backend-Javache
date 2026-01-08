@@ -3,15 +3,15 @@ package com.cyecize.app.api.product;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-
-import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import javax.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class ImageRepository {
+
     private final TransactionContext transactionContext;
 
     @Transactional
@@ -33,7 +33,8 @@ public class ImageRepository {
     @Transactional
     public List<Image> findByProductId(Long productId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-        return entityManager.createQuery("select i from Image i where i.productId = ?1", Image.class)
+        return entityManager.createQuery("select i from Image i where i.productId = ?1",
+                        Image.class)
                 .setParameter(1, productId)
                 .getResultList();
     }

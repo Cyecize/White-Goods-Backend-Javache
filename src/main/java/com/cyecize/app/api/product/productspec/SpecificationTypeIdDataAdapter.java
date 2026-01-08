@@ -9,6 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Component
 @RequiredArgsConstructor
 public class SpecificationTypeIdDataAdapter implements DataAdapter<SpecificationType> {
+
     private final SpecificationTypeService specificationTypeService;
 
     @Override

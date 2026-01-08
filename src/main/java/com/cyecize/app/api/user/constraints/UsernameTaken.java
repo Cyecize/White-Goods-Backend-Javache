@@ -11,5 +11,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Constraint(validatedBy = UsernameTakenValidator.class)
 public @interface UsernameTaken {
+
     String message() default ValidationMessages.NAME_ALREADY_TAKEN;
 }

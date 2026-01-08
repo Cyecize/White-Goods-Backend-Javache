@@ -55,7 +55,8 @@ public class ProductServiceImpl implements ProductService {
         final Specification<Product> specification = ProductSpecifications.idEquals(id)
                 .and(ProductSpecifications.showHidden(true, currentUser));
 
-        return this.specificationExecutor.findOne(specification, Product.class, EntityGraphs.PRODUCT_ALL);
+        return this.specificationExecutor.findOne(specification, Product.class,
+                EntityGraphs.PRODUCT_ALL);
     }
 
     @Override
@@ -66,11 +67,13 @@ public class ProductServiceImpl implements ProductService {
                 .and(ProductSpecifications.sort(productQuery.getSort()))
                 .and(ProductSpecifications.categoryIdContains(productQuery.getCategoryIds()))
                 .and(ProductSpecifications.idContains(productQuery.getIds(), false))
-                .and(ProductSpecifications.includesAllSpecifications(productQuery.getSpecifications()))
+                .and(ProductSpecifications.includesAllSpecifications(
+                        productQuery.getSpecifications()))
                 .and(ProductSpecifications.containsText(productQuery.getSearch()));
 
         return this.specificationExecutor.findAll(
-                specification, productQuery.getPage(), Product.class, EntityGraphs.PRODUCT_FOR_SEARCH
+                specification, productQuery.getPage(), Product.class,
+                EntityGraphs.PRODUCT_FOR_SEARCH
         );
     }
 
@@ -111,7 +114,8 @@ public class ProductServiceImpl implements ProductService {
         final Set<ProductSpecification> specifications = new HashSet<>();
         if (createProductDto.getProductSpecifications() != null) {
             for (CreateProductSpecificationDto dto : createProductDto.getProductSpecifications()) {
-                specifications.add(this.productSpecificationService.createProductSpecification(dto));
+                specifications.add(
+                        this.productSpecificationService.createProductSpecification(dto));
             }
         }
 
@@ -160,7 +164,8 @@ public class ProductServiceImpl implements ProductService {
         final Set<ProductSpecification> specifications = new HashSet<>();
         if (dto.getProductSpecifications() != null) {
             for (CreateProductSpecificationDto specDto : dto.getProductSpecifications()) {
-                specifications.add(this.productSpecificationService.createProductSpecification(specDto));
+                specifications.add(
+                        this.productSpecificationService.createProductSpecification(specDto));
             }
         }
 

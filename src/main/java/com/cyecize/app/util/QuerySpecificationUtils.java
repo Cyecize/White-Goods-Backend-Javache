@@ -1,7 +1,5 @@
 package com.cyecize.app.util;
 
-import org.apache.commons.lang3.BooleanUtils;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.From;
@@ -12,13 +10,14 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SetAttribute;
 import javax.persistence.metamodel.SingularAttribute;
+import org.apache.commons.lang3.BooleanUtils;
 
 public final class QuerySpecificationUtils {
 
     public static <T extends Comparable<? super T>> Predicate getLesserPredicate(T value,
-                                                                                 CriteriaBuilder criteriaBuilder,
-                                                                                 Expression<T> field,
-                                                                                 boolean inclusive) {
+            CriteriaBuilder criteriaBuilder,
+            Expression<T> field,
+            boolean inclusive) {
         if (value == null) {
             return criteriaBuilder.conjunction();
         }
@@ -31,9 +30,9 @@ public final class QuerySpecificationUtils {
     }
 
     public static <T extends Comparable<? super T>> Predicate getGreaterPredicate(T value,
-                                                                                  CriteriaBuilder criteriaBuilder,
-                                                                                  Expression<T> field,
-                                                                                  boolean inclusive) {
+            CriteriaBuilder criteriaBuilder,
+            Expression<T> field,
+            boolean inclusive) {
         if (value == null) {
             return criteriaBuilder.conjunction();
         }
@@ -49,17 +48,18 @@ public final class QuerySpecificationUtils {
      * @param attr  - Field to compare
      * @param query -
      * @param cb    -
-     * @param root  - Path from which the field can be accessed.
-     *              For joins pass {@link Join} and for sub queries pass subroot.
+     * @param root  - Path from which the field can be accessed. For joins pass {@link Join} and for
+     *              sub queries pass subroot.
      * @param <T>   - Entity type
      * @param <V>   - Field value type
      * @return predicate
      */
-    public static <T, V extends Comparable<? super V>> Predicate betweenPredicate(SingularAttribute<T, V> attr,
-                                                                                  BetweenQuery<V> query,
-                                                                                  CriteriaBuilder cb,
-                                                                                  Path<T> root,
-                                                                                  boolean inclusive) {
+    public static <T, V extends Comparable<? super V>> Predicate betweenPredicate(
+            SingularAttribute<T, V> attr,
+            BetweenQuery<V> query,
+            CriteriaBuilder cb,
+            Path<T> root,
+            boolean inclusive) {
         if (query == null) {
             return cb.conjunction();
         }
@@ -84,10 +84,12 @@ public final class QuerySpecificationUtils {
     }
 
     /**
-     * Using this method ensures that only one join will be made across all executed specifications.
+     * Using this method ensures that only one join will be made across all executed
+     * specifications.
      */
     @SuppressWarnings("unchecked")
-    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from, String attribute, boolean fetch) {
+    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from, String attribute,
+            boolean fetch) {
         Join<?, ?> join = from.getJoins().stream()
                 .filter(j -> j.getAttribute().getName().equals(attribute))
                 .findFirst().orElse(null);
@@ -109,7 +111,8 @@ public final class QuerySpecificationUtils {
         return (Join<X, Y>) join;
     }
 
-    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from, ListAttribute<X, Y> attribute) {
+    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from,
+            ListAttribute<X, Y> attribute) {
         return getOrCreateJoin(from, attribute.getName(), false);
     }
 
@@ -117,19 +120,23 @@ public final class QuerySpecificationUtils {
         return getOrCreateJoin(from, attribute.getName(), false);
     }
 
-    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from, SingularAttribute<X, Y> attribute) {
+    public static <X, Y> Join<X, Y> getOrCreateJoin(From<?, ?> from,
+            SingularAttribute<X, Y> attribute) {
         return getOrCreateJoin(from, attribute.getName(), false);
     }
 
-    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from, ListAttribute<X, Y> attribute) {
+    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from,
+            ListAttribute<X, Y> attribute) {
         return getOrCreateJoin(from, attribute.getName(), true);
     }
 
-    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from, SetAttribute<X, Y> attribute) {
+    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from,
+            SetAttribute<X, Y> attribute) {
         return getOrCreateJoin(from, attribute.getName(), true);
     }
 
-    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from, SingularAttribute<X, Y> attribute) {
+    public static <X, Y> Join<X, Y> getOrCreateFetch(From<?, ?> from,
+            SingularAttribute<X, Y> attribute) {
         return getOrCreateJoin(from, attribute.getName(), true);
     }
 }

@@ -1,10 +1,7 @@
 package com.cyecize.app.api.product;
 
 import com.cyecize.app.constants.EntityGraphs;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,7 +13,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
-import java.util.Set;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "product_categories")

@@ -7,10 +7,9 @@ import com.cyecize.app.util.Page;
 import com.cyecize.app.util.Specification;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-
-import java.util.ArrayList;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +24,8 @@ public class SpecificationTypeServiceImpl implements SpecificationTypeService {
         final Specification<SpecificationType> spec = SpecificationTypeSpecifications
                 .categoryContains(query.getCategoryIds());
 
-        return this.specificationExecutor.findAll(spec, query.getPage(), SpecificationType.class, null);
+        return this.specificationExecutor.findAll(spec, query.getPage(), SpecificationType.class,
+                null);
     }
 
     @Override
@@ -63,7 +63,8 @@ public class SpecificationTypeServiceImpl implements SpecificationTypeService {
 
     @Override
     public SpecificationType createSpecificationType(CreateSpecificationTypeDto dto) {
-        final SpecificationType specificationType = this.modelMapper.map(dto, SpecificationType.class);
+        final SpecificationType specificationType = this.modelMapper.map(dto,
+                SpecificationType.class);
         specificationType.setCategories(new ArrayList<>());
 
         specificationType.getCategories().add(dto.getCategory());

@@ -2,13 +2,12 @@ package com.cyecize.app.integration.transaction;
 
 import com.cyecize.app.error.ApiException;
 import com.cyecize.summer.common.annotations.Component;
-import lombok.RequiredArgsConstructor;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.Optional;
 import java.util.Stack;
 import java.util.UUID;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -60,7 +59,8 @@ public class TransactionContext {
     public EntityManager getEntityManagerForTransaction() {
         return this.getTransaction()
                 .map(Transaction::getEntityManager)
-                .orElseThrow(() -> new ApiException("Cannot obtain EntityManager because there is no transaction."));
+                .orElseThrow(() -> new ApiException(
+                        "Cannot obtain EntityManager because there is no transaction."));
     }
 
     public Optional<Transaction> getTransaction() {

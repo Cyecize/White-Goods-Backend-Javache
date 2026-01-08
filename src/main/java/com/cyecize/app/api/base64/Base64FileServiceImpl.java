@@ -6,18 +6,18 @@ import com.cyecize.solet.SoletConstants;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
 import com.cyecize.summer.utils.PathUtils;
-import lombok.RequiredArgsConstructor;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Base64;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class Base64FileServiceImpl implements Base64FileService {
+
     private final SoletConfig soletConfig;
 
     @Configuration("uploaded.files.location")

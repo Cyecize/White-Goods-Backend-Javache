@@ -4,10 +4,9 @@ import com.cyecize.app.api.user.User;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,8 @@ public class AuthTokenServiceImpl implements AuthTokenService {
         final LocalDateTime now = LocalDateTime.now();
         final LocalDateTime lastAccessTime = token.getLastAccessDate();
 
-        return Math.abs(ChronoUnit.MINUTES.between(now, lastAccessTime)) > maxUserTokenInactivityMin;
+        return Math.abs(ChronoUnit.MINUTES.between(now, lastAccessTime))
+                > maxUserTokenInactivityMin;
     }
 
     @Override

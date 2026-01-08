@@ -5,8 +5,7 @@ import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.ioc.annotations.Nullable;
 import com.cyecize.summer.common.annotations.Component;
-import lombok.RequiredArgsConstructor;
-
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -14,7 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
@@ -23,7 +22,8 @@ public class SpecificationExecutor {
     private final TransactionContext transactionContext;
 
     @Transactional
-    public <T> T findOne(Specification<T> specification, Class<T> returnType, @Nullable String entityGraph) {
+    public <T> T findOne(Specification<T> specification, Class<T> returnType,
+            @Nullable String entityGraph) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -34,7 +34,8 @@ public class SpecificationExecutor {
 
         final TypedQuery<T> typeQuery = entityManager.createQuery(query);
         if (entityGraph != null) {
-            typeQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph(entityGraph));
+            typeQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH,
+                    entityManager.getEntityGraph(entityGraph));
         }
 
         return typeQuery.getResultList().stream().findFirst().orElse(null);
@@ -42,9 +43,9 @@ public class SpecificationExecutor {
 
     @Transactional
     public <T> Page<T> findAll(Specification<T> specification,
-                               PageQuery pageQuery,
-                               Class<T> returnType,
-                               @Nullable String entityGraph) {
+            PageQuery pageQuery,
+            Class<T> returnType,
+            @Nullable String entityGraph) {
         final Page<Long> page = this.selectIdFindAll(specification, pageQuery, returnType);
         if (page.getElements().isEmpty()) {
             return new Page<>(List.of(), pageQuery);
@@ -68,14 +69,16 @@ public class SpecificationExecutor {
 
         final TypedQuery<T> typedQuery = entityManager.createQuery(query);
         if (entityGraph != null) {
-            typedQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph(entityGraph));
+            typedQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH,
+                    entityManager.getEntityGraph(entityGraph));
         }
 
         final List<T> results = typedQuery.getResultList();
         return new Page<>(results, page.getItemsCount(), pageQuery);
     }
 
-    private <T> Page<Long> selectIdFindAll(Specification<T> specification, PageQuery pageQuery, Class<T> returnType) {
+    private <T> Page<Long> selectIdFindAll(Specification<T> specification, PageQuery pageQuery,
+            Class<T> returnType) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -105,7 +108,7 @@ public class SpecificationExecutor {
     }
 
     private <T> Long countDistinctBySpecification(Specification<T> specification,
-                                                  Class<T> entityType) {
+            Class<T> entityType) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -121,7 +124,8 @@ public class SpecificationExecutor {
     }
 
     @Transactional
-    public <T> List<T> findAll(Specification<T> specification, Class<T> returnType, @Nullable String entityGraph) {
+    public <T> List<T> findAll(Specification<T> specification, Class<T> returnType,
+            @Nullable String entityGraph) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
@@ -132,7 +136,8 @@ public class SpecificationExecutor {
 
         final TypedQuery<T> typedQuery = entityManager.createQuery(query);
         if (entityGraph != null) {
-            typedQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH, entityManager.getEntityGraph(entityGraph));
+            typedQuery.setHint(General.HIBERNATE_HINT_ENTITY_GRAPH,
+                    entityManager.getEntityGraph(entityGraph));
         }
 
         return typedQuery.getResultList();

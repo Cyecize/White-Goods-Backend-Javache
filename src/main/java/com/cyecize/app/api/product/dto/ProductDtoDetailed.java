@@ -4,12 +4,11 @@ import com.cyecize.app.api.product.Image;
 import com.cyecize.app.api.product.productspec.ProductSpecificationDtoDetailed;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -24,7 +23,8 @@ public class ProductDtoDetailed extends ProductDto {
 
     public void setImages(List<Image> images) {
         if (images != null) {
-            this.imageGallery.addAll(images.stream().map(Image::getImageUrl).collect(Collectors.toList()));
+            this.imageGallery.addAll(
+                    images.stream().map(Image::getImageUrl).collect(Collectors.toList()));
         }
     }
 
@@ -35,6 +35,7 @@ public class ProductDtoDetailed extends ProductDto {
 
     @Data
     static class CategoryDto {
+
         @JsonProperty("categoryNameBg")
         private String nameBg;
 

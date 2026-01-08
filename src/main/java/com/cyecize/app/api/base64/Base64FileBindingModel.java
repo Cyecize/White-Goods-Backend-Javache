@@ -6,6 +6,7 @@ import lombok.Data;
 
 @Data
 public class Base64FileBindingModel {
+
     @NotNull
     @Base64FileSize(maxBytes = General.MAX_FILE_SIZE_BYTES)
     private String base64;

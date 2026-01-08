@@ -3,10 +3,9 @@ package com.cyecize.app.integration.transaction;
 import com.cyecize.ioc.annotations.Service;
 import com.cyecize.ioc.handlers.MethodInvocationChain;
 import com.cyecize.ioc.handlers.ServiceMethodAspectHandler;
-import lombok.RequiredArgsConstructor;
-
 import java.lang.reflect.Method;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +15,8 @@ public class TransactionalAspectIntegration implements ServiceMethodAspectHandle
 
     @Override
     public Object proceed(Transactional transactional,
-                          Method method, Object[] objects,
-                          MethodInvocationChain methodInvocationChain) throws Exception {
+            Method method, Object[] objects,
+            MethodInvocationChain methodInvocationChain) throws Exception {
         Optional<String> newTransactionId = Optional.empty();
         Optional<Transaction> transaction = this.transactionContext.getTransaction();
 

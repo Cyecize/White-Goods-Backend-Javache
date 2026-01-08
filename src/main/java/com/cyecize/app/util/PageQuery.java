@@ -1,12 +1,12 @@
 package com.cyecize.app.util;
 
+import static com.cyecize.app.constants.ValidationMessages.FIELD_CANNOT_BE_NULL;
+
 import com.cyecize.summer.areas.validation.constraints.Min;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import static com.cyecize.app.constants.ValidationMessages.FIELD_CANNOT_BE_NULL;
 
 @Data
 @NoArgsConstructor

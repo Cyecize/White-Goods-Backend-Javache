@@ -8,9 +8,8 @@ import com.cyecize.summer.areas.validation.annotations.Valid;
 import com.cyecize.summer.areas.validation.constraints.MaxLength;
 import com.cyecize.summer.areas.validation.constraints.NotEmpty;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 @Data
 public class CreateCategoryDto {

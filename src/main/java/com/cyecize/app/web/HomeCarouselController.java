@@ -21,11 +21,10 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.annotations.routing.RequestParam;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Controller
 @RequestMapping(value = "", produces = General.APPLICATION_JSON)
@@ -39,27 +38,31 @@ public class HomeCarouselController {
 
     @GetMapping(Endpoints.HOME_CAROUSEL)
     @PreAuthorize(AuthorizationType.ANY)
-    public List<HomeCarouselDto> getHomeCarousel(@RequestParam("showHidden") boolean showHidden, Principal principal) {
-        return this.homeCarouselService.getHomeCarousel(showHidden, (User) principal.getUser()).stream()
+    public List<HomeCarouselDto> getHomeCarousel(@RequestParam("showHidden") boolean showHidden,
+            Principal principal) {
+        return this.homeCarouselService.getHomeCarousel(showHidden, (User) principal.getUser())
+                .stream()
                 .map(hc -> this.modelMapper.map(hc, HomeCarouselDto.class))
                 .collect(Collectors.toList());
     }
 
     @PostMapping(Endpoints.HOME_CAROUSEL)
     public HomeCarouselDto createCarouselItem(@Valid CreateCarouselDto dto) {
-        return this.modelMapper.map(this.homeCarouselService.createCarouselItem(dto), HomeCarouselDto.class);
+        return this.modelMapper.map(this.homeCarouselService.createCarouselItem(dto),
+                HomeCarouselDto.class);
     }
 
     @PutMapping(Endpoints.HOME_CAROUSEL_ITEM)
     public HomeCarouselDto editHomeCarousel(@PathVariable("id")
-                                            @ConvertedBy(HomeCarouselIdDataAdapter.class) HomeCarousel item,
-                                            @Valid EditCarouselDto dto) {
-        return this.modelMapper.map(this.homeCarouselService.editCarouselItem(item.getId(), dto), HomeCarouselDto.class);
+            @ConvertedBy(HomeCarouselIdDataAdapter.class) HomeCarousel item,
+            @Valid EditCarouselDto dto) {
+        return this.modelMapper.map(this.homeCarouselService.editCarouselItem(item.getId(), dto),
+                HomeCarouselDto.class);
     }
 
     @GetMapping(Endpoints.HOME_CAROUSEL_ITEM)
     public HomeCarouselDto getCarousel(@PathVariable("id")
-                                       @ConvertedBy(HomeCarouselIdDataAdapter.class) HomeCarousel item) {
+    @ConvertedBy(HomeCarouselIdDataAdapter.class) HomeCarousel item) {
         return this.modelMapper.map(item, HomeCarouselDto.class);
     }
 }

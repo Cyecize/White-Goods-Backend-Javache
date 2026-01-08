@@ -3,16 +3,16 @@ package com.cyecize.app.api.product;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.app.util.SpecificationExecutor;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService {
+
     private final TagRepository tagRepository;
     private final SpecificationExecutor specificationExecutor;
 

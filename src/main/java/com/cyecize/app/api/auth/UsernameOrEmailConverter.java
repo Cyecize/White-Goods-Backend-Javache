@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 @Component
 @RequiredArgsConstructor
 public class UsernameOrEmailConverter implements DataAdapter<User> {
+
     private final UserService userService;
 
     @Override

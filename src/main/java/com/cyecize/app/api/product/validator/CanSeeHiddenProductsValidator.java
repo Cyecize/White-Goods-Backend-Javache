@@ -9,7 +9,8 @@ import org.apache.commons.lang3.BooleanUtils;
 
 @Component
 @RequiredArgsConstructor
-public class CanSeeHiddenProductsValidator implements ConstraintValidator<CanSeeHiddenProducts, Boolean> {
+public class CanSeeHiddenProductsValidator implements
+        ConstraintValidator<CanSeeHiddenProducts, Boolean> {
 
     private final Principal principal;
 

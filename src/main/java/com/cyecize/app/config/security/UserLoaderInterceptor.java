@@ -24,7 +24,8 @@ public class UserLoaderInterceptor implements InterceptorAdapter {
     private final AuthTokenService authTokenService;
 
     @Override
-    public boolean preHandle(HttpSoletRequest request, HttpSoletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpSoletRequest request, HttpSoletResponse response, Object handler)
+            throws Exception {
         //No need to load user for each handler, just the first time.
         if (!(handler instanceof DependencyContainer)) {
             return true;

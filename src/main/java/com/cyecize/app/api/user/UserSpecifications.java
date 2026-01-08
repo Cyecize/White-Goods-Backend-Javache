@@ -10,7 +10,8 @@ public final class UserSpecifications {
             return Specification.not(null);
         }
 
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.username), value);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.username),
+                value);
     }
 
     public static Specification<User> emailEquals(String value) {
@@ -18,6 +19,7 @@ public final class UserSpecifications {
             return Specification.not(null);
         }
 
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.email), value);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(User_.email),
+                value);
     }
 }

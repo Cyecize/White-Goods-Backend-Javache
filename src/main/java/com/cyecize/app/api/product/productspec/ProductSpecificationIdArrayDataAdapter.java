@@ -5,16 +5,15 @@ import com.cyecize.summer.areas.validation.interfaces.DataAdapter;
 import com.cyecize.summer.common.annotations.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class ProductSpecificationIdArrayDataAdapter implements DataAdapter<List<ProductSpecification>> {
+public class ProductSpecificationIdArrayDataAdapter implements
+        DataAdapter<List<ProductSpecification>> {
+
     private final ObjectMapper objectMapper;
     private final ProductSpecificationService productSpecificationService;
 
@@ -25,8 +24,8 @@ public class ProductSpecificationIdArrayDataAdapter implements DataAdapter<List<
         }
 
         try {
-           final List<Long> ids = List.of(objectMapper.readValue(param, Long[].class));
-           return this.productSpecificationService.findAllSpecificationsById(ids);
+            final List<Long> ids = List.of(objectMapper.readValue(param, Long[].class));
+            return this.productSpecificationService.findAllSpecificationsById(ids);
         } catch (JsonProcessingException ignored) {
             return new ArrayList<>();
         }

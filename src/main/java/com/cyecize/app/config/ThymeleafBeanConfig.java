@@ -8,7 +8,6 @@ import com.cyecize.summer.common.annotations.BeanConfig;
 import com.cyecize.summer.common.annotations.Configuration;
 import com.cyecize.summer.utils.PathUtils;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;

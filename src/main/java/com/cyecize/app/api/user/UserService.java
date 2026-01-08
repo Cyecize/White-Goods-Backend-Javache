@@ -1,7 +1,6 @@
 package com.cyecize.app.api.user;
 
 import com.cyecize.app.api.auth.ResetPasswordDto;
-import com.cyecize.summer.areas.security.interfaces.UserDetails;
 import java.util.List;
 
 public interface UserService {

@@ -19,11 +19,10 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Controller
 @RequestMapping(value = "", produces = General.APPLICATION_JSON)
@@ -38,18 +37,22 @@ public class ProductCategoryController {
     @PreAuthorize(AuthorizationType.ANY)
     public List<ProductCategoryDto> getCategories() {
         return this.productCategoryService.findAllCategories().stream()
-                .map(productCategory -> this.modelMapper.map(productCategory, ProductCategoryDto.class))
+                .map(productCategory -> this.modelMapper.map(productCategory,
+                        ProductCategoryDto.class))
                 .collect(Collectors.toList());
     }
 
     @PostMapping(Endpoints.CATEGORIES)
     public ProductCategoryDto createCategory(@Valid CreateCategoryDto dto) {
-        return this.modelMapper.map(this.productCategoryService.createCategory(dto), ProductCategoryDto.class);
+        return this.modelMapper.map(this.productCategoryService.createCategory(dto),
+                ProductCategoryDto.class);
     }
 
     @PutMapping(Endpoints.CATEGORY)
-    public ProductCategoryDto editCategory(@PathVariable("id") Long catId, @Valid CreateCategoryDto dto) {
-        return this.modelMapper.map(this.productCategoryService.editCategory(catId, dto), ProductCategoryDto.class);
+    public ProductCategoryDto editCategory(@PathVariable("id") Long catId,
+            @Valid CreateCategoryDto dto) {
+        return this.modelMapper.map(this.productCategoryService.editCategory(catId, dto),
+                ProductCategoryDto.class);
     }
 
     @DeleteMapping(Endpoints.CATEGORY)

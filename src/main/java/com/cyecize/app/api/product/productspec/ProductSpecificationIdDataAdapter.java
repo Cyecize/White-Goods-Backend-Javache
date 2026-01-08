@@ -9,6 +9,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Component
 @RequiredArgsConstructor
 public class ProductSpecificationIdDataAdapter implements DataAdapter<ProductSpecification> {
+
     private final ProductSpecificationService productSpecificationService;
 
     @Override

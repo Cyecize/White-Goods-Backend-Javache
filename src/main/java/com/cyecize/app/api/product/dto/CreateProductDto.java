@@ -16,10 +16,9 @@ import com.cyecize.summer.areas.validation.constraints.Min;
 import com.cyecize.summer.areas.validation.constraints.NotEmpty;
 import com.cyecize.summer.areas.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import java.util.Objects;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class CreateProductDto {

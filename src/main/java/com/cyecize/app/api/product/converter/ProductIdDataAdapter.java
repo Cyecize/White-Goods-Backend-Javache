@@ -20,7 +20,8 @@ public class ProductIdDataAdapter implements DataAdapter<Product> {
 
     @Override
     public Product resolve(String paramName, HttpSoletRequest httpSoletRequest) {
-        final long id = NumberUtils.toLong(httpSoletRequest.getBodyParam(paramName), Integer.MIN_VALUE);
+        final long id = NumberUtils.toLong(httpSoletRequest.getBodyParam(paramName),
+                Integer.MIN_VALUE);
         final Product product = this.productService.findProductById(id, (User) principal.getUser());
 
         if (product == null) {

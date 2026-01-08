@@ -4,9 +4,7 @@ import com.cyecize.app.api.product.Product;
 import com.cyecize.app.api.product.Product_;
 import com.cyecize.app.util.QuerySpecificationUtils;
 import com.cyecize.app.util.Specification;
-
 import java.util.Collection;
-import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
 

@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class PasswordRecoveryEmailDto {
+
     private final User user;
     private final RecoveryKeyDto recoveryKey;
 }

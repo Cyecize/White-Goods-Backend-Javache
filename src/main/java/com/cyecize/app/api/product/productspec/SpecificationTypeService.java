@@ -4,6 +4,7 @@ import com.cyecize.app.api.product.ProductCategory;
 import com.cyecize.app.util.Page;
 
 public interface SpecificationTypeService {
+
     Page<SpecificationType> findAll(SpecificationTypeQuery query);
 
     boolean specificationTypeExists(Long id);

@@ -8,7 +8,9 @@ import org.apache.commons.lang3.StringUtils;
 
 @Component
 @RequiredArgsConstructor
-public class UniqueSpecificationTypeValidator implements ConstraintValidator<UniqueSpecificationType, String> {
+public class UniqueSpecificationTypeValidator implements
+        ConstraintValidator<UniqueSpecificationType, String> {
+
     private final SpecificationTypeService specificationTypeService;
 
     @Override

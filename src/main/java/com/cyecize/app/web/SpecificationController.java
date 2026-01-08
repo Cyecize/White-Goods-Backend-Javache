@@ -30,12 +30,11 @@ import com.cyecize.summer.common.annotations.routing.PostMapping;
 import com.cyecize.summer.common.annotations.routing.PutMapping;
 import com.cyecize.summer.common.annotations.routing.RequestMapping;
 import com.cyecize.summer.common.models.JsonResponse;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 
 @Controller
 @PreAuthorize(role = General.ROLE_ADMIN)
@@ -51,7 +50,8 @@ public class SpecificationController {
 
     @PostMapping(Endpoints.SPECIFICATION_TYPES_SEARCH)
     @PreAuthorize(AuthorizationType.ANY)
-    public Page<SpecificationTypeDto> searchSpecificationTypes(@Valid SpecificationTypeQuery query) {
+    public Page<SpecificationTypeDto> searchSpecificationTypes(
+            @Valid SpecificationTypeQuery query) {
         return this.specificationTypeService.findAll(query)
                 .map(st -> this.modelMapper.map(st, SpecificationTypeDto.class));
     }
@@ -68,44 +68,50 @@ public class SpecificationController {
 
     @PutMapping(Endpoints.PRODUCT_SPECIFICATION)
     public ProductSpecificationDto editProductSpecification(@PathVariable("id")
-                                                            @ConvertedBy(ProductSpecificationIdDataAdapter.class)
-                                                                    ProductSpecification specification,
-                                                            @Valid EditProductSpecificationDto dto) {
+            @ConvertedBy(ProductSpecificationIdDataAdapter.class)
+            ProductSpecification specification,
+            @Valid EditProductSpecificationDto dto) {
         return this.modelMapper.map(
-                this.productSpecificationService.editProductSpecification(specification.getId(), dto),
+                this.productSpecificationService.editProductSpecification(specification.getId(),
+                        dto),
                 ProductSpecificationDto.class
         );
     }
 
     @PutMapping(Endpoints.SPECIFICATION_CATEGORY)
-    public JsonResponse addSpecificationToCategory(@ConvertedBy(SpecificationTypeIdDataAdapter.class)
-                                                   @PathVariable("specTypeId")
-                                                           SpecificationType specificationType,
-                                                   @ConvertedBy(CategoryIdDataAdapter.class) @PathVariable("catId")
-                                                           ProductCategory productCategory) {
+    public JsonResponse addSpecificationToCategory(
+            @ConvertedBy(SpecificationTypeIdDataAdapter.class)
+            @PathVariable("specTypeId")
+            SpecificationType specificationType,
+            @ConvertedBy(CategoryIdDataAdapter.class) @PathVariable("catId")
+            ProductCategory productCategory) {
         this.specificationTypeService.addCategory(specificationType, productCategory);
-        return new JsonResponse(HttpStatus.OK).addAttribute("message", "Specification added successfully!");
+        return new JsonResponse(HttpStatus.OK).addAttribute("message",
+                "Specification added successfully!");
     }
 
     @DeleteMapping(Endpoints.SPECIFICATION_CATEGORY)
-    public JsonResponse removeSpecificationFromCategory(@ConvertedBy(SpecificationTypeIdDataAdapter.class)
-                                                        @PathVariable("specTypeId")
-                                                                SpecificationType specificationType,
-                                                        @ConvertedBy(CategoryIdDataAdapter.class) @PathVariable("catId")
-                                                                ProductCategory productCategory) {
+    public JsonResponse removeSpecificationFromCategory(
+            @ConvertedBy(SpecificationTypeIdDataAdapter.class)
+            @PathVariable("specTypeId")
+            SpecificationType specificationType,
+            @ConvertedBy(CategoryIdDataAdapter.class) @PathVariable("catId")
+            ProductCategory productCategory) {
         this.specificationTypeService.removeCategory(specificationType, productCategory);
-        return new JsonResponse(HttpStatus.OK).addAttribute("message", "Specification removed successfully!");
+        return new JsonResponse(HttpStatus.OK).addAttribute("message",
+                "Specification removed successfully!");
     }
 
     @PostMapping(Endpoints.SPECIFICATION_TYPES)
     public SpecificationTypeDto createSpecificationType(@Valid CreateSpecificationTypeDto dto) {
-        return this.modelMapper.map(this.specificationTypeService.createSpecificationType(dto), SpecificationTypeDto.class);
+        return this.modelMapper.map(this.specificationTypeService.createSpecificationType(dto),
+                SpecificationTypeDto.class);
     }
 
     @PutMapping(Endpoints.SPECIFICATION_TYPE)
     public SpecificationTypeDto editSpecificationType(@Valid EditSpecificationTypeDto dto,
-                                                      @PathVariable("typeId") @ConvertedBy(SpecificationTypeIdDataAdapter.class)
-                                                              SpecificationType specificationType) {
+            @PathVariable("typeId") @ConvertedBy(SpecificationTypeIdDataAdapter.class)
+            SpecificationType specificationType) {
         return this.modelMapper.map(
                 this.specificationTypeService.editSpecificationType(specificationType.getId(), dto),
                 SpecificationTypeDto.class

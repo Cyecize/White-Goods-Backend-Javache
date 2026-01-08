@@ -1,11 +1,11 @@
 package com.cyecize.app.api.question;
 
-import lombok.Data;
-
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Data
 public class QuestionDto {
+
     private Long id;
 
     private String fullName;

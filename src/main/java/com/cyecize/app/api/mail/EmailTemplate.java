@@ -1,7 +1,6 @@
 package com.cyecize.app.api.mail;
 
 import com.cyecize.app.api.auth.recoverykey.PasswordRecoveryEmailDto;
-import com.cyecize.app.api.auth.recoverykey.RecoveryKeyDto;
 import com.cyecize.app.api.question.QuestionDto;
 import com.cyecize.app.api.store.order.dto.OrderDto;
 import lombok.Getter;

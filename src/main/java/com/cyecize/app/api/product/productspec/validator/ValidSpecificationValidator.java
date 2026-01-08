@@ -7,7 +7,8 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class ValidSpecificationValidator implements ConstraintValidator<ValidSpecificationType, Long> {
+public class ValidSpecificationValidator implements
+        ConstraintValidator<ValidSpecificationType, Long> {
 
     private final SpecificationTypeService specificationTypeService;
 

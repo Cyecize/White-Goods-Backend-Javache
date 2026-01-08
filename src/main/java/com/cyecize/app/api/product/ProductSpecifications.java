@@ -47,7 +47,8 @@ public class ProductSpecifications {
             return Specification.where(null);
         }
 
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Product_.enabled), enabled);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(Product_.enabled),
+                enabled);
     }
 
     public static Specification<Product> showHidden(Boolean showHidden, User currentUser) {
@@ -68,7 +69,8 @@ public class ProductSpecifications {
         }
 
         return (root, query, criteriaBuilder)
-                -> QuerySpecifications.sort(Product.class, root.get(sortQuery.getField()), sortQuery.getDirection())
+                -> QuerySpecifications.sort(Product.class, root.get(sortQuery.getField()),
+                        sortQuery.getDirection())
                 .toPredicate(root, query, criteriaBuilder);
     }
 
@@ -90,7 +92,8 @@ public class ProductSpecifications {
                 .or(QuerySpecifications.contains(Product_.descriptionEn, text));
     }
 
-    public static Specification<Product> includesAllSpecifications(Map<Long, List<Long>> specifications) {
+    public static Specification<Product> includesAllSpecifications(
+            Map<Long, List<Long>> specifications) {
         if (specifications == null || specifications.isEmpty()) {
             return Specification.where(null);
         }
@@ -99,7 +102,8 @@ public class ProductSpecifications {
             final Subquery<Long> subquery = query.subquery(Long.class);
             final Root<Product> subRoot = subquery.from(Product.class);
 
-            final SetJoin<Product, ProductSpecification> specs = subRoot.join(Product_.specifications, JoinType.INNER);
+            final SetJoin<Product, ProductSpecification> specs = subRoot.join(
+                    Product_.specifications, JoinType.INNER);
 
             subquery.select(specs.get(ProductSpecification_.id));
             subquery.where(criteriaBuilder.equal(root, subRoot));

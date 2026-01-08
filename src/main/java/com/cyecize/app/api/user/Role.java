@@ -1,19 +1,16 @@
 package com.cyecize.app.api.user;
 
 import com.cyecize.summer.areas.security.interfaces.GrantedAuthority;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "roles")

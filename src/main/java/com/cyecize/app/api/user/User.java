@@ -3,10 +3,9 @@ package com.cyecize.app.api.user;
 import com.cyecize.app.constants.EntityGraphs;
 import com.cyecize.summer.areas.security.interfaces.GrantedAuthority;
 import com.cyecize.summer.areas.security.interfaces.UserDetails;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -19,9 +18,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "users")

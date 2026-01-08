@@ -1,7 +1,7 @@
 package com.cyecize.app.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
+import static com.cyecize.app.util.QuerySpecificationUtils.betweenPredicate;
+import static com.cyecize.app.util.QuerySpecificationUtils.getOrCreateJoin;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
@@ -9,9 +9,8 @@ import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.SingularAttribute;
-
-import static com.cyecize.app.util.QuerySpecificationUtils.betweenPredicate;
-import static com.cyecize.app.util.QuerySpecificationUtils.getOrCreateJoin;
+import org.apache.commons.lang3.StringUtils;
+import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 
 public final class QuerySpecifications {
 
@@ -23,7 +22,8 @@ public final class QuerySpecifications {
         return cb.equal(field, value);
     }
 
-    public static <T> Specification<T> contains(SingularAttribute<T, String> attribute, String text) {
+    public static <T> Specification<T> contains(SingularAttribute<T, String> attribute,
+            String text) {
         return (root, query, criteriaBuilder)
                 -> contains(attribute.getDeclaringType().getJavaType(), root.get(attribute), text)
                 .toPredicate(root, query, criteriaBuilder);
@@ -39,9 +39,10 @@ public final class QuerySpecifications {
         );
     }
 
-    public static <T, V extends Comparable<? super V>> Specification<T> between(SingularAttribute<T, V> attribute,
-                                                                                BetweenQuery<V> query,
-                                                                                boolean inclusive) {
+    public static <T, V extends Comparable<? super V>> Specification<T> between(
+            SingularAttribute<T, V> attribute,
+            BetweenQuery<V> query,
+            boolean inclusive) {
         return (root, criteriaQuery, criteriaBuilder) -> betweenPredicate(
                 attribute,
                 query,
@@ -51,8 +52,9 @@ public final class QuerySpecifications {
         );
     }
 
-    public static <T, V extends Comparable<? super V>> Specification<T> between(SingularAttribute<T, V> attribute,
-                                                                                BetweenQuery<V> query) {
+    public static <T, V extends Comparable<? super V>> Specification<T> between(
+            SingularAttribute<T, V> attribute,
+            BetweenQuery<V> query) {
         return between(attribute, query, true);
     }
 
@@ -67,10 +69,11 @@ public final class QuerySpecifications {
      * @param <V>   - Field value type
      * @return specification
      */
-    public static <T, J, V extends Comparable<? super V>> Specification<T> betweenJoin(SingularAttribute<T, J> join,
-                                                                                       SingularAttribute<J, V> attr,
-                                                                                       BetweenQuery<V> query,
-                                                                                       boolean inclusive) {
+    public static <T, J, V extends Comparable<? super V>> Specification<T> betweenJoin(
+            SingularAttribute<T, J> join,
+            SingularAttribute<J, V> attr,
+            BetweenQuery<V> query,
+            boolean inclusive) {
         return (root, criteriaQuery, criteriaBuilder) -> betweenPredicate(
                 attr,
                 query,
@@ -80,13 +83,15 @@ public final class QuerySpecifications {
         );
     }
 
-    public static <T, J, V extends Comparable<? super V>> Specification<T> betweenJoin(SingularAttribute<T, J> join,
-                                                                                       SingularAttribute<J, V> attr,
-                                                                                       BetweenQuery<V> query) {
+    public static <T, J, V extends Comparable<? super V>> Specification<T> betweenJoin(
+            SingularAttribute<T, J> join,
+            SingularAttribute<J, V> attr,
+            BetweenQuery<V> query) {
         return betweenJoin(join, attr, query, true);
     }
 
-    public static <T> Specification<T> sort(Class<T> entity, Expression<?> field, SortDirection direction) {
+    public static <T> Specification<T> sort(Class<T> entity, Expression<?> field,
+            SortDirection direction) {
         return (root, query, criteriaBuilder) -> {
             final Selection<?> selection = query.getSelection();
             if ((selection instanceof AggregationFunction)

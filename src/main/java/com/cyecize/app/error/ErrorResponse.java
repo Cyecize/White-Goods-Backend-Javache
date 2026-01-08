@@ -1,9 +1,8 @@
 package com.cyecize.app.error;
 
 import com.cyecize.http.HttpStatus;
-import lombok.Data;
-
 import java.util.Date;
+import lombok.Data;
 
 @Data
 public class ErrorResponse {

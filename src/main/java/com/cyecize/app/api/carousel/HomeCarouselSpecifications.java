@@ -11,7 +11,8 @@ public final class HomeCarouselSpecifications {
 
     public static Specification<HomeCarousel> showHidden(Boolean showHidden, User currentUser) {
         if (!BooleanUtils.toBoolean(showHidden) || !AuthUtils.hasAdminRole(currentUser)) {
-            return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(root.get(HomeCarousel_.enabled));
+            return (root, query, criteriaBuilder) -> criteriaBuilder.isTrue(
+                    root.get(HomeCarousel_.enabled));
         }
 
         return Specification.where(null);
@@ -26,6 +27,7 @@ public final class HomeCarouselSpecifications {
     }
 
     public static Specification<HomeCarousel> idEquals(Long id) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(HomeCarousel_.id), id);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get(HomeCarousel_.id),
+                id);
     }
 }

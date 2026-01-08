@@ -1,12 +1,11 @@
 package com.cyecize.app.util;
 
-import lombok.Getter;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
 @Getter
 public class Page<T> implements Iterable<T> {
@@ -36,7 +35,8 @@ public class Page<T> implements Iterable<T> {
     }
 
     public <E> Page<E> map(Function<T, E> mapFunction) {
-        final List<E> mappedElements = this.elements.stream().map(mapFunction).collect(Collectors.toList());
+        final List<E> mappedElements = this.elements.stream().map(mapFunction)
+                .collect(Collectors.toList());
         return new Page<>(mappedElements, this.itemsCount, this.pageable);
     }
 }

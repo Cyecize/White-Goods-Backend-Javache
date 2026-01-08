@@ -10,6 +10,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Component
 @RequiredArgsConstructor
 public class HomeCarouselIdDataAdapter implements DataAdapter<HomeCarousel> {
+
     private final HomeCarouselService homeCarouselService;
 
     @Override

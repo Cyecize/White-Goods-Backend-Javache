@@ -12,6 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Component
 @RequiredArgsConstructor
 public class ImageIdDataAdapter implements DataAdapter<Image> {
+
     private final ImageService imageService;
 
     @Override

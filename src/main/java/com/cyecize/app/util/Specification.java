@@ -1,10 +1,10 @@
 package com.cyecize.app.util;
 
+import java.io.Serializable;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.Serializable;
 
 public interface Specification<T> extends Serializable {
 
@@ -60,8 +60,8 @@ public interface Specification<T> extends Serializable {
     }
 
     /**
-     * Creates a WHERE clause for a query of the referenced entity in form of a {@link Predicate} for the given
-     * {@link Root} and {@link CriteriaQuery}.
+     * Creates a WHERE clause for a query of the referenced entity in form of a {@link Predicate}
+     * for the given {@link Root} and {@link CriteriaQuery}.
      *
      * @param root            must not be {@literal null}.
      * @param query           must not be {@literal null}.

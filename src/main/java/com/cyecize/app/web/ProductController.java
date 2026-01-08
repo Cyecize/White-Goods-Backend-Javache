@@ -81,7 +81,7 @@ public class ProductController {
     @GetMapping(Endpoints.PROD_FE)
     @PreAuthorize(AuthorizationType.ANY)
     public void searchProduct(@PathVariable(value = "id", required = false)
-    @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
+            @ConvertedBy(ProductIdNoErrorDataAdapter.class) Product product,
             HttpSoletRequest request,
             HttpSoletResponse response) {
         final OpenGraphData openGraphData;
@@ -123,7 +123,7 @@ public class ProductController {
 
     @PutMapping(Endpoints.PRODUCT)
     public ProductDtoDetailed editProduct(@PathVariable(value = "id")
-    @ConvertedBy(ProductIdDataAdapter.class) Product product,
+            @ConvertedBy(ProductIdDataAdapter.class) Product product,
             @Valid EditProductDto dto) {
         return this.modelMapper.map(this.productService.editProduct(product.getId(), dto),
                 ProductDtoDetailed.class);

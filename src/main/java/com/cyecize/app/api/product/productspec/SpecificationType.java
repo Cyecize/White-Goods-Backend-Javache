@@ -2,10 +2,7 @@ package com.cyecize.app.api.product.productspec;
 
 import com.cyecize.app.api.product.ProductCategory;
 import com.cyecize.app.constants.EntityGraphs;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +14,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.Table;
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "specification_types")
@@ -26,6 +25,7 @@ import java.util.List;
 @ToString
 @NamedEntityGraph(name = EntityGraphs.SPECIFICATION_TYPE_ALL, includeAllAttributes = true)
 public class SpecificationType {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(insertable = false, updatable = false)

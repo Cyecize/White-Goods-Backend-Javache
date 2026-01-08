@@ -4,5 +4,6 @@ import com.cyecize.solet.HttpSoletRequest;
 import com.cyecize.solet.HttpSoletResponse;
 
 public interface SitemapService {
+
     void downloadSitemapXml(HttpSoletRequest request, HttpSoletResponse response);
 }

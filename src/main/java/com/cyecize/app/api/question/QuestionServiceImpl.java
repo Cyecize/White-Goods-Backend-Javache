@@ -27,6 +27,7 @@ public class QuestionServiceImpl implements QuestionService {
         this.questionRepository.saveQuestion(question);
 
         final QuestionDto questionDto = this.modelMapper.map(question, QuestionDto.class);
-        this.mailService.sendEmail(EmailTemplate.QUESTION, questionDto, this.userService.getEmailsOfAdmins());
+        this.mailService.sendEmail(EmailTemplate.QUESTION, questionDto,
+                this.userService.getEmailsOfAdmins());
     }
 }

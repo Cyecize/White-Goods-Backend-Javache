@@ -15,6 +15,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class UserAddress {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

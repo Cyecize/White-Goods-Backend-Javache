@@ -14,6 +14,7 @@ import lombok.Data;
 
 @Data
 public class CreateSpecificationTypeDto {
+
     @NotEmpty(message = ValidationMessages.FIELD_CANNOT_BE_NULL)
     @MaxLength(length = General.MAX_VARCHAR, message = ValidationMessages.INVALID_VALUE)
     @UniqueSpecificationType

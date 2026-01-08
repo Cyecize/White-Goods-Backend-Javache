@@ -3,12 +3,11 @@ package com.cyecize.app.api.mail;
 import com.cyecize.summer.common.annotations.Bean;
 import com.cyecize.summer.common.annotations.BeanConfig;
 import com.cyecize.summer.common.annotations.Configuration;
-import lombok.RequiredArgsConstructor;
-
+import java.util.Properties;
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
-import java.util.Properties;
+import lombok.RequiredArgsConstructor;
 
 @BeanConfig
 @RequiredArgsConstructor

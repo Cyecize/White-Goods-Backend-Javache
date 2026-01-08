@@ -5,12 +5,11 @@ import com.cyecize.app.constants.General;
 import com.cyecize.app.integration.transaction.TransactionContext;
 import com.cyecize.app.integration.transaction.Transactional;
 import com.cyecize.summer.common.annotations.Service;
-import lombok.RequiredArgsConstructor;
-
-import javax.persistence.EntityManager;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +37,8 @@ public class AuthTokenRepository {
     @Transactional
     public List<AuthToken> findByUser(Long userId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-        return entityManager.createQuery("select at from AuthToken at where at.userId = ?1", AuthToken.class)
+        return entityManager.createQuery("select at from AuthToken at where at.userId = ?1",
+                        AuthToken.class)
                 .setParameter(1, userId)
                 .getResultList();
     }
@@ -46,7 +46,8 @@ public class AuthTokenRepository {
     @Transactional
     public Optional<AuthToken> findAuthTokenById(String id) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-        return entityManager.createQuery("select at from AuthToken at where at.id = ?1", AuthToken.class)
+        return entityManager.createQuery("select at from AuthToken at where at.id = ?1",
+                        AuthToken.class)
                 .setParameter(1, id)
                 .setHint(
                         General.HIBERNATE_HINT_ENTITY_GRAPH,
@@ -58,7 +59,8 @@ public class AuthTokenRepository {
     @Transactional
     public boolean existsById(String tokenId) {
         final EntityManager entityManager = this.transactionContext.getEntityManagerForTransaction();
-        return entityManager.createQuery("select count (at) from AuthToken at where at.id = ?1", Long.class)
+        return entityManager.createQuery("select count (at) from AuthToken at where at.id = ?1",
+                        Long.class)
                 .setParameter(1, tokenId)
                 .getSingleResult() > 0;
     }

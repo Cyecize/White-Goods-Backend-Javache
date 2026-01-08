@@ -13,6 +13,7 @@ import lombok.Data;
 
 @Data
 public class ResetPasswordDto {
+
     @ConvertedBy(RecoveryKeyIdConverter.class)
     @NotNull(message = ValidationMessages.INVALID_RECOVERY_KEY)
     private RecoveryKey recoveryKey;

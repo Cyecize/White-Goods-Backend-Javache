@@ -40,6 +40,7 @@ public class PercentPerProductDiscounter extends DiscounterBase {
         }
 
         final double totalDiscount = MathUtil.sumAll(discountedValues.toArray(Double[]::new));
-        priceBag.addDiscount(DiscountDtoFactory.fromPromotion(promotion, totalDiscount, discountItems));
+        priceBag.addDiscount(
+                DiscountDtoFactory.fromPromotion(promotion, totalDiscount, discountItems));
     }
 }

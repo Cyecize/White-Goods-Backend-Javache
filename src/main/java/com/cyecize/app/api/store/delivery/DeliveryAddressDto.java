@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class DeliveryAddressDto {
+
     private String fullName;
 
     private String email;

@@ -11,6 +11,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 @Component
 @RequiredArgsConstructor
 public class CategoryIdDataAdapter implements DataAdapter<ProductCategory> {
+
     private final ProductCategoryService productCategoryService;
 
     @Override

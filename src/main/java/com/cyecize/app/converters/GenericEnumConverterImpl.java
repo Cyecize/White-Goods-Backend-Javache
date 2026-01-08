@@ -4,15 +4,15 @@ import com.cyecize.summer.common.annotations.Component;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import lombok.SneakyThrows;
-
 import java.io.IOException;
+import lombok.SneakyThrows;
 
 @Component
 public class GenericEnumConverterImpl extends JsonDeserializer<Object> {
 
     @Override
-    public Object deserialize(JsonParser parser, DeserializationContext context) throws IOException {
+    public Object deserialize(JsonParser parser, DeserializationContext context)
+            throws IOException {
         final String currentName = parser.getCurrentName();
         final Class<?> modelType = parser.getCurrentValue().getClass();
 

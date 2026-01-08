@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class HomeCarouselDto {
+
     private Long id;
 
     private Long productId;
